@@ -161,7 +161,7 @@ a.mdl-navigation__link:hover {
   height: 800px;
   width: auto;
   background-color: #f3f3f3;
-  background: url('/images/slide01.jpg') center 30% no-repeat;
+  background: url('/images/hippo.jpg') center 30% no-repeat;
   background-size: cover;
 }
 
@@ -233,7 +233,7 @@ a.mdl-navigation__link:hover {
 
 .la-slide3-section {
   position: relative;
-  background: url('/images/slide3.png') center top no-repeat;
+  background: url('/images/kudu.jpeg') center top no-repeat;
   background-size: cover;
   height: 800px;
 }
@@ -306,7 +306,7 @@ a.mdl-navigation__link:hover {
 }
 
 .la-customized-section-image {
-  background: url('/images/slide2.jpg') center top no-repeat;
+  background: url('/images/migration.jpg') center top no-repeat;
   background-size: cover;
   height: 400px;
 }

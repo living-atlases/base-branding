@@ -1,65 +1,68 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Atlas of Living Wakanda"/>
-    <meta name="author" content="Wakanda National Biodiversity Office">
-    <title>Atlas of Living Wakanda</title>
-        <!-- ALA dependencies (loaded by grails modules) -->
-    <!-- During development of local html pages (like the main index) we need to load them -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/ala-styles.min.css">
-    <link rel="stylesheet" href="css/ala-theme.min.css">
 
-    <!-- <link rel="stylesheet" href="css/autocomplete.min.css">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Atlas of Living Wakanda" />
+  <meta name="author" content="Wakanda National Biodiversity Office">
+  <title>Tanzania National Biodiversity Facility</title>
+  <!-- ALA dependencies (loaded by grails modules) -->
+  <!-- During development of local html pages (like the main index) we need to load them -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="css/ala-styles.min.css">
+  <link rel="stylesheet" href="css/ala-theme.min.css">
+
+  <!-- <link rel="stylesheet" href="css/autocomplete.min.css">
          <link rel="stylesheet" href="css/autocomplete-extra.min.css"> -->
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <script src="js/jquery.min.js"></script>
-    <script src="js/jquery-migration.min.js"></script>
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery-migration.min.js"></script>
 
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/autocomplete.min.js"></script>
-    <script src="js/application.min.js"></script>
-    <!-- End ALA dependencies -->
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/autocomplete.min.js"></script>
+  <script src="js/application.min.js"></script>
+  <!-- End ALA dependencies -->
 
-    <!-- included head -->
-<!-- Google Analytics: Put here your UA id -->
-<script>
-  window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-  ga('create', 'UA-XXXXXXXX-1', 'auto');
-  ga('send', 'pageview');
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-<!-- End Google Analytics -->
+  <!-- included head -->
+  <!-- Google Analytics: Put here your UA id -->
+  <script>
+    window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) }; ga.l = +new Date;
+    ga('create', 'UA-XXXXXXXX-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
+  <!-- End Google Analytics -->
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 
 
-<!-- End included head -->
+  <!-- End included head -->
 
-  </head>
-  <body onload="focusScroll()">
-        <!-- We add this here instead of in head because it seems that CAS doesn't load head.html -->
-<!-- Optional: Material Design Lite Page styles -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="http://localhost:3333/material-lite/material.min.css">
-<!-- End: Material Design Lite -->
+</head>
 
-<!-- Experimental: Use of bootstrap-material-design compatible with BS3 -->
-<script src="http://localhost:3333/custom-bootstrap/material.min.js"></script>
-<script src="http://localhost:3333/custom-bootstrap/ripples.min.js"></script>
-<!-- <link rel="stylesheet" href="http://localhost:3333/custom-bootstrap/bootstrap-material-design.min.css">
-     <link rel="stylesheet" href="http://localhost:3333/custom-bootstrap/ripples.min.css">
+<body onload="focusScroll()">
+  <!-- We add this here instead of in head because it seems that CAS doesn't load head.html -->
+  <!-- Optional: Material Design Lite Page styles -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="http://tanbif.ditnet.ac.tz/material-lite/material.min.css">
+  <!-- End: Material Design Lite -->
+
+  <!-- Experimental: Use of bootstrap-material-design compatible with BS3 -->
+  <script src="http://tanbif.ditnet.ac.tz/custom-bootstrap/material.min.js"></script>
+  <script src="http://tanbif.ditnet.ac.tz/custom-bootstrap/ripples.min.js"></script>
+  <!-- <link rel="stylesheet" href="http://tanbif.ditnet.ac.tz/custom-bootstrap/bootstrap-material-design.min.css">
+     <link rel="stylesheet" href="http://tanbif.ditnet.ac.tz/custom-bootstrap/ripples.min.css">
      <script>$(document).ready(function() { window.$.material.init(); });</script> -->
-<!--[if IE]>
+  <!--[if IE]>
   <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.2.0/es5-shim.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/classlist/2014.01.31/classList.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/selectivizr/1.0.2/selectivizr-min.js"></script>
   -->
-<![endif]-->
+  <![endif]-->
 <!-- End bootstrap-material-design -->
 
 <!-- Minified version of `es6-promise-auto` below. (required for IE) -->
@@ -67,9 +70,9 @@
 <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
 
 <!-- This is our js/css generated by brunch -->
-<link rel="stylesheet" href="http://localhost:3333/css/app.css?DIGEST">
-<script src="http://localhost:3333/js/vendor.js?DIGEST"></script>
-<script src="http://localhost:3333/js/app.js?DIGEST"></script>
+<link rel="stylesheet" href="http://tanbif.ditnet.ac.tz/css/app.css?892f4da">
+<script src="http://tanbif.ditnet.ac.tz/js/vendor.js?892f4da"></script>
+<script src="http://tanbif.ditnet.ac.tz/js/app.js?892f4da"></script>
 <script>require('js/init');</script>
 <!-- end of self js -->
 
@@ -104,9 +107,9 @@
         <nav class="la-navigation mdl-navigation">
 
           <a data-i18n="nav.collectory" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://collections.tanbif.ditnet.ac.tz"></a>
-          <a data-i18n="nav.biocache" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://records.tanbif.ditnet.ac.tz"></a>
+          <a data-i18n="nav.biocache" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://tanbif.ditnet.ac.tz"></a>
           <a data-i18n="nav.datasets" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://collections.tanbif.ditnet.ac.tz/datasets"></a>
-          <a data-i18n="nav.your-area" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://records.tanbif.ditnet.ac.tz/explore/your-area/"></a>
+          <a data-i18n="nav.your-area" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://tanbif.ditnet.ac.tz/explore/your-area/"></a>
 
         </nav>
       </div>
@@ -133,7 +136,7 @@
       <a data-i18n="nav.create-account" class="mdl-navigation__link signUpBtn" href="https://auth.tanbif.ditnet.ac.tz/userdetails/registration/createAccount"></a>
       <div class="la-drawer-separator"></div>
       <a data-i18n="nav.collectory" class="mdl-navigation__link" href="https://collections.tanbif.ditnet.ac.tz"></a>
-      <a data-i18n="nav.biocache" class="mdl-navigation__link" href="https://records.tanbif.ditnet.ac.tz"></a>
+      <a data-i18n="nav.biocache" class="mdl-navigation__link" href="https://tanbif.ditnet.ac.tz"></a>
       <a data-i18n="nav.species" class="mdl-navigation__link" href="https://species.tanbif.ditnet.ac.tz"></a>
       <a data-i18n="nav.regions" class="mdl-navigation__link" href="https://regions.tanbif.ditnet.ac.tz"></a>
       <a data-i18n="nav.species-lists" class="mdl-navigation__link" href="https://lists.tanbif.ditnet.ac.tz"></a>
@@ -195,11 +198,11 @@
         </div>
         <div class="la-customized-section">
           <div class="la-customized-section-text">
-            <div class="mdl-typography--font-light mdl-typography--display-1-color-contrast">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
+            <div class="mdl-typography--font-light mdl-typography--display-1-color-contrast">Engage with Proffesionals</div>
             <p class="mdl-typography--font-light">
-              Lorem ipsum dolor sit amet, consectetur adipiscing eli
+              The Tanzania National Biodiversity Facility is a collaborative, national project that aggregates biodiversity data from multiple sources and makes it freely available and usable online
               <br>
-              <a href="" class="la-link mdl-typography--font-light">Just testing non latin characters</a>
+              <a href="" class="la-link mdl-typography--font-light">Learn More</a>
             </p>
           </div>
           <div class="la-customized-section-image"></div>
@@ -209,10 +212,10 @@
           <div class="la-card-container mdl-grid">
             <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-card mdl-shadow--3dp">
               <div class="mdl-card__media">
-                <img src="images/more-from-1.png">
+                <img src="images/lions.jpg">
               </div>
               <div class="mdl-card__title">
-                 <h4 class="mdl-card__title-text">Search and download records</h4>
+                 <h4 class="mdl-card__title-text">Tanzania Species</h4>
               </div>
               <div class="mdl-card__supporting-text">
                 <span class="mdl-typography--font-light mdl-typography--subhead">Search occurrence records by species, taxon, dataset, region, date, location, data provider.</span>
@@ -227,17 +230,17 @@
 
             <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-card mdl-shadow--3dp">
               <div class="mdl-card__media">
-                <img src="images/more-from-4.png">
+                <img src="images/tiger.jpg">
               </div>
               <div class="mdl-card__title">
-                 <h4 class="mdl-card__title-text">Spatial Portal</h4>
+                 <h4 class="mdl-card__title-text">Species by location</h4>
               </div>
               <div class="mdl-card__supporting-text">
                 <span class="mdl-typography--font-light mdl-typography--subhead">Map, visualise and analyse relationships between species, location and environment.</span>
               </div>
               <div class="mdl-card__actions">
                  <a class="la-link mdl-button mdl-js-button mdl-typography--text-uppercase" href="https://spatial.tanbif.ditnet.ac.tz">
-                   ANALIZE
+                   ANALYZE
                    <i class="material-icons">chevron_right</i>
                  </a>
               </div>
@@ -245,10 +248,10 @@
 
             <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-card mdl-shadow--3dp">
               <div class="mdl-card__media">
-                <img src="images/more-from-2.png">
+                <img src="images/giraffe.jpg">
               </div>
               <div class="mdl-card__title">
-                 <h4 class="mdl-card__title-text">Search datasets</h4>
+                 <h4 class="mdl-card__title-text">Occurence records</h4>
               </div>
               <div class="mdl-card__supporting-text">
                 <span class="mdl-typography--font-light mdl-typography--subhead">Search data sets provided by collecting institutions, individual collectors and community groups.</span>
@@ -263,7 +266,7 @@
 
             <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-card mdl-shadow--3dp">
               <div class="mdl-card__media">
-                <img src="images/more-from-3.png">
+                <img src="images/monkey.jpg">
               </div>
               <div class="mdl-card__title">
                  <h4 class="mdl-card__title-text">Explore regions</h4>
@@ -285,10 +288,10 @@
             <div class="la-slide3-band-text">
               <div class="mdl-typography--display-2 mdl-typography--font-thin">Record Wildlife</div>
               <p class="mdl-typography--headline mdl-typography--font-thin">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                What to Contribute to TANBIF? Record a sighting now!
               </p>
               <p>
-                <a class="mdl-typography--font-regular mdl-typography--text-uppercase la-alt-link" href="">
+                <a class="mdl-typography--font-regular mdl-typography--text-uppercase la-alt-link" href="https://images/tanbif.ditnet.ac.tz">
                   SHARE&nbsp;<i class="material-icons">chevron_right</i>
                 </a>
               </p>
@@ -319,10 +322,12 @@
 
   <div class="mdl-mega-footer--middle-section">
     <div class="mdl-mega-footer--right-section">
-      <img src="http://localhost:3333/images/tdwg.png">&nbsp;&nbsp;<img src="http://localhost:3333/images/gbif.png">
+      <img src="http://tanbif.ditnet.ac.tz/images/dit.png" title="Dar es Salaam Institute of Technology" alt="DIT">&nbsp;&nbsp;
+      <img src="http://tanbif.ditnet.ac.tz/images/costech.jpg" title="COSTECH" alt="COSTECH">&nbsp;&nbsp;
+      <img src="http://tanbif.ditnet.ac.tz/images/jrs.png" title="JRS" alt="JRS">
     </div>
     <p class="mdl-typography--font-light">Licence: </p>
-    <p class="mdl-typography--font-light">© 2020 Wakanda National Biodiversity Office</p>
+    <p class="mdl-typography--font-light">© 2020 Tanzania National Biodiversity Facility</p>
   </div>
 
   <div class="mdl-mega-footer--bottom-section">
@@ -332,17 +337,16 @@
     </a>
     <ul class="locale-switcher mdl-menu mdl-js-menu mdl-menu--top-left mdl-js-ripple-effect" for="version-dropdown">
       <li class="locale-link mdl-menu__item" data-locale="en"><a class="en-locale-link" href=""><span class="lang_link_en">English</span></a></li>
-      <li class="locale-link mdl-menu__item" data-locale="es"><a class="es-locale-link" href=""><span class="lang_link_es">Español</span></a></li>
-      <li class="locale-link mdl-menu__item" data-locale="zh"><a class="zh-CN-locale-link" href=""><span class="lang_link_zh-CN">简体中文</span></a></li>
+      <li class="locale-link mdl-menu__item" data-locale="sw"><a class="sw-locale-link" href=""><span class="lang_link_es">Swahili</span></a></li>
     </ul>
     <a class="la-link la-link-menu mdl-typography--font-light" id="developers-dropdown">
-      For Researchers
+      Start Exploring
       <i class="material-icons">arrow_drop_up</i>
     </a>
     <ul class="mdl-menu mdl-js-menu mdl-menu--top-left mdl-js-ripple-effect" for="developers-dropdown">
-      <li class="mdl-menu__item">Some link</li>
-      <li class="mdl-menu__item">Another link</li>
-      <li class="mdl-menu__item">Whatever</li>
+      <li class="mdl-menu__item"><a class="mdl-menu__item la-link" href="https://records.tanbif.ditnet.ac.tz/explore/your-area">Explore your area</a></li>
+      <li class="mdl-menu__item"><a href="https://regions.tanbif.ditnet.ac.tz">Explore Regions</a></li>
+      <li class="mdl-menu__item"><a href="https://records.tanbif.ditnet.ac.tz/search">Search Occurrence Records</a></li>
     </ul>
     <a class="la-link mdl-typography--font-light" href="">Blog</a>
     <a class="la-link mdl-typography--font-light" href="">Privacy Policy</a>
@@ -352,18 +356,18 @@
 </footer>
 <!-- End footer -->
 </div>
-<script src="http://localhost:3333/material-lite/material.min.js"></script>
+<script src="http://tanbif.ditnet.ac.tz/material-lite/material.min.js"></script>
 <script type="text/javascript">
   function focusScroll() {
     // Allow to move with PgUp/Down the main contain without having to focus manually
     $("#main_content").trigger('focus');
   }
-  function smoothScrollingTo(target){
+  function smoothScrollingTo(target) {
     var nameValue = $.attr(target, 'href').substr(1)
     // console.log(`Name value: ${nameValue}`);
-    $('.mdl-layout__content').animate({scrollTop:$('[name="' + nameValue + '"]').offset().top}, 500);
+    $('.mdl-layout__content').animate({ scrollTop: $('[name="' + nameValue + '"]').offset().top }, 500);
   }
-  $('a[href*=\\#]').on('click', function(event){
+  $('a[href*=\\#]').on('click', function (event) {
     event.preventDefault();
     smoothScrollingTo(this);
   });

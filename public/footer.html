@@ -22,10 +22,12 @@
 
   <div class="mdl-mega-footer--middle-section">
     <div class="mdl-mega-footer--right-section">
-      <img src="::headerFooterServer::/images/tdwg.png">&nbsp;&nbsp;<img src="::headerFooterServer::/images/gbif.png">
+      <img src="http://tanbif.ditnet.ac.tz/images/dit.png" title="Dar es Salaam Institute of Technology" alt="DIT">&nbsp;&nbsp;
+      <img src="http://tanbif.ditnet.ac.tz/images/costech.jpg" title="COSTECH" alt="COSTECH">&nbsp;&nbsp;
+      <img src="http://tanbif.ditnet.ac.tz/images/jrs.png" title="JRS" alt="JRS">
     </div>
     <p class="mdl-typography--font-light">Licence: </p>
-    <p class="mdl-typography--font-light">© 2020 Wakanda National Biodiversity Office</p>
+    <p class="mdl-typography--font-light">© 2020 Tanzania National Biodiversity Facility</p>
   </div>
 
   <div class="mdl-mega-footer--bottom-section">
@@ -35,17 +37,16 @@
     </a>
     <ul class="locale-switcher mdl-menu mdl-js-menu mdl-menu--top-left mdl-js-ripple-effect" for="version-dropdown">
       <li class="locale-link mdl-menu__item" data-locale="en"><a class="en-locale-link" href=""><span class="lang_link_en">English</span></a></li>
-      <li class="locale-link mdl-menu__item" data-locale="es"><a class="es-locale-link" href=""><span class="lang_link_es">Español</span></a></li>
-      <li class="locale-link mdl-menu__item" data-locale="zh"><a class="zh-CN-locale-link" href=""><span class="lang_link_zh-CN">简体中文</span></a></li>
+      <li class="locale-link mdl-menu__item" data-locale="sw"><a class="sw-locale-link" href=""><span class="lang_link_es">Swahili</span></a></li>
     </ul>
     <a class="la-link la-link-menu mdl-typography--font-light" id="developers-dropdown">
-      For Researchers
+      Start Exploring
       <i class="material-icons">arrow_drop_up</i>
     </a>
     <ul class="mdl-menu mdl-js-menu mdl-menu--top-left mdl-js-ripple-effect" for="developers-dropdown">
-      <li class="mdl-menu__item">Some link</li>
-      <li class="mdl-menu__item">Another link</li>
-      <li class="mdl-menu__item">Whatever</li>
+      <li class="mdl-menu__item"><a class="mdl-menu__item la-link" href="https://records.tanbif.ditnet.ac.tz/explore/your-area">Explore your area</a></li>
+      <li class="mdl-menu__item"><a href="https://regions.tanbif.ditnet.ac.tz">Explore Regions</a></li>
+      <li class="mdl-menu__item"><a href="https://records.tanbif.ditnet.ac.tz/search">Search Occurrence Records</a></li>
     </ul>
     <a class="la-link mdl-typography--font-light" href="">Blog</a>
     <a class="la-link mdl-typography--font-light" href="">Privacy Policy</a>
@@ -55,18 +56,18 @@
 </footer>
 <!-- End footer -->
 </div>
-<script src="::headerFooterServer::/material-lite/material.min.js"></script>
+<script src="http://tanbif.ditnet.ac.tz/material-lite/material.min.js"></script>
 <script type="text/javascript">
   function focusScroll() {
     // Allow to move with PgUp/Down the main contain without having to focus manually
     $("#main_content").trigger('focus');
   }
-  function smoothScrollingTo(target){
+  function smoothScrollingTo(target) {
     var nameValue = $.attr(target, 'href').substr(1)
     // console.log(`Name value: ${nameValue}`);
-    $('.mdl-layout__content').animate({scrollTop:$('[name="' + nameValue + '"]').offset().top}, 500);
+    $('.mdl-layout__content').animate({ scrollTop: $('[name="' + nameValue + '"]').offset().top }, 500);
   }
-  $('a[href*=\\#]').on('click', function(event){
+  $('a[href*=\\#]').on('click', function (event) {
     event.preventDefault();
     smoothScrollingTo(this);
   });
