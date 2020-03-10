@@ -61,7 +61,7 @@ This is using https://brunch.io instead of gulp and using [ALA commonui-bs3-2019
 ```
 # First use:
 
-git clone --recurse-submodule https://github.com/living-atlases/base-branding.git
+git clone --recurse-submodule https://github.com/TANBIF/base-branding.git
 
 # install yarn with or similar:
 # https://classic.yarnpkg.com/en/docs/install/#debian-stable
@@ -71,6 +71,10 @@ npm install -g brunch
 
 # During development
 brunch watch
+
+###To specify other port
+# brunch watch --server --port 3000
+
 # or
 brunch build
 # or
@@ -181,3 +185,4 @@ Additionally:
 ## More information
 
 - https://github.com/AtlasOfLivingAustralia/documentation/wiki/Styling-the-web-app
+

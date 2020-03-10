@@ -168,7 +168,7 @@ a.mdl-navigation__link:hover {
 .logo-font {
   font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   line-height: 1;
-  color: rgb(255,171,64);
+  color: #c4f392;
   font-weight: 500;
 }
 
@@ -515,7 +515,7 @@ a.mdl-navigation__link:hover {
 }
 
 #main_biosearch_form {
-  background: rgb(0,0,0,0.55);
+  /*background: rgb(0,0,0,0.55);*/
 }
 
 #main_biosearch {
@@ -625,4 +625,10 @@ h6,p {
 
 .mdl-layout-title > a:hover {
   text-decoration: none;
+}
+
+.btn-primary, .gform_button {
+    color: #fff;
+    background-color: #009688;
+    border-color: #009688;
 }
