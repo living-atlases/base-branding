@@ -71,6 +71,10 @@ npm install -g brunch
 
 # During development
 brunch watch
+
+###To specify other port
+# brunch watch --server --port 3000
+
 # or
 brunch build
 # or
@@ -181,3 +185,4 @@ Additionally:
 ## More information
 
 - https://github.com/AtlasOfLivingAustralia/documentation/wiki/Styling-the-web-app
+
