@@ -1,6 +1,6 @@
 module.exports = {
   isDevel: true,
-  inMante: false, // set to true and deploy if you want to set a maintenance message in all the services
+  inMante: true, // set to true and deploy if you want to set a maintenance message in all the services
   enabledLangs: ['en', 'sw'],
   mainDomain: 'tanbif.ditnet.ac.tz', // used for cookies (without http/https)
   mainLAUrl: 'https://tanbif.ditnet.ac.tz',
