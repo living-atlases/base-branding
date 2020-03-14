@@ -1,10 +1,6 @@
 {
-<<<<<<< HEAD
-  "general.orgfullname": "TANZANIA NATIONAL BIODIVERSITY FACILITY",
   "general.copyright": "© 2020 Tanzania National Biodiversity Facility",
-=======
   "general.orgfullname": "Tanzania Biodiversity Information Facility",
->>>>>>> b3c3fbcf7b17233225f0f0d76c4d2a457ff1792e
   "nav.collectory": "Collections",
   "nav.biocache": "Occurrences",
   "nav.datasets": "Datasets",
