@@ -627,8 +627,23 @@ h6,p {
   text-decoration: none;
 }
 
+/*Addition CSS*/
 .btn-primary, .gform_button {
     color: #fff;
     background-color: #009688;
     border-color: #009688;
+}
+.btn-primary:hover, .gform_button:hover {
+    color: #fff;
+    background-color: #06af9f;
+    border-color: #06af9f;
+}
+
+a:hover, a:focus {
+    color: #05796f;
+    text-decoration: underline;
+}
+
+.la-navigation .mdl-navigation__link:hover {
+    border-bottom: 4px solid #06af9f;
 }
