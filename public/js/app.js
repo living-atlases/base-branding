@@ -259,54 +259,57 @@ i18n.on('languageChanged', function (lng) {
   }
 });
 
-i18n.use(backend).use(lngDetector).use(cache).init(i18nOpts, function (err, t) {
-  // initialized and ready to
-  if (err) {
-    console.error(err);
-    return;
-  }
-  console.log('Language initialized: ' + i18n.language);
-  jqueryI18next.init(i18n, $);
-  $("body").localize();
+(function ($) {
+  i18n.use(backend).use(lngDetector).use(cache).init(i18nOpts, function (err, t) {
+    // initialized and ready to
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log('Language initialized: ' + i18n.language);
+    jqueryI18next.init(i18n, $, { i18nName: 'i18next' });
+    console.log('jquery i18next initialized');
+    $("body").localize();
 
-  $('.locale-link').on('click', function (e) {
-    e.preventDefault();
-    var lang = $(this).data('locale');
-    console.log('Lang clicked ' + lang);
+    $('.locale-link').on('click', function (e) {
+      e.preventDefault();
+      var lang = $(this).data('locale');
+      console.log('Lang clicked ' + lang);
 
-    i18n.changeLanguage(lang);
+      i18n.changeLanguage(lang);
 
-    // Change ?lang param and reload
-    currentUrl.query.lang = lang;
-    document.location.search = currentUrl.query;
+      // Change ?lang param and reload
+      currentUrl.query.lang = lang;
+      document.location.search = currentUrl.query;
+    });
+
+    if (typeof Cookies.get(laSessionCookie) === 'undefined' && typeof currentUrl.query.lang === 'undefined') {
+      // Workaround to set grails locale
+      // This will use to do a unique lang redirect (to force grails to set the lang for the session)
+      var in30Minutes = 1 / 48;
+      // grails default session lifetime is 30min
+      Cookies.set(laSessionCookie, '/', { expires: in30Minutes });
+      currentUrl.query.lang = i18n.language;
+      document.location.search = currentUrl.query;
+    }
+
+    // cookies eu consent
+    /* const cookiesOpt = {
+     *   cookieTitle: t('Uso de Cookies'),
+     *   cookieMessage: t('Utilizamos cookies para asegurar un mejor uso de nuestra web. Si continúas navegando, consideramos que aceptas su uso'),
+     *   showLink: false,
+     *   position: 'bottom',
+     *   linkText: 'Lee más',
+     *   linkRouteName: '/privacy',
+     *   acceptButtonText: t('Aceptar'),
+     *   html: false,
+     *   expirationInDays: 70,
+     *   forceShow: false
+     * };
+     */
+    // CookieConsent.init(cookiesOpt);
   });
-
-  if (typeof Cookies.get(laSessionCookie) === 'undefined' && typeof currentUrl.query.lang === 'undefined') {
-    // Workaround to set grails locale
-    // This will use to do a unique lang redirect (to force grails to set the lang for the session)
-    var in30Minutes = 1 / 48;
-    // grails default session lifetime is 30min
-    Cookies.set(laSessionCookie, '/', { expires: in30Minutes });
-    currentUrl.query.lang = i18n.language;
-    document.location.search = currentUrl.query;
-  }
-
-  // cookies eu consent
-  /* const cookiesOpt = {
-   *   cookieTitle: t('Uso de Cookies'),
-   *   cookieMessage: t('Utilizamos cookies para asegurar un mejor uso de nuestra web. Si continúas navegando, consideramos que aceptas su uso'),
-   *   showLink: false,
-   *   position: 'bottom',
-   *   linkText: 'Lee más',
-   *   linkRouteName: '/privacy',
-   *   acceptButtonText: t('Aceptar'),
-   *   html: false,
-   *   expirationInDays: 70,
-   *   forceShow: false
-   * };
-   */
-  // CookieConsent.init(cookiesOpt);
-});
+})(jQuery);
 });
 
 require.register("js/index-auth.js", function(exports, require, module) {
@@ -318,8 +321,8 @@ var authCookieName = 'ALA-Auth';
 var loginClass = 'signedIn';
 var logoutClass = 'signedOut';
 
-var mainDrawerLoginStatusInIndex = function mainDrawerLoginStatusInIndex() {
-  if (document.location.host === settings.mainDomain || document.location.host === 'localhost:3333') {
+var loginStatusInIndex = function loginStatusInIndex() {
+  if ((document.location.origin === settings.mainLAUrl || document.location.host === 'localhost:3333') && document.location.pathname === '/') {
     if (settings.isDevel) console.log("We are in the main url, let's see if we are authenticated");
     // As this page is plain html, we have to detect if with are authenticated via Cookies
     // NOTE: For make this work you need ala.cookie.httpOnly to false in /data/cas/config/application.yml
@@ -349,11 +352,11 @@ var mainDrawerLoginStatusInIndex = function mainDrawerLoginStatusInIndex() {
 $(function () {
   // wait til drawer elements are visible
   var checkExist = setInterval(function () {
-    if (window.jQuery && $('#drawer-nav-menu').length) {
+    if (window.jQuery) {
       clearInterval(checkExist);
-      mainDrawerLoginStatusInIndex();
+      loginStatusInIndex();
     } else {
-      if (settings.isDevel) console.log("drawer not loaded");
+      if (settings.isDevel) console.log("jquery not loaded");
     }
   }, 1000);
 });
@@ -478,7 +481,8 @@ var loadStats = function loadStats() {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.location.host === settings.mainLAUrl || document.location.host === 'localhost:3333' || settings.isDevel) {
+  if ((document.location.origin === settings.mainLAUrl || document.location.host === 'localhost') && document.location.pathname === '/') {
+    // only load stats on /
     loadStats();
   }
 });

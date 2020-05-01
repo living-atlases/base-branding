@@ -45,8 +45,6 @@ exports.plugins = {
     // just copy ALA default builded files to our build
     // These are loaded by ala-bootstrap3 library, so we need to load manually in our development testPage
     'js': [ 'commonui-bs3-2019/build/js/'],
-    'material-lite': [ 'app/material-lite' ],
-    'custom-bootstrap': [ 'app/custom-bootstrap' ],
     'css': [ 'commonui-bs3-2019/build/css/' ],
     'fonts': 'commonui-bs3-2019/build/fonts/',
     verbose : false, // shows each file that is copied to the destination directory
@@ -122,8 +120,6 @@ exports.plugins = {
 exports.conventions = {
   // file won't be compiled and will be just moved to public directory instead
   ignored: [
-    /^app\/material-lite/,
-    /^app\/custom-bootstrap/
   ]
 };
 

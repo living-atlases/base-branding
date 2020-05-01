@@ -4,7 +4,7 @@ const authCookieName = 'ALA-Auth';
 const loginClass = 'signedIn';
 const logoutClass = 'signedOut';
 
-var mainDrawerLoginStatusInIndex = () => {
+var loginStatusInIndex = () => {
   if ((document.location.origin === settings.mainLAUrl || document.location.host === 'localhost:3333') && document.location.pathname === '/' ) {
     if (settings.isDevel) console.log("We are in the main url, let's see if we are authenticated");
     // As this page is plain html, we have to detect if with are authenticated via Cookies
@@ -36,11 +36,11 @@ var mainDrawerLoginStatusInIndex = () => {
 $(function() {
   // wait til drawer elements are visible
   var checkExist = setInterval(function() {
-    if (window.jQuery && $('#drawer-nav-menu').length) {
+    if (window.jQuery) {
       clearInterval(checkExist);
-      mainDrawerLoginStatusInIndex();
+      loginStatusInIndex();
     } else {
-      if (settings.isDevel) console.log("drawer not loaded");
+      if (settings.isDevel) console.log("jquery not loaded");
     }
   }, 1000);
 });
