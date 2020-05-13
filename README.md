@@ -70,7 +70,7 @@ yarn install
 npm install -g brunch
 
 # During development
-brunch watch
+brunch watch -s
 # or
 brunch build
 # or

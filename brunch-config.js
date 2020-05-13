@@ -108,10 +108,15 @@ exports.plugins = {
 
     ]
   },
-  // https://www.npmjs.com/package/brunch-browser-sync
+  // Using:
+  // https://github.com/ocombe/browser-sync-brunch
+  // instead of auto-reload-brunch and just `brunch watch`
+  // We can return to auto-reload in the future
   browserSync: {
     port: 3333,
-    open: false // Don't open a browser tab on each modification
+    // logLevel: "debug"
+    // Don't open a browser tab on each modification (this was working in another browser-sync plugin)
+    // open: false
   }
   // Also:
   // https://github.com/mikefarah/git-digest-brunch
