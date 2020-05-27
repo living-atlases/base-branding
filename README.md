@@ -129,6 +129,25 @@ See the `brunch-config.js` for more details.
 
 Pull Request welcome!
 
+## Screenshots
+
+Home page with stats:
+
+![](https://raw.github.com/living-atlases/base-branding/master/la-base-index.png)
+
+`CAS` Authentication links in dropdown (and other configurable links):
+
+![](https://raw.github.com/living-atlases/base-branding/master/la-base-menu-auth-and-links.png)
+
+ALA Species autocompletion integrated and sticky footer:
+
+![](https://raw.github.com/living-atlases/base-branding/master/la-base-autocomplete.png)
+
+Error page:
+
+![](https://raw.github.com/living-atlases/base-branding/master/la-base-error.png)
+
+
 ## Error pages
 
 You can enable a error banner in `js/settings` variable `inMante` to `true` that will visible in all the LA modules using this skin.
