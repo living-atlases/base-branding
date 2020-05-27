@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Atlas of Living Wakanda"/>
     <meta name="author" content="Wakanda National Biodiversity Office">
-    <title>Atlas of Living Wakanda</title>
+    <title data-i18n="general.orgfullname"></title>
         <!-- ALA dependencies (loaded by grails modules) -->
     <!-- During development of local html pages (like the main index) we need to load them -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -13,15 +13,15 @@
     <link rel="stylesheet" href="css/ala-styles.min.css">
     <link rel="stylesheet" href="css/ala-theme.min.css">
 
-    <!-- <link rel="stylesheet" href="css/autocomplete.min.css">
-         <link rel="stylesheet" href="css/autocomplete-extra.min.css"> -->
+    <link rel="stylesheet" href="css/autocomplete.min.css">
+    <link rel="stylesheet" href="css/autocomplete-extra.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-migration.min.js"></script>
 
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/autocomplete.min.js"></script>
-    <script src="js/application.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/autocomplete.js"></script>
+    <script src="js/application.js"></script>
     <!-- End ALA dependencies -->
 
     <!-- included head -->
@@ -54,25 +54,69 @@
 <script>require('js/init');</script>
 <!-- end of self js -->
 
+
 <!-- site-banner -->
-      <span class="la-title mdl-layout-title">
-        <a href="https://l-a.site" data-i18n="general.orgfullname"></a>
-      </span>
-      <div class="la-navigation-container">
-        <nav class="la-navigation mdl-navigation">
 
-          <a data-i18n="nav.collectory" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://collections.l-a.site"></a>
-          <a data-i18n="nav.biocache" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://biocache.l-a.site"></a>
-          <a data-i18n="nav.datasets" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://collections.l-a.site/datasets"></a>
-          <a data-i18n="nav.your-area" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://biocache.l-a.site/explore/your-area/"></a>
+<!-- BootStrap 3 Classic Navbar addapted from sample:
+     https://getbootstrap.com/docs/3.3/components/#navbar -->
 
-        </nav>
-      </div>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://l-a.site" data-i18n="general.orgfullname"></a>
     </div>
-  </div>
 
-  <div class="container" id="autocompleteSearchALA" class="collapse">
-  </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right"">
+
+        <li><a data-i18n="nav.collectory" href="https://collections.l-a.site"></a></li>
+        <li><a data-i18n="nav.biocache" href="https://biocache.l-a.site"></a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+          <ul class="dropdown-menu signedIn">
+            <li><a data-i18n="nav.login" class="loginBtn" href="https://auth.l-a.site/cas/login"></a></li>
+            <li><a data-i18n="nav.myprofile" class="myProfileBtn" href="https://auth.l-a.site/userdetails/myprofile/"></a></li>
+            <li><a data-i18n="nav.logout" class="logoutBtn" href="https://auth.l-a.site/cas/logout"></a></li>
+            <li><a data-i18n="nav.create-account" class="signUpBtn" href="https://auth.l-a.site/userdetails/registration/createAccount"></a></li>
+            <li role="separator" class="divider"></li>
+            <li><a data-i18n="nav.collectory" href="https://collections.l-a.site"></a></li>
+            <li><a data-i18n="nav.biocache" href="https://biocache.l-a.site"></a></li>
+            <li><a data-i18n="nav.species" href="https://especies.gbif.es"></a></li>
+            <li><a data-i18n="nav.species-lists" href="https://lists.l-a.site"></a></li>
+            <li><a data-i18n="nav.spatial" href="https://spatial.l-a.site"></a></li>
+            <li><a data-i18n="nav.regions" href="https://regions.l-a.site"></a></li>
+            <li><a data-i18n="nav.images" href="https://images.l-a.site"></a></li>
+            <li role="separator" class="divider"></li>
+            <li><a data-i18n="nav.your-area" href="https://biocache.l-a.site/explore/your-area/"></a></li>
+            <li><a data-i18n="nav.datasets" href="https://collections.l-a.site/datasets"></a></li>
+          </ul>
+        </li>
+      </ul>
+      <!-- Search classic form with ALA autocomplete -->
+      <form method="get" action="https://especies.gbif.es/search" class="search-form navbar-form navbar-right">
+        <div class="form-group">
+          <input name="q" id="autocompleteHeader" type="text" class="form-control" data-i18n="[placeholder]nav.searchbox">
+        </div>
+
+        <button type="submit" data-toggle="tooltip" aria-label="Left Align" data-placement="bottom" data-i18n="[title]nav.searchbox" class="btn btn-default">
+          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        </button>
+      </form>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+  <div class="container" id="autocompleteSearchALA" class="collapse"></div>
+
+  <!-- ALA autocoplete code -->
   <script type="text/html" id="autoCompleteTemplate">
     <li class="autocomplete-item striped">
       <div class="content-spacing">
@@ -93,67 +137,104 @@
   <div id="mante-container" style="display: none;" class="container"></div>
   <!-- end maintenance -->
   <!-- main content -->
-  <div tabindex="-1" id="main_content" class="la-content mdl-layout__content">
-    <div class="la-main-content">
-      <a name="top"></a>
+  <div tabindex="-1" id="main_content" class="la-content container">
+    <a name="top"></a>
 
-        <div class="la-be-together-section mdl-typography--text-center">
-          <div class="logo-font la-slogan" data-i18n="general.orgfullname">
-          </div>
-          <div data-i18n="index.slogan" class="logo-font la-sub-slogan">
-          </div>
 
-          <div class="mdl-grid index-stats">
-            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone" ></div>
-            <div class="mdl-cell mdl-cell--2-col-desktop mdl-cell--4-col-tablet mdl-cell--2-col-phone stats-group">
-              <ul class="mdl-list stats-list">
-                <li class="mdl-list__item stats-item"><span class="mdl-list__item-primary-content stats-title" data-i18n="index.stats.occurrences"></span></li>
-                <li class="mdl-list__item stats-item"><span class="mdl-list__item-primary-content stats-value" id="stats_occurrences">1000000</span></li>
-              </ul>
-            </div>
-            <div class="mdl-cell mdl-cell--2-col-desktop mdl-cell--4-col-tablet mdl-cell--2-col-phone stats-group">
-              <ul class="mdl-list stats-list">
-                <li class="mdl-list__item stats-item"><span class="mdl-list__item-primary-content stats-title" data-i18n="index.stats.datasets"></span></li>
-                <li class="mdl-list__item stats-item"><span id="stats_datasets" class="mdl-list__item-primary-content stats-value">11000</span></li>
-              </ul>
-            </div>
-            <div class="mdl-cell mdl-cell--2-col-desktop mdl-cell--4-col-tablet mdl-cell--2-col-phone stats-group">
-              <ul class="mdl-list stats-list">
-                <li class="mdl-list__item stats-item"><span class="mdl-list__item-primary-content stats-title" data-i18n="index.stats.institutions"></span></li>
-                <li class="mdl-list__item stats-item"><span id="stats_institutions" class="mdl-list__item-primary-content stats-value">11000</span></li>
-              </ul>
-            </div>
-            <div class="mdl-cell mdl-cell--2-col-desktop mdl-cell--4-col-tablet mdl-cell--2-col-phone stats-group">
-              <ul class="mdl-list stats-list">
-                <li class="mdl-list__item stats-item"><span class="mdl-list__item-primary-content stats-title" data-i18n="index.stats.species"></span></li>
-                <li class="mdl-list__item stats-item"><span id="stats_species" class="mdl-list__item-primary-content stats-value">11000</span></li>
-              </ul>
-            </div>
-            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+    <div class="jumbotron">
+      <h1 data-i18n="general.orgfullname"></h1>
+      <p data-i18n="index.slogan"></p>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="list-group">
+          <a href="https://biocache.l-a.site" class="list-group-item">
+            <h4 class="list-group-item-heading" data-i18n="index.stats.occurrences"></h4>
+            <p class="list-group-item-text" id="stats_occurrences"></p>
+          </a>
+        </div>
+        <div class="list-group">
+          <a href="https://collections.l-a.site/datasets" class="list-group-item">
+            <h4 class="list-group-item-heading" data-i18n="index.stats.datasets"></h4>
+            <p class="list-group-item-text" id="stats_datasets"></p>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="list-group">
+          <a href="https://collections.l-a.site" class="list-group-item">
+            <h4 class="list-group-item-heading" data-i18n="index.stats.institutions"></h4>
+            <p class="list-group-item-text" id="stats_institutions"></p>
+          </a>
+        </div>
+        <div class="list-group">
+          <a href="https://especies.gbif.es" class="list-group-item">
+            <h4 class="list-group-item-heading" data-i18n="index.stats.species"></h4>
+            <p class="list-group-item-text" id="stats_species"></p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="list-group">
+      <form method="get" action="https://especies.gbif.es/search" class="search-form" id="main_biosearch_form" action="#">
+        <div class="input-group">
+          <div class="form-group is-empty">
+            <input data-i18n="[placeholder]nav.searchbox" id="search" class="form-control ac_input general-search ui-autocomplete-input" name="q" type="text"  autocomplete="off">
           </div>
-          <div class="mdl-grid index-search">
-            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone" ></div>
-            <div class="mdl-cell mdl-cell--8-col">
-              <div class="logo-font la-create-character">
-                <form method="get" action="https://especies.gbif.es/search" class="search-form" id="main_biosearch_form" action="#">
-                  <div class="input-group">
-                    <div class="form-group is-empty">
-                      <input data-i18n="[placeholder]nav.searchbox" id="search" class="form-control ac_input general-search ui-autocomplete-input" name="q" type="text"  autocomplete="off">
-                    </div>
-                    <span id="main_biosearch_label" class="input-group-btn">
-                      <div class="form-group"><input data-i18n="[value]index.search-btn" type="submit" class="form-control btn btn-raised btn-primary" alt="Search" value=""></div>
-                    </span>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone" ></div>
-          </div>
+          <span id="main_biosearch_label" class="input-group-btn">
+            <div class="form-group"><input data-i18n="[value]index.search-btn" type="submit" class="form-control btn btn-raised btn-primary" alt="Search" value=""></div>
+          </span>
+        </div>
+      </form>
+    </div>
+
+    <h2>Chinese lorem ipsum to test UTF-8</h2>
+    <p lang="zh" xml:lang="zh" dir="ltr">認彦式時守当航完録川権報一案映。年旅国産択生型敢否強逮齢当同担策地負郎。用問思所画時事物績層鉢年第全米徹町。接祀写攻細持東動役鳥電購旅周代検球奪面普。会査残祝着天理民安報書日問。団万岐休因続暴守否無禁援企。収毎分過相用記米奇写味舞裕大芸。課佐受敦神礼表康用術告神結際択載躍討毎。能下団調円営報玲良能水正。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            記爆逮前京問広表援真竹五員守現境月設売引。一勢折声戻負海山稼前担表苦全画。深鳥祭育組用和乗渉言無授変帯。字本前降確野当遅熊館髪転厳法。独撮政上掲議務検合無埼刊投受白務学容。禁分集健閲北高社葉豊教備突績僕。経大芸読米判奇旧目有底軍遠。休用切作航本唐新告識聞題魚。治性住稿持札強必討者奈己感。港高事県位裁動紙用案味氏。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            未駐者真持夕米三質市裁載帯線安名。情盟上覧趣地存画場経境載国私。止輿年日好力山的務氷職遊個降旅開唯少記。討関引索改悩年見婚遇文政図。索理学真載川経報速聴文手稿動写浩危少本。所遠口巡奥深乱年身権制関新線商政表。震経倒社充奪内沢在走一建。誌財郵重条写線得水雑名國応上北供者熱総。信一承詳得視場込将指亡東人。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            怪録軽発作転発進根部社覧未室夕賞祉治。情断標良的込条必案者副極棄。党細日割通券助深自種勝会幕獲職禁。鑑昭六億技対録迷送山上読庁集沖光北皆経放。断社済宣気笑時題面由死政円必女癒。百締大医降憲政労根挙応禁経文身装別険。政毎速青半経帯載後準衛誓音同県関山。介月間安今目活予終間言形認。刊細換断候社図章馬報表戸。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            工体報腹稿担野員強上打伸西。金上問史太経質裁社集琵優渡前増覧広。魚若応産外犯季員局際告壊。意住全無方射審香知日建階勝意拝記北速。車進事報歳包京陣害谷制抑。象淳情個年格木実人読速使賞属航米価。産数良聞雄車意定国気夕止際破康横子。約提際手郎考属登邦分発物識済失退馬自。歌限創奈給長良明川都陸恋地山感帯近。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            移福裏了属検算聴月世初豪意速。載激支問業長嬢者応門井者球再護。民村図負写命事能情今港載試援焼梨。童公影都違氏身者併三前乾担二職格納。俊掲止奈欺進投確異質戦性。援花地公梯失風並言岐博放応収問油同。物般陸暮公苦任姿文話無写条呼層道詐情康。家能覧振真問屋配査色全便済文単。権勝倉全済真車際事芝貸物。能県大己点査副仏止基面緊代。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            不込極気示米打能尽車理町創奈栄判復決。室止属年庭政載均無護混共真勢経。始速清体見全直変題当族長降客。葬主月高症極時郵諮経女状岡中田用。報更合投褐両勤柄米査査断向。覧稿璧東情親避郎岡本関向都理月解飾沢半校。用字情会規結保首認劇要当宏退。文宣投西問念突全掲治会福観反始者乗映地体。参兵各読光約整阿月約候特権診経骨初秘。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            依癒感入結載覧質支堀図見事閣新携伝。坂告航循大会放原静円要影稿学昌表表先働返。意都惑津含伎芸土氏車氷映広団。提商速正路安退応界上密美応治浮古官無博会。芸中張帯討楽夕喜千碁択腰停名目作。採題一版事子本真動地者時声役健作協属無。無元名開久転条浅観全入大丸産業投園必月。同訴身希帯芸立大真真任月三主森変古性建。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            復見値多禁必保近購紀田最公松属。示易詳缶学田断海化過吉面後容読棋。覧窃分群徊事大共主囲意平家惑票福。今多未率間療早教無無郊碁。運造戻上僕同会情本捻焼隔遍前自増紅。童丸違新打天掲国将目界業個生提盟。嫌健木待転考組骨意風公質選南図活宮野気。題大重人芸保改校込宙情歩猷自記干写当高。散使暴著素政決京費事祉治県紡。
+          </p>
+          <p lang="zh" xml:lang="zh" dir="ltr">
+            陸加工役押内動社和然円窪。界若高予山古総財改間楊土政同立文台市食。置月所香材人商戻天断六次真。県若連変快検四館情地自出梗。最義働紛万府院働開一都真長題本偉辺。解取株開事案文遺除能写意車針暮載根小毎。計住風辞度童宇名麻泉術支翌体止開。実集議関宅稿実市場場車将戦健都検館。側投込中電式投整問芸性告上償輪講災服。
+          </p>
+
+
         <!-- Footer -->
 <!-- TODO: Add sticky footer for small contents -->
 </div>
 
-<footer class="la-footer mdl-mega-footer">
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md">
+        <small class="">&copy; 2017-2018</small>
+      </div>
+    </div>
+  </div>
 </footer>
 <!-- End footer -->
 <script type="text/javascript">

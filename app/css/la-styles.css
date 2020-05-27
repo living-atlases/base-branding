@@ -32,7 +32,6 @@ li.autocomplete-item {
 }
 
 body,
-.mdl-layout__content,
 html {
   scroll-behavior: smooth !important;
 }

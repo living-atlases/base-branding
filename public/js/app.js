@@ -481,7 +481,7 @@ var loadStats = function loadStats() {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-  if ((document.location.origin === settings.mainLAUrl || document.location.host === 'localhost') && document.location.pathname === '/') {
+  if ((document.location.origin === settings.mainLAUrl || document.location.host === 'localhost:3333') && document.location.pathname === '/') {
     // only load stats on /
     loadStats();
   }

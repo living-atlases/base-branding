@@ -10,15 +10,15 @@
     <link rel="stylesheet" href="css/ala-styles.min.css">
     <link rel="stylesheet" href="css/ala-theme.min.css">
 
-    <!-- <link rel="stylesheet" href="css/autocomplete.min.css">
-         <link rel="stylesheet" href="css/autocomplete-extra.min.css"> -->
+    <link rel="stylesheet" href="css/autocomplete.min.css">
+    <link rel="stylesheet" href="css/autocomplete-extra.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-migration.min.js"></script>
 
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/autocomplete.min.js"></script>
-    <script src="js/application.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/autocomplete.js"></script>
+    <script src="js/application.js"></script>
     <!-- End ALA dependencies -->
 
     <!-- included head -->
@@ -52,25 +52,69 @@
 <script>require('js/init');</script>
 <!-- end of self js -->
 
+
 <!-- site-banner -->
-      <span class="la-title mdl-layout-title">
-        <a href="https://l-a.site" data-i18n="general.orgfullname"></a>
-      </span>
-      <div class="la-navigation-container">
-        <nav class="la-navigation mdl-navigation">
 
-          <a data-i18n="nav.collectory" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://collections.l-a.site"></a>
-          <a data-i18n="nav.biocache" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://biocache.l-a.site"></a>
-          <a data-i18n="nav.datasets" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://collections.l-a.site/datasets"></a>
-          <a data-i18n="nav.your-area" class="mdl-navigation__link mdl-typography--text-uppercase" href="https://biocache.l-a.site/explore/your-area/"></a>
+<!-- BootStrap 3 Classic Navbar addapted from sample:
+     https://getbootstrap.com/docs/3.3/components/#navbar -->
 
-        </nav>
-      </div>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://l-a.site" data-i18n="general.orgfullname"></a>
     </div>
-  </div>
 
-  <div class="container" id="autocompleteSearchALA" class="collapse">
-  </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right"">
+
+        <li><a data-i18n="nav.collectory" href="https://collections.l-a.site"></a></li>
+        <li><a data-i18n="nav.biocache" href="https://biocache.l-a.site"></a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+          <ul class="dropdown-menu signedIn">
+            <li><a data-i18n="nav.login" class="loginBtn" href="https://auth.l-a.site/cas/login"></a></li>
+            <li><a data-i18n="nav.myprofile" class="myProfileBtn" href="https://auth.l-a.site/userdetails/myprofile/"></a></li>
+            <li><a data-i18n="nav.logout" class="logoutBtn" href="https://auth.l-a.site/cas/logout"></a></li>
+            <li><a data-i18n="nav.create-account" class="signUpBtn" href="https://auth.l-a.site/userdetails/registration/createAccount"></a></li>
+            <li role="separator" class="divider"></li>
+            <li><a data-i18n="nav.collectory" href="https://collections.l-a.site"></a></li>
+            <li><a data-i18n="nav.biocache" href="https://biocache.l-a.site"></a></li>
+            <li><a data-i18n="nav.species" href="https://especies.gbif.es"></a></li>
+            <li><a data-i18n="nav.species-lists" href="https://lists.l-a.site"></a></li>
+            <li><a data-i18n="nav.spatial" href="https://spatial.l-a.site"></a></li>
+            <li><a data-i18n="nav.regions" href="https://regions.l-a.site"></a></li>
+            <li><a data-i18n="nav.images" href="https://images.l-a.site"></a></li>
+            <li role="separator" class="divider"></li>
+            <li><a data-i18n="nav.your-area" href="https://biocache.l-a.site/explore/your-area/"></a></li>
+            <li><a data-i18n="nav.datasets" href="https://collections.l-a.site/datasets"></a></li>
+          </ul>
+        </li>
+      </ul>
+      <!-- Search classic form with ALA autocomplete -->
+      <form method="get" action="https://especies.gbif.es/search" class="search-form navbar-form navbar-right">
+        <div class="form-group">
+          <input name="q" id="autocompleteHeader" type="text" class="form-control" data-i18n="[placeholder]nav.searchbox">
+        </div>
+
+        <button type="submit" data-toggle="tooltip" aria-label="Left Align" data-placement="bottom" data-i18n="[title]nav.searchbox" class="btn btn-default">
+          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        </button>
+      </form>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+  <div class="container" id="autocompleteSearchALA" class="collapse"></div>
+
+  <!-- ALA autocoplete code -->
   <script type="text/html" id="autoCompleteTemplate">
     <li class="autocomplete-item striped">
       <div class="content-spacing">
@@ -91,9 +135,9 @@
   <div id="mante-container" style="display: none;" class="container"></div>
   <!-- end maintenance -->
   <!-- main content -->
-  <div tabindex="-1" id="main_content" class="la-content mdl-layout__content">
-    <div class="la-main-content">
-      <a name="top"></a>
+  <div tabindex="-1" id="main_content" class="la-content container">
+    <a name="top"></a>
+
 
       <!-- main content -->
       <div class="la-customized-section">
@@ -110,7 +154,14 @@
 <!-- TODO: Add sticky footer for small contents -->
 </div>
 
-<footer class="la-footer mdl-mega-footer">
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md">
+        <small class="">&copy; 2017-2018</small>
+      </div>
+    </div>
+  </div>
 </footer>
 <!-- End footer -->
 <script type="text/javascript">

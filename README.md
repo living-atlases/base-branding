@@ -14,11 +14,7 @@ You can use this as a basis for a new LA infrastructure branding or just to see 
 
 ALA uses Bootstrap version 3 in most of their modules.
 
-Additionally we use:
-- Material Design Lite https://getmdl.io/ with a custom theme that you can https://getmdl.io/customize/index.html change, download and put instead of `app/css/material.min.css`.
-Anyway you can drop any of these last dependencies and create your header/footer from scratch with your own style. See `app/assets/head*.html` for more details.
-- And experimentally also [Material Bootstrap Design](https://github.com/FezVrasta/bootstrap-material-design) to have similar style in the ALA modules.
-If you only want to do minor style changes, have a look to `app/css/material-custom-styles.css`.
+This sample add some basic bootstrap 3 components to add content like stats, CAS login/logout, etc.
 
 This styling is not the most important work of this branding, but instead the integration with ALA and the brunch configuration that gives you the possibility to use modern javascript code and modern libraries or use `i18next`, for example.
 
@@ -133,28 +129,6 @@ See the `brunch-config.js` for more details.
 
 Pull Request welcome!
 
-## Screenshots
-
-Home page with stats:
-
-![](https://raw.github.com/living-atlases/base-branding/master/la-base-index.png)
-
-Multilingual menu selection integrated with `grails` i18n:
-
-![](https://raw.github.com/living-atlases/base-branding/master/la-base-branding-collectory-i18n.png)
-
-`CAS` Authentication links in drawer (and other configurable links):
-
-![](https://raw.github.com/living-atlases/base-branding/master/la-base-branding-drawer.png)
-
-ALA Species autocompletion integrated and sticky footer:
-
-![](https://raw.github.com/living-atlases/base-branding/master/la-base-sticky-footer-autocomplete.png)
-
-Error page:
-
-![](https://raw.github.com/living-atlases/base-branding/master/error-page.png)
-
 ## Error pages
 
 You can enable a error banner in `js/settings` variable `inMante` to `true` that will visible in all the LA modules using this skin.
@@ -180,11 +154,6 @@ Some peculiarities to take into account:
 ## License
 
 Apache-2.0 © 2020 [Living Atlases](https://living-atlases.gbif.org)
-
-Additionally:
-
-- Some `html`/`css`/`js` based in Material Design Lite, Apache License 2.0.
-- Bootstrap Material Design, MIT license.
 
 ## More information
 

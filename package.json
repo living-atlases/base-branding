@@ -4,7 +4,7 @@
     "build": "brunch build --production"
   },
   "dependencies": {
-    "browser-sync-brunch": "^0.0.9",
+    "auto-reload-brunch": "^2.7.1",
     "countup.js": "2.0.3",
     "domurl": "^2.3.0",
     "git-digest-brunch": "^1.0.3",

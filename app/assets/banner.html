@@ -11,25 +11,69 @@
 <script>require('js/init');</script>
 <!-- end of self js -->
 
+
 <!-- site-banner -->
-      <span class="la-title mdl-layout-title">
-        <a href="::centralServer::" data-i18n="general.orgfullname"></a>
-      </span>
-      <div class="la-navigation-container">
-        <nav class="la-navigation mdl-navigation">
 
-          <a data-i18n="nav.collectory" class="mdl-navigation__link mdl-typography--text-uppercase" href="::collectoryURL::"></a>
-          <a data-i18n="nav.biocache" class="mdl-navigation__link mdl-typography--text-uppercase" href="::biocacheURL::"></a>
-          <a data-i18n="nav.datasets" class="mdl-navigation__link mdl-typography--text-uppercase" href="::collectoryURL::/datasets"></a>
-          <a data-i18n="nav.your-area" class="mdl-navigation__link mdl-typography--text-uppercase" href="::biocacheURL::/explore/your-area/"></a>
+<!-- BootStrap 3 Classic Navbar addapted from sample:
+     https://getbootstrap.com/docs/3.3/components/#navbar -->
 
-        </nav>
-      </div>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="::centralServer::" data-i18n="general.orgfullname"></a>
     </div>
-  </div>
 
-  <div class="::containerClass::" id="autocompleteSearchALA" class="collapse">
-  </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right"">
+
+        <li><a data-i18n="nav.collectory" href="::collectoryURL::"></a></li>
+        <li><a data-i18n="nav.biocache" href="::biocacheURL::"></a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+          <ul class="dropdown-menu ::loginStatus::">
+            <li><a data-i18n="nav.login" class="loginBtn" href="::loginURL::"></a></li>
+            <li><a data-i18n="nav.myprofile" class="myProfileBtn" href="::casURL::/userdetails/myprofile/"></a></li>
+            <li><a data-i18n="nav.logout" class="logoutBtn" href="::logoutURL::"></a></li>
+            <li><a data-i18n="nav.create-account" class="signUpBtn" href="::casURL::/userdetails/registration/createAccount"></a></li>
+            <li role="separator" class="divider"></li>
+            <li><a data-i18n="nav.collectory" href="::collectoryURL::"></a></li>
+            <li><a data-i18n="nav.biocache" href="::biocacheURL::"></a></li>
+            <li><a data-i18n="nav.species" href="::bieURL::"></a></li>
+            <li><a data-i18n="nav.species-lists" href="::listsURL::"></a></li>
+            <li><a data-i18n="nav.spatial" href="::spatialURL::"></a></li>
+            <li><a data-i18n="nav.regions" href="::regionsURL::"></a></li>
+            <li><a data-i18n="nav.images" href="::imagesURL::"></a></li>
+            <li role="separator" class="divider"></li>
+            <li><a data-i18n="nav.your-area" href="::biocacheURL::/explore/your-area/"></a></li>
+            <li><a data-i18n="nav.datasets" href="::datasetsURL::"></a></li>
+          </ul>
+        </li>
+      </ul>
+      <!-- Search classic form with ALA autocomplete -->
+      <form method="get" action="::searchServer::::searchPath::" class="search-form navbar-form navbar-right">
+        <div class="form-group">
+          <input name="q" id="autocompleteHeader" type="text" class="form-control" data-i18n="[placeholder]nav.searchbox">
+        </div>
+
+        <button type="submit" data-toggle="tooltip" aria-label="Left Align" data-placement="bottom" data-i18n="[title]nav.searchbox" class="btn btn-default">
+          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        </button>
+      </form>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+  <div class="::containerClass::" id="autocompleteSearchALA" class="collapse"></div>
+
+  <!-- ALA autocoplete code -->
   <script type="text/html" id="autoCompleteTemplate">
     <li class="autocomplete-item striped">
       <div class="content-spacing">
@@ -50,6 +94,6 @@
   <div id="mante-container" style="display: none;" class="container"></div>
   <!-- end maintenance -->
   <!-- main content -->
-  <div tabindex="-1" id="main_content" class="la-content mdl-layout__content">
-    <div class="la-main-content">
-      <a name="top"></a>
+  <div tabindex="-1" id="main_content" class="la-content container">
+    <a name="top"></a>
+
