@@ -150,6 +150,23 @@ var __makeRelativeRequire = function(require, mappings, pref) {
   }
 };
 
+require.register("@babel/runtime/helpers/arrayLikeToArray.js", function(exports, require, module) {
+  require = __makeRelativeRequire(require, {}, "@babel/runtime");
+  (function() {
+    function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+module.exports = _arrayLikeToArray;
+  })();
+});
+
 require.register("@babel/runtime/helpers/arrayWithHoles.js", function(exports, require, module) {
   require = __makeRelativeRequire(require, {}, "@babel/runtime");
   (function() {
@@ -164,14 +181,10 @@ module.exports = _arrayWithHoles;
 require.register("@babel/runtime/helpers/arrayWithoutHoles.js", function(exports, require, module) {
   require = __makeRelativeRequire(require, {}, "@babel/runtime");
   (function() {
-    function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
-    }
+    var arrayLikeToArray = require("./arrayLikeToArray");
 
-    return arr2;
-  }
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return arrayLikeToArray(arr);
 }
 
 module.exports = _arrayWithoutHoles;
@@ -293,7 +306,7 @@ require.register("@babel/runtime/helpers/iterableToArray.js", function(exports, 
   require = __makeRelativeRequire(require, {}, "@babel/runtime");
   (function() {
     function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
 }
 
 module.exports = _iterableToArray;
@@ -304,10 +317,7 @@ require.register("@babel/runtime/helpers/iterableToArrayLimit.js", function(expo
   require = __makeRelativeRequire(require, {}, "@babel/runtime");
   (function() {
     function _iterableToArrayLimit(arr, i) {
-  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-    return;
-  }
-
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
   var _arr = [];
   var _n = true;
   var _d = false;
@@ -341,7 +351,7 @@ require.register("@babel/runtime/helpers/nonIterableRest.js", function(exports, 
   require = __makeRelativeRequire(require, {}, "@babel/runtime");
   (function() {
     function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance");
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 module.exports = _nonIterableRest;
@@ -352,7 +362,7 @@ require.register("@babel/runtime/helpers/nonIterableSpread.js", function(exports
   require = __makeRelativeRequire(require, {}, "@babel/runtime");
   (function() {
     function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 module.exports = _nonIterableSpread;
@@ -429,13 +439,34 @@ require.register("@babel/runtime/helpers/slicedToArray.js", function(exports, re
 
 var iterableToArrayLimit = require("./iterableToArrayLimit");
 
+var unsupportedIterableToArray = require("./unsupportedIterableToArray");
+
 var nonIterableRest = require("./nonIterableRest");
 
 function _slicedToArray(arr, i) {
-  return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || nonIterableRest();
+  return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
 }
 
 module.exports = _slicedToArray;
+  })();
+});
+
+require.register("@babel/runtime/helpers/toArray.js", function(exports, require, module) {
+  require = __makeRelativeRequire(require, {}, "@babel/runtime");
+  (function() {
+    var arrayWithHoles = require("./arrayWithHoles");
+
+var iterableToArray = require("./iterableToArray");
+
+var unsupportedIterableToArray = require("./unsupportedIterableToArray");
+
+var nonIterableRest = require("./nonIterableRest");
+
+function _toArray(arr) {
+  return arrayWithHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableRest();
+}
+
+module.exports = _toArray;
   })();
 });
 
@@ -446,10 +477,12 @@ require.register("@babel/runtime/helpers/toConsumableArray.js", function(exports
 
 var iterableToArray = require("./iterableToArray");
 
+var unsupportedIterableToArray = require("./unsupportedIterableToArray");
+
 var nonIterableSpread = require("./nonIterableSpread");
 
 function _toConsumableArray(arr) {
-  return arrayWithoutHoles(arr) || iterableToArray(arr) || nonIterableSpread();
+  return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
 }
 
 module.exports = _toConsumableArray;
@@ -479,6 +512,24 @@ module.exports = _typeof;
   })();
 });
 
+require.register("@babel/runtime/helpers/unsupportedIterableToArray.js", function(exports, require, module) {
+  require = __makeRelativeRequire(require, {}, "@babel/runtime");
+  (function() {
+    var arrayLikeToArray = require("./arrayLikeToArray");
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+}
+
+module.exports = _unsupportedIterableToArray;
+  })();
+});
+
 require.register("countup.js/dist/countUp.min.js", function(exports, require, module) {
   require = __makeRelativeRequire(require, {}, "countup.js");
   (function() {
@@ -489,7 +540,7 @@ require.register("countup.js/dist/countUp.min.js", function(exports, require, mo
 require.register("domurl/url.min.js", function(exports, require, module) {
   require = __makeRelativeRequire(require, {}, "domurl");
   (function() {
-    !function(t){"use strict";var y=/^[a-z]+:/,d=/[-a-z0-9]+(\.[-a-z0-9])*:\d+/i,v=/\/\/(.*?)(?::(.*?))?@/,r=/^win/i,g=/:$/,m=/^\?/,q=/^#/,w=/(.*\/)/,A=/^\/{2,}/,o=/'/g,e=/%([ef][0-9a-f])%([89ab][0-9a-f])%([89ab][0-9a-f])/gi,n=/%([cd][0-9a-f])%([89ab][0-9a-f])/gi,i=/%([0-7][0-9a-f])/gi,p=/\+/g,s=/^\w:$/,C=/[^/#?]/;var a,I="undefined"==typeof window&&"undefined"!=typeof global&&"function"==typeof require,S=I?t.require:null,b={protocol:"protocol",host:"hostname",port:"port",path:"pathname",query:"search",hash:"hash"},j={ftp:21,gopher:70,http:80,https:443,ws:80,wss:443};function x(){return I?a=a||"file://"+(process.platform.match(r)?"/":"")+S("fs").realpathSync("."):document.location.href}function h(t,r,o){var e,n,i;r=r||x(),I?e=S("url").parse(r):(e=document.createElement("a")).href=r;var s,p,a=(p={path:!0,query:!0,hash:!0},(s=r)&&y.test(s)&&(p.protocol=!0,p.host=!0,d.test(s)&&(p.port=!0),v.test(s)&&(p.user=!0,p.pass=!0)),p);for(n in i=r.match(v)||[],b)a[n]?t[n]=e[b[n]]||"":t[n]="";if(t.protocol=t.protocol.replace(g,""),t.query=t.query.replace(m,""),t.hash=z(t.hash.replace(q,"")),t.user=z(i[1]||""),t.pass=z(i[2]||""),t.port=j[t.protocol]==t.port||0==t.port?"":t.port,!a.protocol&&C.test(r.charAt(0))&&(t.path=r.split("?")[0].split("#")[0]),!a.protocol&&o){var h=new U(x().match(w)[0]),u=h.path.split("/"),c=t.path.split("/"),f=["protocol","user","pass","host","port"],l=f.length;for(u.pop(),n=0;n<l;n++)t[f[n]]=h[f[n]];for(;".."===c[0];)u.pop(),c.shift();t.path=("/"!==r.charAt(0)?u.join("/"):"")+"/"+c.join("/")}t.path=t.path.replace(A,"/"),t.paths(t.paths()),t.query=new F(t.query)}function u(t){return encodeURIComponent(t).replace(o,"%27")}function z(t){return(t=(t=(t=t.replace(p," ")).replace(e,function(t,r,o,e){var n=parseInt(r,16)-224,i=parseInt(o,16)-128;if(0==n&&i<32)return t;var s=(n<<12)+(i<<6)+(parseInt(e,16)-128);return 65535<s?t:String.fromCharCode(s)})).replace(n,function(t,r,o){var e=parseInt(r,16)-192;if(e<2)return t;var n=parseInt(o,16)-128;return String.fromCharCode((e<<6)+n)})).replace(i,function(t,r){return String.fromCharCode(parseInt(r,16))})}function F(t){for(var r=t.split("&"),o=0,e=r.length;o<e;o++){var n=r[o].split("="),i=decodeURIComponent(n[0].replace(p," "));if(i){var s=void 0!==n[1]?z(n[1]):null;void 0===this[i]?this[i]=s:(this[i]instanceof Array||(this[i]=[this[i]]),this[i].push(s))}}}function U(t,r){h(this,t,!r)}F.prototype.toString=function(){var t,r,o="",e=u;for(t in this){var n=this[t];if(!(n instanceof Function||void 0===n))if(n instanceof Array){var i=n.length;if(!i){o+=(o?"&":"")+e(t)+"=";continue}for(r=0;r<i;r++){var s=n[r];void 0!==s&&(o+=o?"&":"",o+=e(t)+(null===s?"":"="+e(s)))}}else o+=o?"&":"",o+=e(t)+(null===n?"":"="+e(n))}return o},U.prototype.clearQuery=function(){for(var t in this.query)this.query[t]instanceof Function||delete this.query[t];return this},U.prototype.queryLength=function(){var t=0;for(var r in this.query)this.query[r]instanceof Function||t++;return t},U.prototype.isEmptyQuery=function(){return 0===this.queryLength()},U.prototype.paths=function(t){var r,o="",e=0;if(t&&t.length&&t+""!==t){for(this.isAbsolute()&&(o="/"),r=t.length;e<r;e++)t[e]=!e&&s.test(t[e])?t[e]:u(t[e]);this.path=o+t.join("/")}for(e=0,r=(t=("/"===this.path.charAt(0)?this.path.slice(1):this.path).split("/")).length;e<r;e++)t[e]=z(t[e]);return t},U.prototype.encode=u,U.prototype.decode=z,U.prototype.isAbsolute=function(){return this.protocol||"/"===this.path.charAt(0)},U.prototype.toString=function(){return(this.protocol&&this.protocol+"://")+(this.user&&u(this.user)+(this.pass&&":"+u(this.pass))+"@")+(this.host&&this.host)+(this.port&&":"+this.port)+(this.path&&this.path)+(this.query.toString()&&"?"+this.query)+(this.hash&&"#"+u(this.hash))},t[t.exports?"exports":"Url"]=U}("undefined"!=typeof module&&module.exports?module:window);
+    !function(t){"use strict";var y=/^[a-z]+:/,d=/[-a-z0-9]+(\.[-a-z0-9])*:\d+/i,v=/\/\/(.*?)(?::(.*?))?@/,r=/^win/i,g=/:$/,m=/^\?/,q=/^#/,w=/(.*\/)/,A=/^\/{2,}/,I=/(^\/?)/,e=/'/g,o=/%([ef][0-9a-f])%([89ab][0-9a-f])%([89ab][0-9a-f])/gi,n=/%([cd][0-9a-f])%([89ab][0-9a-f])/gi,i=/%([0-7][0-9a-f])/gi,s=/\+/g,a=/^\w:$/,C=/[^/#?]/;var p,S="undefined"==typeof window&&"undefined"!=typeof global&&"function"==typeof require,b=!S&&t.navigator&&t.navigator.userAgent&&~t.navigator.userAgent.indexOf("MSIE"),x=S?t.require:null,j={protocol:"protocol",host:"hostname",port:"port",path:"pathname",query:"search",hash:"hash"},z={ftp:21,gopher:70,http:80,https:443,ws:80,wss:443};function E(){return S?p=p||"file://"+(process.platform.match(r)?"/":"")+x("fs").realpathSync("."):"about:srcdoc"===document.location.href?self.parent.document.location.href:document.location.href}function h(t,r,e){var o,n,i;r=r||E(),S?o=x("url").parse(r):(o=document.createElement("a")).href=r;var a,s,p=(s={path:!0,query:!0,hash:!0},(a=r)&&y.test(a)&&(s.protocol=!0,s.host=!0,d.test(a)&&(s.port=!0),v.test(a)&&(s.user=!0,s.pass=!0)),s);for(n in i=r.match(v)||[],j)p[n]?t[n]=o[j[n]]||"":t[n]="";if(t.protocol=t.protocol.replace(g,""),t.query=t.query.replace(m,""),t.hash=F(t.hash.replace(q,"")),t.user=F(i[1]||""),t.pass=F(i[2]||""),t.port=z[t.protocol]==t.port||0==t.port?"":t.port,!p.protocol&&C.test(r.charAt(0))&&(t.path=r.split("?")[0].split("#")[0]),!p.protocol&&e){var h=new L(E().match(w)[0]),u=h.path.split("/"),c=t.path.split("/"),f=["protocol","user","pass","host","port"],l=f.length;for(u.pop(),n=0;n<l;n++)t[f[n]]=h[f[n]];for(;".."===c[0];)u.pop(),c.shift();t.path=("/"!==r.charAt(0)?u.join("/"):"")+"/"+c.join("/")}t.path=t.path.replace(A,"/"),b&&(t.path=t.path.replace(I,"/")),t.paths(t.paths()),t.query=new U(t.query)}function u(t){return encodeURIComponent(t).replace(e,"%27")}function F(t){return(t=(t=(t=t.replace(s," ")).replace(o,function(t,r,e,o){var n=parseInt(r,16)-224,i=parseInt(e,16)-128;if(0==n&&i<32)return t;var a=(n<<12)+(i<<6)+(parseInt(o,16)-128);return 65535<a?t:String.fromCharCode(a)})).replace(n,function(t,r,e){var o=parseInt(r,16)-192;if(o<2)return t;var n=parseInt(e,16)-128;return String.fromCharCode((o<<6)+n)})).replace(i,function(t,r){return String.fromCharCode(parseInt(r,16))})}function U(t){for(var r=t.split("&"),e=0,o=r.length;e<o;e++){var n=r[e].split("="),i=decodeURIComponent(n[0].replace(s," "));if(i){var a=void 0!==n[1]?F(n[1]):null;void 0===this[i]?this[i]=a:(this[i]instanceof Array||(this[i]=[this[i]]),this[i].push(a))}}}function L(t,r){h(this,t,!r)}U.prototype.toString=function(){var t,r,e="",o=u;for(t in this){var n=this[t];if(!(n instanceof Function||void 0===n))if(n instanceof Array){var i=n.length;if(!i){e+=(e?"&":"")+o(t)+"=";continue}for(r=0;r<i;r++){var a=n[r];void 0!==a&&(e+=e?"&":"",e+=o(t)+(null===a?"":"="+o(a)))}}else e+=e?"&":"",e+=o(t)+(null===n?"":"="+o(n))}return e},L.prototype.clearQuery=function(){for(var t in this.query)this.query[t]instanceof Function||delete this.query[t];return this},L.prototype.queryLength=function(){var t=0;for(var r in this.query)this.query[r]instanceof Function||t++;return t},L.prototype.isEmptyQuery=function(){return 0===this.queryLength()},L.prototype.paths=function(t){var r,e="",o=0;if(t&&t.length&&t+""!==t){for(this.isAbsolute()&&(e="/"),r=t.length;o<r;o++)t[o]=!o&&a.test(t[o])?t[o]:u(t[o]);this.path=e+t.join("/")}for(o=0,r=(t=("/"===this.path.charAt(0)?this.path.slice(1):this.path).split("/")).length;o<r;o++)t[o]=F(t[o]);return t},L.prototype.encode=u,L.prototype.decode=F,L.prototype.isAbsolute=function(){return this.protocol||"/"===this.path.charAt(0)},L.prototype.toString=function(){return(this.protocol&&this.protocol+"://")+(this.user&&u(this.user)+(this.pass&&":"+u(this.pass))+"@")+(this.host&&this.host)+(this.port&&":"+this.port)+(this.path&&this.path)+(this.query.toString()&&"?"+this.query)+(this.hash&&"#"+u(this.hash))},t[t.exports?"exports":"Url"]=L}("undefined"!=typeof module&&module.exports?module:window);
   })();
 });
 
@@ -519,16 +570,24 @@ function defaults(obj) {
 
 var cookie = {
   create: function create(name, value, minutes, domain) {
+    var cookieOptions = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {
+      path: '/'
+    };
     var expires;
 
     if (minutes) {
       var date = new Date();
       date.setTime(date.getTime() + minutes * 60 * 1000);
-      expires = '; expires=' + date.toGMTString();
+      expires = '; expires=' + date.toUTCString();
     } else expires = '';
 
     domain = domain ? 'domain=' + domain + ';' : '';
-    document.cookie = name + '=' + value + expires + ';' + domain + 'path=/';
+    cookieOptions = Object.keys(cookieOptions).reduce(function (acc, key) {
+      return acc + ';' + key.replace(/([A-Z])/g, function ($1) {
+        return '-' + $1.toLowerCase();
+      }) + '=' + cookieOptions[key];
+    }, '');
+    document.cookie = name + '=' + encodeURIComponent(value) + expires + ';' + domain + cookieOptions;
   },
   read: function read(name) {
     var nameEQ = name + '=';
@@ -564,7 +623,7 @@ var cookie$1 = {
   },
   cacheUserLanguage: function cacheUserLanguage(lng, options) {
     if (options.lookupCookie && typeof document !== 'undefined') {
-      cookie.create(options.lookupCookie, lng, options.cookieMinutes, options.cookieDomain);
+      cookie.create(options.lookupCookie, lng, options.cookieMinutes, options.cookieDomain, options.cookieOptions);
     }
   }
 };
@@ -722,7 +781,8 @@ function getDefaults() {
     excludeCacheFor: ['cimode'],
     //cookieMinutes: 10,
     //cookieDomain: 'myDomain'
-    checkWhitelist: true
+    checkWhitelist: true,
+    checkForSimilarInWhitelist: false
   };
 }
 
@@ -745,7 +805,9 @@ function () {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var i18nOptions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       this.services = services;
-      this.options = defaults(options, this.options || {}, getDefaults()); // backwards compatibility
+      this.options = defaults(options, this.options || {}, getDefaults()); // if checking for similar, user needs to check whitelist
+
+      if (this.options.checkForSimilarInWhitelist) this.options.checkWhitelist = true; // backwards compatibility
 
       if (this.options.lookupFromUrlIndex) this.options.lookupFromPathIndex = this.options.lookupFromUrlIndex;
       this.i18nOptions = i18nOptions;
@@ -784,6 +846,10 @@ function () {
         var cleanedLng = _this.services.languageUtils.formatLanguageCode(lng);
 
         if (!_this.options.checkWhitelist || _this.services.languageUtils.isWhitelisted(cleanedLng)) found = cleanedLng;
+
+        if (!found && _this.options.checkForSimilarInWhitelist) {
+          found = _this.getSimilarInWhitelist(cleanedLng);
+        }
       });
 
       if (!found) {
@@ -811,6 +877,30 @@ function () {
       caches.forEach(function (cacheName) {
         if (_this2.detectors[cacheName]) _this2.detectors[cacheName].cacheUserLanguage(lng, _this2.options);
       });
+    }
+  }, {
+    key: "getSimilarInWhitelist",
+    value: function getSimilarInWhitelist(cleanedLng) {
+      var _this3 = this;
+
+      if (!this.i18nOptions.whitelist) return;
+
+      if (cleanedLng.includes('-')) {
+        // i.e. es-MX should check if es is in whitelist
+        var prefix = cleanedLng.split('-')[0];
+        var cleanedPrefix = this.services.languageUtils.formatLanguageCode(prefix);
+        if (this.services.languageUtils.isWhitelisted(cleanedPrefix)) return cleanedPrefix; // if reached here, nothing found. continue to search for similar using only prefix
+
+        cleanedLng = cleanedPrefix;
+      } // i.e. 'pt' should return 'pt-BR'. If multiple in whitelist with 'pt-', then use first one in whitelist
+
+
+      var similar = this.i18nOptions.whitelist.find(function (whitelistLng) {
+        var cleanedWhitelistLng = _this3.services.languageUtils.formatLanguageCode(whitelistLng);
+
+        if (cleanedWhitelistLng.startsWith(cleanedLng)) return cleanedWhitelistLng;
+      });
+      if (similar) return similar;
     }
   }]);
 
@@ -1370,6 +1460,7 @@ var _getPrototypeOf = _interopDefault(require('@babel/runtime/helpers/getPrototy
 var _assertThisInitialized = _interopDefault(require('@babel/runtime/helpers/assertThisInitialized'));
 var _inherits = _interopDefault(require('@babel/runtime/helpers/inherits'));
 var _toConsumableArray = _interopDefault(require('@babel/runtime/helpers/toConsumableArray'));
+var _toArray = _interopDefault(require('@babel/runtime/helpers/toArray'));
 var _slicedToArray = _interopDefault(require('@babel/runtime/helpers/slicedToArray'));
 
 var consoleLogger = {
@@ -1660,6 +1751,7 @@ function escape(data) {
 
   return data;
 }
+var isIE10 = typeof window !== 'undefined' && window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1;
 
 var ResourceStore =
 /*#__PURE__*/
@@ -1677,7 +1769,10 @@ function (_EventEmitter) {
     _classCallCheck(this, ResourceStore);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ResourceStore).call(this));
-    EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+
+    if (isIE10) {
+      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+    }
 
     _this.data = data || {};
     _this.options = options;
@@ -1852,7 +1947,10 @@ function (_EventEmitter) {
     _classCallCheck(this, Translator);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Translator).call(this));
-    EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+
+    if (isIE10) {
+      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+    }
 
     copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat', 'utils'], services, _assertThisInitialized(_this));
     _this.options = options;
@@ -2270,6 +2368,7 @@ function () {
       var found = fallbacks[code];
       if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
       if (!found) found = fallbacks[this.formatLanguageCode(code)];
+      if (!found) found = fallbacks[this.getLanguagePartFromCode(code)];
       if (!found) found = fallbacks["default"];
       return found || [];
     }
@@ -2621,6 +2720,7 @@ function () {
       this.unescapeSuffix = this.unescapePrefix ? '' : iOpts.unescapeSuffix || '';
       this.nestingPrefix = iOpts.nestingPrefix ? regexEscape(iOpts.nestingPrefix) : iOpts.nestingPrefixEscaped || regexEscape('$t(');
       this.nestingSuffix = iOpts.nestingSuffix ? regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || regexEscape(')');
+      this.nestingOptionsSeparator = iOpts.nestingOptionsSeparator ? iOpts.nestingOptionsSeparator : iOpts.nestingOptionsSeparator || ',';
       this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
       this.alwaysFormat = iOpts.alwaysFormat !== undefined ? iOpts.alwaysFormat : false; // the regexp
 
@@ -2731,6 +2831,8 @@ function () {
   }, {
     key: "nest",
     value: function nest(str, fc) {
+      var _this2 = this;
+
       var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       var match;
       var value;
@@ -2743,10 +2845,11 @@ function () {
       // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
 
       function handleHasOptions(key, inheritedOptions) {
-        if (key.indexOf(',') < 0) return key;
-        var p = key.split(',');
-        key = p.shift();
-        var optionsString = p.join(',');
+        var sep = this.nestingOptionsSeparator;
+        if (key.indexOf(sep) < 0) return key;
+        var c = key.split(new RegExp("".concat(sep, "[ ]*{")));
+        var optionsString = "{".concat(c[1]);
+        key = c[0];
         optionsString = this.interpolate(optionsString, clonedOptions);
         optionsString = optionsString.replace(/'/g, '"');
 
@@ -2754,7 +2857,8 @@ function () {
           clonedOptions = JSON.parse(optionsString);
           if (inheritedOptions) clonedOptions = _objectSpread({}, inheritedOptions, clonedOptions);
         } catch (e) {
-          this.logger.error("failed parsing options string in nesting for key ".concat(key), e);
+          this.logger.warn("failed parsing options string in nesting for key ".concat(key), e);
+          return "".concat(key).concat(sep).concat(optionsString);
         } // assert we do not get a endless loop on interpolating defaultValue again and again
 
 
@@ -2764,6 +2868,31 @@ function () {
 
 
       while (match = this.nestingRegexp.exec(str)) {
+        var formatters = [];
+        /**
+         * If there is more than one parameter (contains the format separator). E.g.:
+         *   - t(a, b)
+         *   - t(a, b, c)
+         *
+         * And those parameters are not dynamic values (parameters do not include curly braces). E.g.:
+         *   - Not t(a, { "key": "{{variable}}" })
+         *   - Not t(a, b, {"keyA": "valueA", "keyB": "valueB"})
+         */
+
+        var doReduce = false;
+
+        if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
+          var _match$1$split$map = match[1].split(this.formatSeparator).map(function (elem) {
+            return elem.trim();
+          });
+
+          var _match$1$split$map2 = _toArray(_match$1$split$map);
+
+          match[1] = _match$1$split$map2[0];
+          formatters = _match$1$split$map2.slice(1);
+          doReduce = true;
+        }
+
         value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions); // is only the nesting key (key1 = '$(key2)') return the value without stringify
 
         if (value && match[0] === str && typeof value !== 'string') return value; // no string to include or empty
@@ -2773,6 +2902,12 @@ function () {
         if (!value) {
           this.logger.warn("missed to resolve ".concat(match[1], " for nesting ").concat(str));
           value = '';
+        }
+
+        if (doReduce) {
+          value = formatters.reduce(function (v, f) {
+            return _this2.format(v, f, options.lng, options);
+          }, value.trim());
         } // Nested keys should not be escaped by default #854
         // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
 
@@ -2810,7 +2945,10 @@ function (_EventEmitter) {
     _classCallCheck(this, Connector);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Connector).call(this));
-    EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+
+    if (isIE10) {
+      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+    }
 
     _this.backend = backend;
     _this.store = store;
@@ -2934,7 +3072,7 @@ function (_EventEmitter) {
       var _this3 = this;
 
       var tried = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-      var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 250;
+      var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 350;
       var callback = arguments.length > 5 ? arguments[5] : undefined;
       if (!lng.length) return callback(null, {}); // noting to load
 
@@ -3122,6 +3260,7 @@ function get() {
       unescapePrefix: '-',
       nestingPrefix: '$t(',
       nestingSuffix: ')',
+      nestingOptionsSeparator: ',',
       // nestingPrefixEscaped: '$t(',
       // nestingSuffixEscaped: ')',
       // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data
@@ -3161,7 +3300,10 @@ function (_EventEmitter) {
     _classCallCheck(this, I18n);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(I18n).call(this));
-    EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+
+    if (isIE10) {
+      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+    }
 
     _this.options = transformOptions(options);
     _this.services = {};
@@ -3368,6 +3510,9 @@ function (_EventEmitter) {
   }, {
     key: "use",
     value: function use(module) {
+      if (!module) throw new Error('You are passing an undefined module! Please check the object you are passing to i18next.use()');
+      if (!module.type) throw new Error('You are passing a wrong module! Please check the object you are passing to i18next.use()');
+
       if (module.type === 'backend') {
         this.modules.backend = module;
       }
@@ -3618,6 +3763,10 @@ function (_EventEmitter) {
       membersToCopy.forEach(function (m) {
         clone[m] = _this8[m];
       });
+      clone.services = _objectSpread({}, this.services);
+      clone.services.utils = {
+        hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+      };
       clone.translator = new Translator(clone.services, clone.options);
       clone.translator.on('*', function (event) {
         for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
@@ -3629,6 +3778,9 @@ function (_EventEmitter) {
       clone.init(mergedOptions, callback);
       clone.translator.options = clone.options; // sync options
 
+      clone.translator.backendConnector.services.utils = {
+        hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+      };
       return clone;
     }
   }]);
