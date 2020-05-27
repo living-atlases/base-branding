@@ -112,31 +112,28 @@
   </div><!-- /.container-fluid -->
 </nav>
 
-  <div class="container" id="autocompleteSearchALA" class="collapse"></div>
+<div class="container" id="autocompleteSearchALA" class="collapse"></div>
 
-  <!-- ALA autocoplete code -->
-  <script type="text/html" id="autoCompleteTemplate">
-    <li class="autocomplete-item striped">
-      <div class="content-spacing">
-        <div class="autocomplete-heading">
-          <% if (commonNameMatches.length > 0) { %>
-          <%=commonNameMatches[0]%>
-          <% } else if (scientificNameMatches.length > 0) { %>
-          <%=scientificNameMatches[0]%>
-          <% } else { %>
-          <%=matchedNames[0]%>
-          <% } %>
-        </div>
+<!-- ALA autocoplete code -->
+<script type="text/html" id="autoCompleteTemplate">
+  <li class="autocomplete-item striped">
+    <div class="content-spacing">
+      <div class="autocomplete-heading">
+        <% if (commonNameMatches.length > 0) { %>
+        <%=commonNameMatches[0]%>
+        <% } else if (scientificNameMatches.length > 0) { %>
+        <%=scientificNameMatches[0]%>
+        <% } else { %>
+        <%=matchedNames[0]%>
+        <% } %>
       </div>
-    </li>
-  </script>
-  <!-- end site-banner -->
-  <!-- maintenance -->
-  <div id="mante-container" style="display: none;" class="container"></div>
-  <!-- end maintenance -->
-  <!-- main content -->
-  <div tabindex="-1" id="main_content" class="la-content container">
-    <a name="top"></a>
+    </div>
+  </li>
+</script>
+<!-- end site-banner -->
+<!-- maintenance -->
+<div id="mante-container" style="display: none;" class="container"></div>
+<!-- end maintenance -->
 
 
       <!-- main content -->
@@ -151,8 +148,6 @@
           </div>
         </div>
         <!-- Footer -->
-<!-- TODO: Add sticky footer for small contents -->
-</div>
 
 <footer class="footer">
   <div class="container">
