@@ -57,6 +57,20 @@
           </ul>
         </li>
       </ul>
+
+      <!-- Language selector if you don't whan a multilang site, remove it -->
+      <ul class="nav navbar-nav navbar-right">
+        <li id="dropdown-lang" class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lang<span class="caret"></span></a>
+          <ul class="locale-switcher dropdown-menu dropdown-lang-menu">
+            <li class="locale-link" data-locale="en"><a class="en-locale-link" href="#"><span class="lang_link_en">English</span></a></li>
+            <li class="locale-link" data-locale="es"><a class="es-locale-link" href="#"><span class="lang_link_es">Español</span></a></li>
+            <li class="locale-link" data-locale="zh"><a class="zh-CN-locale-link" href="#"><span class="lang_link_zh-CN">简体中文</span></a></li>
+            <li class="locale-link" data-locale="sw"><a class="sw-locale-link" href="#"><span class="lang_link_sw">Swahili</span></a></li>
+          </ul>
+        </li>
+      </ul>
+
       <!-- Search classic form with ALA autocomplete -->
       <form method="get" action="::searchServer::::searchPath::" class="search-form navbar-form navbar-right">
         <div class="form-group">

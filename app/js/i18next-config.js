@@ -131,6 +131,9 @@ i18n.use(backend)
         currentUrl.query.lang = lang;
         document.location.search = currentUrl.query;
       });
+      if( $('#dropdown-lang').length ) {
+        $('#dropdown-lang').find('.dropdown-toggle').html(i18n.language + ' <span class="caret"></span>');
+      }
 
       if (typeof Cookies.get(laSessionCookie) === 'undefined' && typeof currentUrl.query.lang === 'undefined') {
         // Workaround to set grails locale
