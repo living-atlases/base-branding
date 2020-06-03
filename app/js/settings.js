@@ -9,8 +9,10 @@ module.exports = {
     collectory: { url: 'https://collections.l-a.site', title: 'Collections' },
     biocache: { url: 'https://biocache.l-a.site', title: 'Occurrence records' },
     biocacheService: { url: 'https://biocache-ws.l-a.site', title: 'Occurrence records webservice' },
-    bie: { url: 'https://especies.gbif.es', title: 'Species' },
-    bieDis: { url: 'https://species.l-a.site', title: 'Species' },
+    bie: { url: 'https://species.l-a.site', title: 'Species' },
+    // This bieService var is used by the search autocomplete. With your BIE
+    // service running and well indexed, you can put here your url
+    bieService: { url: 'https://bie.ala.org.au/ws', title: 'Species webservice' },
     regions: { url: 'https://regions.l-a.site', title: 'Regions' },
     lists: { url: 'https://lists.l-a.site', title: 'Species List' },
     spatial: { url: 'https://spatial.l-a.site', title: 'Spatial Portal' },
