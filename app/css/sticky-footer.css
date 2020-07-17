@@ -24,3 +24,7 @@ body {
 .footer .text-muted {
   color: #808080;
 }
+
+body,html {
+  height: auto !important;
+}
