@@ -1,8 +1,7 @@
 var settings = require('./settings');
 var i18n = require('i18next');
 var jqueryI18next = require('jquery-i18next');
-// var backend = require('i18next-xhr-backend');
-var Backend = require('i18next-service-backend').default;
+var backend = require("i18next-http-backend");
 var lngDetector = require('i18next-browser-languagedetector');
 var cache = require('i18next-localstorage-cache');
 var Url = require('domurl');
@@ -10,16 +9,13 @@ var Cookies = require('js-cookie');
 
 // We use this backend as remote because subdomains.l-a.site should request to l-a.site domain
 const backOpts = {
-  // service url to the backend service
-  // i.e. https://api.spacetranslate.com or https://api.locize.io
-  service: '$_LOCALES_URL',
-  projectId: '',
-  apiKey: '',
-  referenceLng: 'en',
-  version: 'locales'
+  // Something like: https://vtatlasoflife.org/basic-brand-2020//locales/es/common
+  // More options: https://github.com/i18next/i18next-http-backend
+  loadPath: "$_LOCALES_URL/locales/{{lng}}/{{ns}}", // in the original .json
+
+  // allow cross domain requests
+  crossDomain: true,
 }
-const backend = new Backend();
-backend.init(null, backOpts);
 
 var currentUrl  = new Url;
 
