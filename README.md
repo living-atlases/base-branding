@@ -100,6 +100,8 @@ See and edit `app/js/settings.js` there you can select for instance the theme yo
 
 This is using https://brunch.io instead of gulp and using [ALA commonui-bs3-2019](https://github.com/AtlasOfLivingAustralia/commonui-bs3-2019) as a git submodule to use the same assets used by ALA modules.
 
+There is a experimental branch `vite` that uses [vitejs](https://vitejs.dev/) instead.
+
 ### Usage
 
 ```
