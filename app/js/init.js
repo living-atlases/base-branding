@@ -1,9 +1,10 @@
-require('./settings.js').default;
-require('./index-auth.js');
-require('./i18next-config.js');
-require('./mante.js');
-require('./stats.js');
-require('./autocomplete-conf.js');
+import settings from './settings.js';
+import './index-auth.js';
+import './i18next-config.js';
+import './mante.js';
+import './stats.js';
+import './autocomplete-conf.js';
+import './import-css.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('LA skin initialized');

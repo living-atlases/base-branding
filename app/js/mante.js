@@ -1,4 +1,4 @@
-var settings = require('./settings');
+import settings from './settings';
 
 $(function(){
   if (settings.inMante) {

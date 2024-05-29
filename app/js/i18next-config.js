@@ -1,11 +1,12 @@
-var settings = require('./settings');
-var i18n = require('i18next');
-var jqueryI18next = require('jquery-i18next');
-var backend = require("i18next-http-backend");
-var lngDetector = require('i18next-browser-languagedetector');
-var cache = require('i18next-localstorage-cache');
-var Url = require('domurl');
-var Cookies = require('js-cookie');
+import settings from './settings';
+import i18n from 'i18next';
+import jqueryI18next from 'jquery-i18next';
+import backend from 'i18next-http-backend';
+import lngDetector from 'i18next-browser-languagedetector';
+import cache from 'i18next-localstorage-cache';
+import Url from 'domurl';
+import Cookies from 'js-cookie';
+
 
 // We use this backend as remote because subdomains.l-a.site should request to l-a.site domain
 const backOpts = {

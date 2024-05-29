@@ -1,6 +1,6 @@
-var settings = require('./settings');
+import settings from './settings';
 // FIXME var { locale } = require('./i18n_init');
-var { CountUp } = require('countup.js');
+import { CountUp } from 'countup.js';
 
 var collectory = settings.services.collectory.url;
 var biocacheService = settings.services.biocacheService.url;

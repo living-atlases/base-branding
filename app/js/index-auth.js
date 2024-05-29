@@ -1,5 +1,5 @@
-var Cookies = require("js-cookie");
-const settings = require("js/settings");
+import settings from "./settings.js";
+import Cookies from "js-cookie";
 const authCookieName = "ALA-Auth";
 const loginClass = "signedIn";
 const logoutClass = "signedOut";

@@ -1,4 +1,4 @@
-var settings = require('./settings');
+import settings from './settings';
 var bieService = settings.services.bieService.url;
 
 // Look for BC_CONF in ALA's public/js/application.js for more details

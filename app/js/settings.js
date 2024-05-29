@@ -1,11 +1,11 @@
-module.exports = {
+export default {
   isDevel: true,
   inMante: false, // set to true and deploy if you want to set a maintenance message in all the services
   enabledLangs: ["en", "es", "zh", "sw"],
   mainDomain: "l-a.site", // used for cookies (without http/https)
   mainLAUrl: "https://l-a.site",
   baseFooterUrl: "https://l-a.site",
-  theme: "simplex", // for now 'material', 'clean', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate' or 'flatly' themes are available. See the last ones in: https://bootswatch.com/3/
+  theme: "material", // simplex ", // for now 'material', 'clean', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate' or 'flatly' themes are available. See the last ones in: https://bootswatch.com/3/
   services: {
     collectory: { url: "https://collections.l-a.site", title: "Collections" },
     biocache: { url: "https://biocache.l-a.site", title: "Occurrence records" },
@@ -14,8 +14,6 @@ module.exports = {
       title: "Occurrence records webservice",
     },
     bie: { url: "https://species.l-a.site", title: "Species" },
-    // This bieService var is used by the search autocomplete. With your BIE
-    // service running and well indexed, you can put here your url
     bieService: {
       url: "https://bie.ala.org.au/ws",
       title: "Species webservice",
@@ -36,3 +34,4 @@ module.exports = {
     { title: "twitter", url: "", icon: "twitter" },
   ],
 };
+
