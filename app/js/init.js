@@ -4,12 +4,13 @@ import './i18next-config.js';
 import './mante.js';
 import './stats.js';
 import './autocomplete-conf.js';
+// This loads all the css in app/css
 import './import-css.js';
 
+// And this only the themes one (as import glob does not allow use of variables only literals)
+// If you use a custom theme, you can remove this and load your css directly
 async function loadThemeResources(theme) {
   try {
-    // Importar CSS del tema
-    // await import(`../themes/${theme}/css/styles.css`);
     if (theme == "material") {
       await import('../themes/material/css/material-custom-styles.css');
       await import('../themes/material/css/cas-style.css');
