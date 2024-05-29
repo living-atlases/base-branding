@@ -5,7 +5,7 @@ export default {
   mainDomain: "l-a.site", // used for cookies (without http/https)
   mainLAUrl: "https://l-a.site",
   baseFooterUrl: "https://l-a.site",
-  theme: "material", // simplex ", // for now 'material', 'clean', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate' or 'flatly' themes are available. See the last ones in: https://bootswatch.com/3/
+  theme: "simplex", // for now 'material', 'clean', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate' or 'flatly' themes are available. See the last ones in: https://bootswatch.com/3/
   services: {
     collectory: { url: "https://collections.l-a.site", title: "Collections" },
     biocache: { url: "https://biocache.l-a.site", title: "Occurrence records" },
