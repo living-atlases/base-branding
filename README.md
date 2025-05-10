@@ -16,7 +16,7 @@ A LA compatible branding consist (currently) in a Bootstrap v3 footer and header
 
 In other words, we can have our custom html with our custom look & feel, image, css, menus, and still we need to put in our branding some common libs and resources that should be loaded by the ALA modules (like bootstrap, jquery and other js libs).
 
-Our strategy is to keep our brandings in sync with these dependencies easily. For this we just copy all that resources from the [ALA current branding](https://github.com/AtlasOfLivingAustralia/commonui-bs3-2019/) that is included in this repository as a [git submodule](https://github.com/living-atlases/base-branding/blob/master/.gitmodules) and their resources are [copied on each build](https://github.com/living-atlases/base-branding/blob/59f86493822c25ffef88d308b4a57470bc216b04/brunch-config.js#L66). With the same strategy the LA branding includes their [WP theme](https://github.com/AtlasOfLivingAustralia/commonui-bs3-2019/) as a submodule, so, if they change some css in the WP theme, their branding is also updated.
+Our strategy is to keep our brandings in sync with these dependencies easily. For this we just copy all that resources from the [ALA current branding](https://github.com/AtlasOfLivingAustralia/commonui-bs3-2019/) that is included in this repository as a [git submodule](https://github.com/living-atlases/base-branding/blob/master/.gitmodules) and their resources are copied on each build (See the `vite.config.js`). With the same strategy the LA branding includes their [WP theme](https://github.com/AtlasOfLivingAustralia/commonui-bs3-2019/) as a submodule, so, if they change some css in the WP theme, their branding is also updated.
 
 ```
 This base branding ---- uses ---> ALA branding resources ---- uses ----> ALA WP theme resources
@@ -28,18 +28,18 @@ The goal is also not to deal with [duplicate code and their problems](https://en
 
 So if ALA fix some js error, or if add a new chart lib, or similar, we can include that changes in our build easily. 
 
-This is how the `base-branding` includes the ALA theme code in the [build process](https://github.com/living-atlases/base-branding/blob/a1204080896101b07ef769e273963f67d75e3291/brunch-config.js#L66):
+This is how the `base-branding` includes the ALA theme code in the build process (see (See the `vite.config.js`):
 
 ![image](https://github.com/living-atlases/base-branding/assets/180085/fe465bc3-335a-42c0-a5c6-ff1d4823edf6)
 
-The branding also create some homepage, some test pages and a error page. But if you need some more complex homepage, and for instance, you need to use a CMS (like Wordpress), our recommendation is that you can use a similar strategy to avoid the need of keed in sync your LA branding and your CMS theme. So you can develop a common header/footer and css styling in your CMS, and include it in a fork of this sample branding. In summary:
+The branding also create a homepage, a test page and an error page. But if you need some more complex homepage, and for instance, you need to use a CMS (like Wordpress), our recommendation is that you can use a similar strategy to avoid the need of keed in sync your LA branding and your CMS theme. So you can develop a common header/footer and css styling in your CMS, and include it in a fork of this sample branding. In summary:
 
 ```
 Your branding ---- uses ---> ALA branding resources ---- uses ----> ALA WP theme resources
               `--- uses ---> you CMS theme resources
 ```
 
-So if for instance, you change a logo or a footer link in your CMS you can have the same change in your LA portal easily. For that you need to include it a submodule and also [copy your resources](https://github.com/living-atlases/base-branding/blob/a1204080896101b07ef769e273963f67d75e3291/brunch-config.js#L66) during the build like we do with the ALA resources. 
+So if for instance, you change a logo or a footer link in your CMS you can have the same change in your LA portal easily. For that you need to include it a submodule and also copy your resources in `vite.config.js` during the build like we do with the ALA resources. 
 
 Also in general we try not to mix libs versions like different Boostrap or jQuery versions.
 
@@ -51,12 +51,12 @@ ALA uses Bootstrap version 3 in most of their modules.
 
 This branding has currently several themes in `app/themes`. One is a `clean` Boostrap 3 theme that you can easy adapt to your site needs. This is useful when you already have a css/html style (for instance of your blog or main site) that you want to integrate with the new LA portal. Based in this clean BS3 theme there are other customized versions using many of the https://bootswatch.com/3/ themes.
 
-Additionally we have a material-bootstrap theme in `app/themes/material` as a demostration of how to do a different look&feel to a LA portal with other js/css libs. This `material` theme uses:
+Additionally we have a material-bootstrap experimental theme in `app/themes/material` as a demostration of how to do a different look&feel to a LA portal with other js/css libs. This `material` theme uses:
 - Material Design Lite https://getmdl.io/ with a custom theme that you can https://getmdl.io/customize/index.html change, download and put instead of `app/themes/material/css/material.min.css`.
 - And experimentally also [Material Bootstrap Design](https://github.com/FezVrasta/bootstrap-material-design) to have similar style in the ALA modules.
 If you only want to do minor style changes, have a look to `app/themes/material/css/material-custom-styles.css`.
 
-This styling is not the most important work of this `base-branding`, but instead the integration with ALA and the brunch configuration that gives you the possibility to use modern javascript code and modern libraries or use `i18next`, for example.
+This styling is not the most important work of this `base-branding`, but instead the integration with ALA and the vite configuration that gives you the possibility to use modern javascript code and modern libraries or use `i18next`, for example.
 
 ## Structure
 
@@ -84,13 +84,13 @@ This styling is not the most important work of this `base-branding`, but instead
 │                        # any node module and use it in your js code
 └──public
     ├── css              # The 'public' directory is what you have to deploy
-    │   └── images       # It's generated by `brunch`
+    │   └── images       # It's generated by `vite`
     ├── fonts
     ├── locales
     ├── images
     └── js
 ```
-Brunch compiles in public your `js`/`css` and make this compatible with older browsers (so you can use node modules or ES6 code without problems).
+Vite compiles in `public` your `js`/`css` and make this compatible with older browsers (so you can use node modules or ES6 code without problems).
 
 ## Basic settings
 
@@ -98,7 +98,7 @@ See and edit `app/js/settings.js` there you can select for instance the theme yo
 
 ## Development
 
-This is using https://brunch.io instead of gulp and using [ALA commonui-bs3-2019](https://github.com/AtlasOfLivingAustralia/commonui-bs3-2019) as a git submodule to use the same assets used by ALA modules.
+This is using https://vite.dev instead of gulp and using [ALA commonui-bs3-2019](https://github.com/AtlasOfLivingAustralia/commonui-bs3-2019) as a git submodule to use the same assets used by ALA modules.
 
 ### Usage
 
@@ -108,18 +108,9 @@ This is using https://brunch.io instead of gulp and using [ALA commonui-bs3-2019
 git clone --recurse-submodule https://github.com/living-atlases/base-branding.git
 # if you cloned without the submodules: git submodule update --init --recursive # use --init only the fist time
 
-# install yarn with or similar:
-# https://classic.yarnpkg.com/en/docs/install/#debian-stable
+npm install
 
-yarn install
-npm install -g brunch
-
-# During development
-brunch watch -s
-# or
-brunch build
-# or
-brunch build --production
+npm run dev
 ```
 
 Test with:
@@ -130,7 +121,7 @@ Test with:
 ## Deployment and ALA configuration
 
 ```
-brunch build --production && rsync -a --delete --info=progress2 public/ your-server:/srv/your-server-domain/www/test-skin/
+BASE_BRANDING_URL=https://l-a.site npm run build && rsync -a --delete public/ your-server:/srv/your-server-domain/www/test-skin/
 
 ```
 
@@ -162,20 +153,29 @@ In general you should use `main` or `generic` skin in your ALA modules. Some com
 
 [Here you have a table of skin layouts recommended](https://docs.google.com/spreadsheets/d/19rs1GuxZX2tRfm2x8YYf83fAcBrIG1gObIqVOV6C870/edit?usp=sharing), variables names, layouts used by ALA, links to code, etc.
 
-## Why brunch?
+## Why Vite?
 
-With [brunch.io](https://brunch.io) we can use node modules, ES6 js code, sourcemaps, minimize, development with watch and browser auto reload etc, with a more easy configuration than gulp.
+Vite provides an extremely fast development experience with:
 
-We copy the ALA dependencies (jquery, autocomplete, etc) via a plugin from the ALA submodule, so we can integrate ALA modules well.
+- Native ES Modules support
+- Instant server start with hot module replacement (HMR)
+- Optimized production builds
+- Out-of-the-box support for TypeScript, JSX, CSS preprocessors
+- Simpler configuration compared to traditional bundlers
 
-See the `brunch-config.js` for more details.
+We handle ALA dependencies (jquery, autocomplete, etc.) through Vite's optimized dependency management, which offers:
+- Better integration with modern ES modules
+- More efficient bundling
+- Improved caching for faster rebuilds
+
+See `vite.config.js`` for implementation details and customization options.
 
 ## TODO
 
 - [x] Add error page
 - [x] LA occurrences, etc stats in index
 - [ ] use of SASS and better style customization options
-- [ ] Nowadays, during development, if you modify the head/footer/banner you need an extra manual `brunch build` to update well your index and testPage with your changes. We have to find a better way to replace the HEADER, BANNER etc. See `brunch-config.js` plugins for more details.
+- [ ] Nowadays, during development, if you modify the head/footer/banner you need an extra manual build to update well your index and testPage with your changes. We have to find a better way to replace the HEADER, BANNER etc. See `vite.config.js` for more details.
 - [ ] Integration of some EU cookie utility like: https://www.npmjs.com/package/@beyonk/gdpr-cookie-consent-banner
 - [ ] Add sample `/favicon/{manifest.json|favicon.*}` required by `CAS`
 
