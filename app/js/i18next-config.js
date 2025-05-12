@@ -159,4 +159,5 @@ i18n.use(backend)
        */
       // CookieConsent.init(cookiesOpt);
     });
+    window.i18next = i18n;
 }(jQuery));

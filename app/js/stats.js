@@ -1,6 +1,9 @@
 import settings from './settings';
-// FIXME var { locale } = require('./i18n_init');
 import { CountUp } from 'countup.js';
+
+const lang = window.i18next.language;
+
+console.log('Current lang:', lang);
 
 var collectory = settings.services.collectory.url;
 var biocacheService = settings.services.biocacheService.url;
@@ -8,7 +11,7 @@ var biocacheService = settings.services.biocacheService.url;
 
 var setCounter = (id, val, onEnd) => {
   const options = {
-    separator: ',', // FIXME  locale === 'en' ? ',': '.',
+    separator: lang === 'en' ? ',': '.',
     duration: 1
   };
   // If testing set some dummy value
@@ -26,19 +29,13 @@ var setCounter = (id, val, onEnd) => {
 };
 
 var getStats = (url, callback) => {
-  if (settings.isDevel) {
-    if (url.indexOf('species') > -1) callback([{ count: 10402 }]);
-    else callback({ totalRecords: 86965283, total: 12922 });
-  } else {
-    // Real call in production
-    $.getJSON(url, callback);
-  }
+  $.getJSON(url, callback);
 };
 
 // If you want to show collections stats:
 // `${collectory}/ws/dataResource/count`
 var loadStats = () => {
-  getStats(`${biocacheService}/occurrences`, (data) => {
+  getStats(`${biocacheService}/occurrences/search`, (data) => {
     setCounter('stats_occurrences', data.totalRecords, () =>
       getStats(`${collectory}/ws/dataResource/count`, (data) => {
         setCounter('stats_datasets', data.total, () =>
