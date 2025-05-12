@@ -2,7 +2,7 @@ import settings from './settings';
 
 $(function(){
   if (settings.inMante) {
-    console.log("Setting manteinance banner");
+    console.log('Setting manteinance banner');
 
     var manteDiv = `<div class="row">
     <div class="col-md-6">
@@ -21,7 +21,7 @@ $(function(){
       <img src="images/error.svg" alt="Error Image" onerror="this.onerror=null; this.src='images/error.png'">
     </div>
   </div>`;
-    $("#mante-container").html(manteDiv);
-    $("#mante-container").show();
+    $('#mante-container').html(manteDiv);
+    $('#mante-container').show();
   }
 });

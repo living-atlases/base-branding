@@ -33,7 +33,7 @@ var getStats = (url, callback) => {
     // Real call in production
     $.getJSON(url, callback);
   }
-}
+};
 
 // If you want to show collections stats:
 // `${collectory}/ws/dataResource/count`
@@ -45,16 +45,16 @@ var loadStats = () => {
           getStats(`${collectory}/ws/institution/count`, (data) => {
             setCounter('stats_institutions', data.total);
           })
-        )
+        );
       })
-    )});
+    );});
   // Right now this is slow so we put here
   getStats(`${biocacheService}/occurrence/facets?q=*:*&facets=species&pageSize=0`, (data) => {
-    setCounter("stats_species", data[0].count);
+    setCounter('stats_species', data[0].count);
   });
-}
+};
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   if ((document.location.origin === settings.mainLAUrl || document.location.host === 'localhost:3333') && document.location.pathname === '/' ) {
     // only load stats on /
     loadStats();

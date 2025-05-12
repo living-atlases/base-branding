@@ -1,7 +1,11 @@
+import { defineConfig, globalIgnores } from "eslint/config";
+
 export default [
+ {
+    ignores: ['node_modules', 'dist', 'app/themes/material']
+  },
   {
     files: ['app/**/*.js'],
-    ignores: ['node_modules', 'dist'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

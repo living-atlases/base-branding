@@ -11,7 +11,7 @@ import './import-css.js';
 // If you use a custom theme, you can remove this and load your css directly
 async function loadThemeResources(theme) {
   try {
-    if (theme == "material") {
+    if (theme == 'material') {
       await import('../themes/material/css/material-custom-styles.css');
       await import('../themes/material/css/cas-style.css');
     } else {

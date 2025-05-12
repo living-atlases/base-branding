@@ -1,1 +1,1 @@
-const styles = import.meta.glob('../css/*.css', { eager: true });
+import.meta.glob('../css/*.css', { eager: true });

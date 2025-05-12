@@ -12,11 +12,11 @@ import Cookies from 'js-cookie';
 const backOpts = {
   // Something like: https://vtatlasoflife.org/basic-brand-2020//locales/es/common
   // More options: https://github.com/i18next/i18next-http-backend
-  loadPath: "$_LOCALES_URL/locales/{{lng}}/{{ns}}", // in the original .json
+  loadPath: '$_LOCALES_URL/locales/{{lng}}/{{ns}}', // in the original .json
 
   // allow cross domain requests
   crossDomain: true,
-}
+};
 
 var currentUrl  = new Url;
 
@@ -27,7 +27,7 @@ const i18nOpts = {
   //  lng: 'es',
   fallbackLng: {
     zh: ['en'],
-    "sw-TZ": ['en'],
+    'sw-TZ': ['en'],
     default: ['en']
   },
   sendMissingTo: 'fallback',
@@ -106,7 +106,7 @@ i18n.on('languageChanged', function (lng) {
 i18n.use(backend)
     .use(lngDetector)
     .use(cache)
-    .init(i18nOpts, (err, t) => {
+    .init(i18nOpts, (err) => {
       // initialized and ready to
       if (err) {
         console.error(err);
@@ -115,7 +115,7 @@ i18n.use(backend)
       console.log(`Language initialized: ${i18n.language}`);
       jqueryI18next.init(i18n, $, { i18nName: 'i18next' } );
       console.log('jquery i18next initialized');
-      $("body").localize();
+      $('body').localize();
 
       $('.locale-link').on('click', function(e) {
         e.preventDefault();
