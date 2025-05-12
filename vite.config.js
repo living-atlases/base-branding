@@ -5,6 +5,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import multiReplacePlugin from './vite-plugin-multi-replace';
 import settings from './app/js/settings.js';
 import jscc from 'rollup-plugin-jscc';
+import eslintPlugin from 'vite-plugin-eslint';
 
 const theme = settings.theme;
 const cleanBased = ['flatly', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate'].includes(theme);
@@ -24,6 +25,36 @@ const fragmentFiles = {
 const replacements = Object.fromEntries(
   Object.entries(fragmentFiles).map(([k, f]) => [k, fs.readFileSync(f, 'utf8')])
 );
+
+const gitDigest = (() => {
+  try {
+    return require('child_process').execSync('git rev-parse --short HEAD').toString().trim();
+  } catch (_) {
+    return 'dev';
+  }
+})();
+
+
+Object.assign(replacements, {
+  '::DIGEST::': gitDigest,
+  '::containerClass::': 'container',
+  '::headerFooterServer::': process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : baseUrl,
+  '::loginURL::': `${settings.services.cas.url}/cas/login`,
+  '::logoutURL::': `${settings.services.cas.url}/cas/logout`,
+  '::searchServer::': settings.services.bie.url,
+  '::searchPath::': '/search',
+  '::centralServer::': settings.mainLAUrl,
+  '::collectoryURL::': settings.services.collectory.url,
+  '::datasetsURL::': `${settings.services.collectory.url}/datasets`,
+  '::biocacheURL::': settings.services.biocache.url,
+  '::bieURL::': settings.services.bie.url,
+  '::regionsURL::': settings.services.regions.url,
+  '::listsURL::': settings.services.lists.url,
+  '::spatialURL::': settings.services.spatial.url,
+  '::casURL::': settings.services.cas.url,
+  '::imagesURL::': settings.services.images.url,
+  '::loginStatus::': process.env.NODE_ENV === 'development' ? 'signedIn' : '::loginStatus::'
+});
 
 function hotReloadFragments() {
   const watched = new Set(Object.values(fragmentFiles).map(f => path.resolve(f)));
@@ -62,6 +93,7 @@ export default defineConfig({
   base: `${baseUrl}/`,
   assetsInclude: ['app/assets/*.ico', 'app/assets/images/*', 'app/assets/locales/**/*'],
   plugins: [
+    eslintPlugin(),
     multiReplacePlugin(replacements),
     hotReloadFragments(),
     viteStaticCopy({ targets: copyCommands }),
