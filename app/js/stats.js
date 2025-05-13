@@ -29,7 +29,14 @@ var setCounter = (id, val, onEnd) => {
 };
 
 var getStats = (url, callback) => {
-  $.getJSON(url, callback);
+  // As many times during development, the LA portal is not returning stats, let's mock this a bit
+  if (settings.isDevel) {
+    if (url.indexOf('species') > -1) callback([{ count: 10402 }]);
+    else callback({ totalRecords: 86965283, total: 12922 });
+  } else {
+    // Real call in production
+    $.getJSON(url, callback);
+  }
 };
 
 // If you want to show collections stats:
