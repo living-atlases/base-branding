@@ -6,6 +6,7 @@ import multiReplacePlugin from './vite-plugin-multi-replace';
 import settings from './app/js/settings.js';
 import jscc from 'rollup-plugin-jscc';
 import eslintPlugin from 'vite-plugin-eslint';
+import stringReplace from 'vite-plugin-string-replace';
 
 const theme = settings.theme;
 const cleanBased = ['flatly', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate'].includes(theme);
@@ -73,9 +74,11 @@ const replacements = Object.fromEntries(
   })
 );
 
+const headerFooterServer = process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : baseUrl;
+
 Object.assign(replacements, {
   '::containerClass::': 'container',
-  '::headerFooterServer::': process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : baseUrl,
+  '::headerFooterServer::': `${headerFooterServer}`,
   '::loginURL::': `${settings.services.cas.url}/cas/login`,
   '::logoutURL::': `${settings.services.cas.url}/cas/logout`,
   '::searchServer::': settings.services.bie.url,
@@ -132,6 +135,13 @@ export default defineConfig({
   assetsInclude: ['app/assets/*.ico', 'app/assets/images/*', 'app/assets/locales/**/*'],
   plugins: [
     eslintPlugin(),
+    // Used for change urls in CSS
+    stringReplace([
+      {
+        search: '::headerFooterServer::',
+        replace: headerFooterServer,
+      },
+    ]),
     multiReplacePlugin(replacements),
     injectThemeCssLinks(themeAssets),
     virtualGlobalCss(),
