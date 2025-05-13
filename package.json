@@ -5,6 +5,7 @@
   "version": "0.0.0",
   "scripts": {
     "lint": "eslint app/ --ext .js",
+    "lintx": "eslint app/ --ext .js --fix",
     "dev": "BASE_BRANDING_URL=http://localhost:3333 vite",
     "build": "BASE_BRANDING_URL=https://l-a.site vite build",
     "preview": "BASE_BRANDING_URL=http://localhost:3333 vite preview"
