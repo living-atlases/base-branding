@@ -119,6 +119,7 @@ const copyCommands = [
   { src: 'commonui-bs3-2019/build/fonts/*', dest: 'fonts' },
   { src: 'app/assets/fonts/*', dest: 'fonts' },
   { src: 'app/assets/*', dest: '' },
+  { src: `app/themes/${themeAssets}`, dest: 'app/themes/' },
   { src: 'app/assets/images/*', dest: 'images' },
   { src: 'app/assets/locales/*', dest: 'locales' }
 ];
@@ -143,10 +144,10 @@ export default defineConfig({
       },
     ]),
     multiReplacePlugin(replacements),
-    injectThemeCssLinks(themeAssets),
     virtualGlobalCss(),
     hotReloadFragments(),
     viteStaticCopy({ targets: copyCommands }),
+    injectThemeCssLinks(themeAssets),
     jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } })
   ],
   build: {
