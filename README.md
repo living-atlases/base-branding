@@ -2,10 +2,10 @@
 
 This is a base branding for new Living Atlas deployments. That is, some ALA header, banner and footer theme with:
 
-- Well integration with ALA modules trying to avoid jquery conflicts and similar
-- Well integration with `CAS` Authentication
+- Good integration with ALA modules trying to avoid jquery conflicts and similar
+- Good integration with `CAS` Authentication
 - Multilingual
-- Modern javascript code without lost compatibility with old browsers
+- Modern javascript code without lost of compatibility with old browsers
 - Digest usage for skip cache old js/css when we release a new version
 
 You can use this as a basis for a new LA infrastructure branding or just to see how you can integrate your branding with ALA dependencies, etc.
@@ -174,8 +174,8 @@ See `vite.config.js`` for implementation details and customization options.
 
 - [x] Add error page
 - [x] LA occurrences, etc stats in index
-- [ ] use of SASS and better style customization options
-- [ ] Nowadays, during development, if you modify the head/footer/banner you need an extra manual build to update well your index and testPage with your changes. We have to find a better way to replace the HEADER, BANNER etc. See `vite.config.js` for more details.
+- [x] use of SASS and better style customization options
+- [x] Nowadays, during development, if you modify the head/footer/banner you need an extra manual build to update well your index and testPage with your changes. We have to find a better way to replace the HEADER, BANNER etc. See `vite.config.js` for more details.
 - [ ] Integration of some EU cookie utility like: https://www.npmjs.com/package/@beyonk/gdpr-cookie-consent-banner
 - [ ] Add sample `/favicon/{manifest.json|favicon.*}` required by `CAS`
 
