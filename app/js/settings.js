@@ -33,5 +33,8 @@ export default {
     { title: 'Datasets', url: 'https://collections.l-a.site/datasets' },
     { title: 'twitter', url: '', icon: 'twitter' },
   ],
+  analytics: {
+    googleId: 'UA-XXXXXXXX-1'
+  }
 };
 
