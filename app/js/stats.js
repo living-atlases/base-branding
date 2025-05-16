@@ -1,5 +1,6 @@
 import settings from './settings';
 import { CountUp } from 'countup.js';
+import { isHomeFromAppOrigin } from './utils/origin.js';
 
 const lang = window.i18next.language;
 
@@ -59,8 +60,9 @@ var loadStats = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  if ((document.location.origin === settings.mainLAUrl || document.location.host === 'localhost:3333') && document.location.pathname === '/' ) {
-    // only load stats on /
+
+  if (isHomeFromAppOrigin(settings.mainLAUrl)) {
     loadStats();
   }
+
 });

@@ -1,15 +1,10 @@
 import settings from './settings.js';
 import Cookies from 'js-cookie';
 const authCookieName = 'ALA-Auth';
-// const loginClass = 'signedIn';
-// const logoutClass = 'signedOut';
+import { isHomeFromAppOrigin } from './utils/origin.js';
 
 var loginStatusInIndex = () => {
-  if (
-    (document.location.origin === settings.mainLAUrl ||
-      document.location.host === 'localhost:3333') &&
-    document.location.pathname === '/'
-  ) {
+  if (isHomeFromAppOrigin(settings.mainLAUrl)) {
     if (settings.isDevel)
       console.log('We are in the main url, let\'s see if we are authenticated');
     // As this page is plain html, we have to detect if with are authenticated via Cookies
