@@ -6,7 +6,7 @@ import multiReplacePlugin from './vite-plugin-multi-replace';
 import settings from './app/js/settings.js';
 import jscc from 'rollup-plugin-jscc';
 import eslintPlugin from 'vite-plugin-eslint';
-import stringReplace from 'vite-plugin-string-replace';
+import { VitePluginRadar } from 'vite-plugin-radar'
 
 const theme = settings.theme;
 const cleanBased = ['flatly', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate'].includes(theme);
@@ -136,27 +136,27 @@ export default defineConfig({
   assetsInclude: ['app/assets/*.ico', 'app/assets/images/*', 'app/assets/locales/**/*'],
   plugins: [
     eslintPlugin(),
-    // Used for change urls in CSS
-    stringReplace([
-      {
-        search: '::headerFooterServer::',
-        replace: headerFooterServer,
-      },
-    ]),
     multiReplacePlugin(replacements),
     virtualGlobalCss(),
     hotReloadFragments(),
     viteStaticCopy({ targets: copyCommands }),
     injectThemeCssLinks(themeAssets),
-    jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } })
+    jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } }),
+    VitePluginRadar({
+      analytics: {
+        id: settings.analytics.googleId
+      }
+    }),
   ],
   build: {
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
+        init: path.resolve(__dirname, 'app/js/init.js'),
         errorPage: path.resolve(__dirname, 'errorPage.html'),
         testPage: path.resolve(__dirname, 'testPage.html'),
-        testSmall: path.resolve(__dirname, 'testSmall.html')
+        testSmall: path.resolve(__dirname, 'testSmall.html'),
+        banner: path.resolve(__dirname, 'banner.html'),
       },
       output: {
         entryFileNames: 'js/[name].[hash].js',
