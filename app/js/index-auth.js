@@ -31,12 +31,14 @@ var loginStatusInIndex = () => {
       $('#dropdown-auth-menu')
         .removeClass('::loginStatus::')
         .addClass('signedIn');
+        .addClass('signedIn').show();
     } else {
       if (settings.isDevel)
         console.log('No auth cookie not present so not-logged in');
       $('#dropdown-auth-menu')
         .removeClass('::loginStatus::')
         .addClass('signedOut');
+        .addClass('signedOut').show();
     }
   } else {
     if (settings.isDevel) console.log('We aren\'t in the main url');
