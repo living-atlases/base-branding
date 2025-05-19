@@ -156,7 +156,9 @@ export default defineConfig({
         errorPage: path.resolve(__dirname, 'errorPage.html'),
         testPage: path.resolve(__dirname, 'testPage.html'),
         testSmall: path.resolve(__dirname, 'testSmall.html'),
+        head: path.resolve(__dirname, 'head.html'),
         banner: path.resolve(__dirname, 'banner.html'),
+        footer: path.resolve(__dirname, 'footer.html'),
       },
       output: {
         entryFileNames: 'js/[name].[hash].js',
