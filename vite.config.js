@@ -173,6 +173,7 @@ export default defineConfig({
           if (id.includes('app/css')) return 'app';
           if (cleanBased && id.includes('app/themes/clean/css')) return 'app';
           if (id.includes(`app/themes/${theme}/css`)) return 'app';
+          if (id.includes(`app/themes/${theme}/fonts`)) return 'app';
         }
       },
       external: [
