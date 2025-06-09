@@ -30,14 +30,12 @@ var loginStatusInIndex = () => {
       if (settings.isDevel) console.log('Auth cookie present so logged in');
       $('#dropdown-auth-menu')
         .removeClass('::loginStatus::')
-        .addClass('signedIn');
         .addClass('signedIn').show();
     } else {
       if (settings.isDevel)
         console.log('No auth cookie not present so not-logged in');
       $('#dropdown-auth-menu')
         .removeClass('::loginStatus::')
-        .addClass('signedOut');
         .addClass('signedOut').show();
     }
   } else {
