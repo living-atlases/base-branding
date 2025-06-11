@@ -1,26 +1,27 @@
-import fs from 'fs';
 import path from 'path';
 
-function multiReplacePlugin(replacements) {
+export default function multiReplacePlugin(rules) {
   return {
     name: 'vite-plugin-multi-replace',
     enforce: 'pre',
-    transformIndexHtml(html, { filename }) {
-      let replacedHtml = html;
 
-      for (const [search, replace] of Object.entries(replacements)) {
-        replacedHtml = replacedHtml.replace(new RegExp(search, 'g'), replace);
+    // Sólo filtramos para .js y .css (ahorra tiempo de parseo)
+    transform(code, id) {
+      if (!id.match(/\\.(js|css)$/)) return;
+
+      let out = code;
+      for (const { match } of rules) {
+        out = out.replace(new RegExp(match.find, 'g'), match.replace);
       }
+      return out === code ? null : { code: out, map: null };
+    },
 
-      // Aplicar reemplazos dentro de los reemplazos
-      for (const [search, replace] of Object.entries(replacements)) {
-        replacedHtml = replacedHtml.replace(new RegExp(search, 'g'), replace);
-      }
-
-      return replacedHtml;
+    // En HTML aplicamos **todas** las reglas sin mirar el nombre de archivo
+    transformIndexHtml(html) {
+      return rules.reduce(
+        (acc, { match }) => acc.replace(new RegExp(match.find, 'g'), match.replace),
+        html
+      );
     }
   };
 }
-
-export default multiReplacePlugin;
-

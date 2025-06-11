@@ -6,15 +6,84 @@ import multiReplacePlugin from './vite-plugin-multi-replace';
 import settings from './app/js/settings.js';
 import jscc from 'rollup-plugin-jscc';
 import eslintPlugin from 'vite-plugin-eslint';
-import { VitePluginRadar } from 'vite-plugin-radar'
+import { VitePluginRadar } from 'vite-plugin-radar';
+import glob from 'fast-glob';
 
 const theme = settings.theme;
-const cleanBased = ['flatly', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate'].includes(theme);
+const cleanBased = [
+  'flatly', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate'
+].includes(theme);
 const themeAssets = cleanBased || theme === 'clean' ? 'clean' : theme;
+const baseUrl = process.env.BASE_BRANDING_URL.replace(/\/+$|^\/+/, '');
 
-const baseUrl = process.env.BASE_BRANDING_URL.replace(/\/+$/, '');;
+const toReplace = [
+  /index\.html$/, /errorPage\.html$/, /testPage\.html$/, /testSmall\.html$/
+];
 
-import glob from 'fast-glob';
+const toReplaceOthers = [
+  /banner\.html$/, /footer\.html$/, ...toReplace
+];
+
+const r = (files, find, replace) => ({ files, match: { find, replace } });
+
+const fragmentFiles = {
+  INDEX_BODY: `app/themes/${themeAssets}/assets/indexBody.html`,
+  TEST_BODY: `app/themes/${themeAssets}/assets/testBody.html`,
+  HEADLOCAL_HERE: `app/themes/${themeAssets}/assets/headLocal.html`,
+  HEAD_HERE: `app/themes/${themeAssets}/assets/head.html`,
+  BANNER_HERE: `app/themes/${themeAssets}/assets/banner.html`,
+  FOOTER_HERE: `app/themes/${themeAssets}/assets/footer.html`
+};
+
+function applyRulesToText(text) {
+  return rulesBase.reduce((acc, rule) => {
+    const { find, replace } = rule.match;
+    return acc.replace(new RegExp(find, 'g'), replace);
+  }, text);
+}
+
+const rulesBase = [
+  r(toReplace, '::containerClass::', 'container'),
+  r(toReplace, '::headerFooterServer::', process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3333'
+    : settings.baseFooterUrl),
+  r(toReplace, '::loginURL::', `${settings.services.cas.url}/cas/login`),
+  r(toReplace, '::logoutURL::', `${settings.services.cas.url}/cas/logout`),
+  r(toReplace, '::searchServer::', settings.services.bie.url),
+  r(toReplace, '::searchPath::', '/search'),
+  r(toReplace, '::centralServer::', settings.mainLAUrl),
+  r(toReplaceOthers, '::collectoryURL::', settings.services.collectory.url),
+  r(toReplaceOthers, '::datasetsURL::', `${settings.services.collectory.url}/datasets`),
+  r(toReplaceOthers, '::biocacheURL::', settings.services.biocache.url),
+  r(toReplaceOthers, '::bieURL::', settings.services.bie.url),
+  r(toReplaceOthers, '::regionsURL::', settings.services.regions.url),
+  r(toReplaceOthers, '::listsURL::', settings.services.lists.url),
+  r(toReplaceOthers, '::spatialURL::', settings.services.spatial.url),
+  r(toReplaceOthers, '::casURL::', settings.services.cas.url),
+  r(toReplaceOthers, '::imagesURL::', settings.services.images.url)
+];
+
+const replacements = Object.fromEntries(
+  Object.entries(fragmentFiles).map(([k, f]) => {
+    let raw = fs.readFileSync(f, 'utf8');
+    raw = prefixStaticUrls(raw, baseUrl);
+    raw = applyRulesToText(raw, f);
+    return [k, raw];
+  })
+);
+
+const rules = [
+  ...rulesBase,
+  ...Object.entries(fragmentFiles).map(([key]) =>
+    r(toReplace, key, replacements[key])
+  )
+];
+
+function prefixStaticUrls(html, baseUrl) {
+  return html.replace(/(href|src)=["'](css|js|fonts|images)\/(.*?)["']/g, (_, attr, folder, rest) => {
+    return `${attr}="${baseUrl}/${folder}/${rest}"`;
+  });
+}
 
 function virtualGlobalCss() {
   const cssFiles = glob.sync('app/css/*.css', { onlyFiles: true });
@@ -52,50 +121,6 @@ function injectThemeCssLinks(theme) {
   };
 }
 
-function prefixStaticUrls(html, baseUrl) {
-  return html.replace(/(href|src)=["'](css|js|fonts|images)\/(.*?)["']/g, (_, attr, folder, rest) => {
-    return `${attr}="${baseUrl}/${folder}/${rest}"`;
-  });
-}
-
-const fragmentFiles = {
-  INDEX_BODY: `app/themes/${themeAssets}/assets/indexBody.html`,
-  TEST_BODY: `app/themes/${themeAssets}/assets/testBody.html`,
-  HEADLOCAL_HERE: `app/themes/${themeAssets}/assets/headLocal.html`,
-  HEAD_HERE: `app/themes/${themeAssets}/assets/head.html`,
-  BANNER_HERE: `app/themes/${themeAssets}/assets/banner.html`,
-  FOOTER_HERE: `app/themes/${themeAssets}/assets/footer.html`
-};
-
-const replacements = Object.fromEntries(
-  Object.entries(fragmentFiles).map(([k, f]) => {
-    const raw = fs.readFileSync(f, 'utf8');
-    return [k, prefixStaticUrls(raw, baseUrl)];
-  })
-);
-
-const headerFooterServer = process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : baseUrl;
-
-Object.assign(replacements, {
-  '::containerClass::': 'container',
-  '::headerFooterServer::': `${headerFooterServer}`,
-  '::loginURL::': `${settings.services.cas.url}/cas/login`,
-  '::logoutURL::': `${settings.services.cas.url}/cas/logout`,
-  '::searchServer::': settings.services.bie.url,
-  '::searchPath::': '/search',
-  '::centralServer::': settings.mainLAUrl,
-  '::collectoryURL::': settings.services.collectory.url,
-  '::datasetsURL::': `${settings.services.collectory.url}/datasets`,
-  '::biocacheURL::': settings.services.biocache.url,
-  '::bieURL::': settings.services.bie.url,
-  '::regionsURL::': settings.services.regions.url,
-  '::listsURL::': settings.services.lists.url,
-  '::spatialURL::': settings.services.spatial.url,
-  '::casURL::': settings.services.cas.url,
-  '::imagesURL::': settings.services.images.url,
-  '::loginStatus::': process.env.NODE_ENV === 'development' ? 'signedIn' : '::loginStatus::'
-});
-
 function hotReloadFragments() {
   const watched = new Set(Object.values(fragmentFiles).map(f => path.resolve(f)));
   return {
@@ -105,7 +130,10 @@ function hotReloadFragments() {
       if (!watched.has(abs)) return;
       for (const [key, fragPath] of Object.entries(fragmentFiles)) {
         if (path.resolve(fragPath) === abs) {
-          replacements[key] = fs.readFileSync(abs, 'utf8');
+          let raw = fs.readFileSync(abs, 'utf8');
+          raw = prefixStaticUrls(raw, baseUrl);
+          raw = applyRulesToText(raw, abs);
+          replacements[key] = raw;
         }
       }
       server.ws.send({ type: 'full-reload' });
@@ -136,17 +164,13 @@ export default defineConfig({
   assetsInclude: ['app/assets/*.ico', 'app/assets/images/*', 'app/assets/locales/**/*'],
   plugins: [
     eslintPlugin(),
-    multiReplacePlugin(replacements),
+    multiReplacePlugin(rules),
     virtualGlobalCss(),
     hotReloadFragments(),
     viteStaticCopy({ targets: copyCommands }),
     injectThemeCssLinks(themeAssets),
     jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } }),
-    VitePluginRadar({
-      analytics: {
-        id: settings.analytics.googleId
-      }
-    }),
+    VitePluginRadar({ analytics: { id: settings.analytics.googleId } }),
   ],
   build: {
     rollupOptions: {
@@ -158,7 +182,7 @@ export default defineConfig({
         testSmall: path.resolve(__dirname, 'testSmall.html'),
         head: path.resolve(__dirname, 'head.html'),
         banner: path.resolve(__dirname, 'banner.html'),
-        footer: path.resolve(__dirname, 'footer.html'),
+        footer: path.resolve(__dirname, 'footer.html')
       },
       output: {
         entryFileNames: 'js/[name].[hash].js',
