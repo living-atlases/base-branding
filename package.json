@@ -6,12 +6,13 @@
   "scripts": {
     "lint": "eslint app/ --ext .js",
     "lintx": "eslint app/ --ext .js --fix",
-    "dev": "BASE_BRANDING_URL=http://localhost:3333 vite",
-    "build": "BASE_BRANDING_URL=https://l-a.site vite build",
+    "dev": "cross-env BASE_BRANDING_URL=http://localhost:3333 vite",
+    "build": "cross-env BASE_BRANDING_URL=https://l-a.site vite build",
     "preview": "BASE_BRANDING_URL=http://localhost:3333 vite preview"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^5.0.5",
+    "cross-env": "^10.0.0",
     "eslint": "^9.26.0",
     "rollup-plugin-jscc": "^2.0.0",
     "sass": "^1.89.0",
