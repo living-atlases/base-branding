@@ -24,5 +24,8 @@
   "error.title": "¡Uuppps, vaya!",
   "error.subtitle": "Estamos experimentando algunos problemas en nuestro servicio",
   "error.description": "Si lo necesita, siempre puede contactarnos, de lo contrario, volveremos a estar online en breve",
-  "error.button": "Ir al Inicio"
+  "error.button": "Ir al Inicio",
+  "cookie_message": "Este sitio web utiliza cookies de terceros para recabar información básica de acceso a internet y detalles sobre los patrones de comportamiento de visitantes. Para más información sobre las cookies utilizadas consulta nuestra Política de cookies.",
+  "cookie_accept_btn": "Aceptar",
+  "cookie_policy_btn": "Política de cookies"
 }

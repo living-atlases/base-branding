@@ -32,6 +32,7 @@
     "i18next-localstorage-cache": "^1.1.1",
     "jquery-i18next": "^1.2.1",
     "js-cookie": "^3.0.5",
-    "url-polyfill": "^1.1.13"
+    "url-polyfill": "^1.1.13",
+    "vanilla-cookieconsent": "^3.1.0"
   }
 }

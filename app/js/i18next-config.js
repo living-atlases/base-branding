@@ -6,7 +6,7 @@ import lngDetector from 'i18next-browser-languagedetector';
 import cache from 'i18next-localstorage-cache';
 import Url from 'domurl';
 import Cookies from 'js-cookie';
-
+import { mountCookieConsent } from './cookie-consent.js';
 
 // We use this backend as remote because subdomains.l-a.site should request to l-a.site domain
 const backOpts = {
@@ -143,21 +143,9 @@ i18n.use(backend)
         document.location.search = currentUrl.query;
       }
 
-      // cookies eu consent
-      /* const cookiesOpt = {
-       *   cookieTitle: t('Uso de Cookies'),
-       *   cookieMessage: t('Utilizamos cookies para asegurar un mejor uso de nuestra web. Si continúas navegando, consideramos que aceptas su uso'),
-       *   showLink: false,
-       *   position: 'bottom',
-       *   linkText: 'Lee más',
-       *   linkRouteName: '/privacy',
-       *   acceptButtonText: t('Aceptar'),
-       *   html: false,
-       *   expirationInDays: 70,
-       *   forceShow: false
-       * };
-       */
-      // CookieConsent.init(cookiesOpt);
+      mountCookieConsent(`https://l-a.site/${window.i18next.resolvedLanguage || 'en'}/put-your-cookies-page-here/`);
+      console.log('Added cookie consent');
+
     });
     window.i18next = i18n;
 }(jQuery));
