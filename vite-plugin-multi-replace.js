@@ -17,9 +17,14 @@ export default function multiReplacePlugin(rules) {
     },
 
     // En HTML aplicamos **todas** las reglas sin mirar el nombre de archivo
-    transformIndexHtml(html) {
+    transformIndexHtml(html, ctx) {
       return rules.reduce(
-        (acc, { match }) => acc.replace(new RegExp(match.find, 'g'), match.replace),
+        (acc, rule) => {
+          const ruleAppliesToFile = rule.files.some(file => ctx.path.match(new RegExp(file)));
+          return ruleAppliesToFile
+            ? acc.replace(new RegExp(rule.match.find, 'g'), rule.match.replace)
+            : acc;
+        },
         html
       );
     }
