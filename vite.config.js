@@ -106,16 +106,19 @@ function injectThemeCssLinks(theme) {
 
   return {
     name: 'inject-theme-css-links',
-    transformIndexHtml(html) {
-      const links = files.map(file => ({
-        tag: 'link',
-        attrs: {
-          rel: 'stylesheet',
-          href: `${baseUrl}/${file}`,
-          'data-theme': theme
-        },
-        injectTo: 'head'
-      }));
+    transformIndexHtml(html, ctx) {
+      const doTransform = html.includes('<head>') || ctx.path.endsWith('head.html');
+      const links = doTransform
+        ? files.map(file => ({
+            tag: 'link',
+            attrs: {
+              rel: 'stylesheet',
+              href: `${baseUrl}/${file}`,
+              'data-theme': theme
+            },
+            injectTo: 'head'
+          }))
+        : [];
       return { html, tags: links };
     }
   };
