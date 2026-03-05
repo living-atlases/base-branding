@@ -1,8 +1,14 @@
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import * as CookieConsent from 'vanilla-cookieconsent';
 import i18next from 'i18next';
+import settings from './settings.js';
 
 export function mountCookieConsent(policyUrl) {
+  // multidomain for that cookie with .l-a.site
+  const cookieDomain = document.location.host !== 'localhost:3333'
+    ? '.' + settings.mainDomain
+    : undefined;
+
   CookieConsent.run({
     categories: {
       necessary: { enabled: true, readOnly: true },
@@ -28,6 +34,11 @@ export function mountCookieConsent(policyUrl) {
           }
         }
       }
+    },
+    cookie: {
+      domain: cookieDomain,
+      path: '/',
+      sameSite: 'Lax'
     }
   });
 }
