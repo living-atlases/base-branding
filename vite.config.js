@@ -17,7 +17,7 @@ const themeAssets = cleanBased || theme === 'clean' ? 'clean' : theme;
 const baseUrl = process.env.BASE_BRANDING_URL.replace(/\/+$|^\/+/, '');
 
 const toReplace = [
-  /index\.html$/, /errorPage\.html$/, /testPage\.html$/, /testPageCas\.html$/, /testSmall\.html$/
+  /index\.html$/, /errorPage\.html$/, /testPage\.html$/, /testSmall\.html$/
 ];
 
 const toReplaceOthers = [
@@ -181,7 +181,6 @@ export default defineConfig({
         init: path.resolve(__dirname, 'app/js/init.js'),
         errorPage: path.resolve(__dirname, 'errorPage.html'),
         testPage: path.resolve(__dirname, 'testPage.html'),
-        testPageCas: path.resolve(__dirname, 'testPageCas.html'),
         testSmall: path.resolve(__dirname, 'testSmall.html'),
         head: path.resolve(__dirname, 'head.html'),
         banner: path.resolve(__dirname, 'banner.html'),
