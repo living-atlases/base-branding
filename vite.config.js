@@ -17,7 +17,7 @@ const themeAssets = cleanBased || theme === 'clean' ? 'clean' : theme;
 const baseUrl = process.env.BASE_BRANDING_URL.replace(/\/+$|^\/+/, '');
 
 const toReplace = [
-  /index\.html$/, /errorPage\.html$/, /testPage\.html$/, /testSmall\.html$/
+  /index\.html$/, /errorPage\.html$/, /testPage\.html$/, /testPageCas\.html$/, /testSmall\.html$/
 ];
 
 const toReplaceOthers = [
@@ -99,6 +99,77 @@ function virtualGlobalCss() {
   };
 }
 
+// Fragments that have no <body> and should NOT receive init scripts
+const skipInjectionFragments = ['head.html', 'footer.html'];
+
+// Inject init bundle scripts so they load on every page — including CAS pages.
+// CAS doesn't load head.html, so scripts can't go there. Instead we inject them:
+//   • into <body> (body-prepend) for full HTML pages
+//   • at the top of banner.html (the fragment CAS always includes)
+// See: https://github.com/AtlasOfLivingAustralia/ala-cas-5/issues/29
+//
+// In dev mode: injects /app/js/init.js directly (Vite serves it unbundled).
+// In build mode: reads ctx.bundle to find the hashed init/vendor/polyfill
+// chunks and injects them with the correct URLs.
+function injectInitToBody() {
+  return {
+    name: 'inject-init-to-body',
+    enforce: 'post',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        const shouldSkip = skipInjectionFragments.some(f => ctx.path.endsWith(f));
+        if (shouldSkip) return html;
+
+        const isBannerFragment = ctx.path.endsWith('banner.html') && !html.includes('<body');
+        const hasBody = html.includes('<body');
+
+        if (!isBannerFragment && !hasBody) return html;
+
+        let scriptTags;
+
+        if (ctx.bundle) {
+          // Production build — find the hashed chunks from the bundle
+          const chunks = Object.values(ctx.bundle).filter(c => c.type === 'chunk');
+          const polyfill = chunks.find(c => c.name === 'modulepreload-polyfill');
+          const vendor   = chunks.find(c => c.name === 'vendor');
+          const init     = chunks.find(c => c.name === 'init');
+
+          scriptTags = [
+            polyfill && `<script type="module" crossorigin src="${baseUrl}/${polyfill.fileName}"></script>`,
+            vendor   && `<script type="module" crossorigin src="${baseUrl}/${vendor.fileName}"></script>`,
+            init     && `<script type="module" crossorigin src="${baseUrl}/${init.fileName}"></script>`,
+          ].filter(Boolean).join('\n');
+        } else {
+          // Dev server — Vite serves modules directly, no hashing needed
+          scriptTags = `<script type="module" src="/app/js/init.js"></script>`;
+        }
+
+        if (isBannerFragment) {
+          // Prepend scripts to the fragment so CAS pages pick them up
+          return scriptTags + '\n' + html;
+        }
+
+        // Full HTML page — inject at body-prepend via Vite tag API
+        const injectTo = 'body-prepend';
+        const tags = [];
+        if (ctx.bundle) {
+          const chunks = Object.values(ctx.bundle).filter(c => c.type === 'chunk');
+          const polyfill = chunks.find(c => c.name === 'modulepreload-polyfill');
+          const vendor   = chunks.find(c => c.name === 'vendor');
+          const init     = chunks.find(c => c.name === 'init');
+          if (polyfill) tags.push({ tag: 'script', attrs: { type: 'module', crossorigin: true, src: `${baseUrl}/${polyfill.fileName}` }, injectTo });
+          if (vendor)   tags.push({ tag: 'script', attrs: { type: 'module', crossorigin: true, src: `${baseUrl}/${vendor.fileName}`   }, injectTo });
+          if (init)     tags.push({ tag: 'script', attrs: { type: 'module', crossorigin: true, src: `${baseUrl}/${init.fileName}`     }, injectTo });
+        } else {
+          tags.push({ tag: 'script', attrs: { type: 'module', src: '/app/js/init.js' }, injectTo });
+        }
+        return { html, tags };
+      }
+    }
+  };
+}
+
 function injectThemeCssLinks(theme) {
   const themePath = `app/themes/${theme}/css/*.css`;
   const files = glob.sync(themePath, { onlyFiles: true });
@@ -170,6 +241,7 @@ export default defineConfig({
     virtualGlobalCss(),
     hotReloadFragments(),
     viteStaticCopy({ targets: copyCommands }),
+    injectInitToBody(),
     injectThemeCssLinks(themeAssets),
     jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } }),
     VitePluginRadar({ analytics: { id: settings.analytics.googleId } }),
@@ -181,6 +253,7 @@ export default defineConfig({
         init: path.resolve(__dirname, 'app/js/init.js'),
         errorPage: path.resolve(__dirname, 'errorPage.html'),
         testPage: path.resolve(__dirname, 'testPage.html'),
+        testPageCas: path.resolve(__dirname, 'testPageCas.html'),
         testSmall: path.resolve(__dirname, 'testSmall.html'),
         head: path.resolve(__dirname, 'head.html'),
         banner: path.resolve(__dirname, 'banner.html'),
