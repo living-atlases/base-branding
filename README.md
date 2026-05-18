@@ -243,7 +243,7 @@ ErrorDocument 503 https://l-a.site/errorPage.html, for instance;
 ## Caveats
 
 - If this header/footer/etc are used from `subdomains.your.l-a.site` you can not use relative urls. You should use like `https://your.l-a.site/img/someResource.png` instead of `img/someResource.png`. If you don't use absolute urls, `collectory` will try to access to `img/someResource.png` in their tomcat without success with `404` errors, and the same with the rest of tools.
-- [ala-cas-5 layout ignores head.html](https://github.com/AtlasOfLivingAustralia/ala-cas-5/issues/29) right now.
+- [ala-cas-5 layout ignores head.html](https://github.com/AtlasOfLivingAustralia/ala-cas-5/issues/29) right now. Because of this, the branding JS is shipped as a single self-contained **classic** bundle `js/init.js` (a second `BUILD_INIT=1 vite build` IIFE pass) and injected into `banner.html` (the only fragment CAS includes) as a plain `<script src>` — no `type=module`, no `crossorigin` — so CAS can load it cross-origin from the skin host without CORS. ES-module scripts are always CORS-fetched and would be blocked here.
 - `collectory` has an old version of `ala-bootstrap3`.
 
 ## License

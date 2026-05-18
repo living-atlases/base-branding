@@ -99,18 +99,17 @@ function virtualGlobalCss() {
   };
 }
 
-// Fragments that have no <body> and should NOT receive init scripts
+// Fragments with no <body> that must NOT receive the init script.
 const skipInjectionFragments = ['head.html', 'footer.html'];
 
-// Inject init bundle scripts so they load on every page — including CAS pages.
-// CAS doesn't load head.html, so scripts can't go there. Instead we inject them:
-//   • into <body> (body-prepend) for full HTML pages
-//   • at the top of banner.html (the fragment CAS always includes)
-// See: https://github.com/AtlasOfLivingAustralia/ala-cas-5/issues/29
-//
-// In dev mode: injects /app/js/init.js directly (Vite serves it unbundled).
-// In build mode: reads ctx.bundle to find the hashed init/vendor/polyfill
-// chunks and injects them with the correct URLs.
+// Inject the branding JS so it loads on every page — including CAS pages.
+// CAS does NOT include head.html (https://github.com/AtlasOfLivingAustralia/ala-cas-5/issues/29),
+// so the script can only ride along in banner.html (the fragment CAS does
+// include). In production it is emitted as a single self-contained CLASSIC
+// (IIFE) bundle at the stable path js/init.js and injected as a plain
+// <script src> — no type=module, no crossorigin — so the CAS page can load it
+// cross-origin from the skin host WITHOUT CORS (matches the brunch behaviour).
+// In dev, Vite serves the unbundled ES module entry.
 function injectInitToBody() {
   return {
     name: 'inject-init-to-body',
@@ -123,48 +122,19 @@ function injectInitToBody() {
 
         const isBannerFragment = ctx.path.endsWith('banner.html') && !html.includes('<body');
         const hasBody = html.includes('<body');
-
         if (!isBannerFragment && !hasBody) return html;
 
-        let scriptTags;
-
-        if (ctx.bundle) {
-          // Production build — find the hashed chunks from the bundle
-          const chunks = Object.values(ctx.bundle).filter(c => c.type === 'chunk');
-          const polyfill = chunks.find(c => c.name === 'modulepreload-polyfill');
-          const vendor   = chunks.find(c => c.name === 'vendor');
-          const init     = chunks.find(c => c.name === 'init');
-
-          scriptTags = [
-            polyfill && `<script type="module" crossorigin src="${baseUrl}/${polyfill.fileName}"></script>`,
-            vendor   && `<script type="module" crossorigin src="${baseUrl}/${vendor.fileName}"></script>`,
-            init     && `<script type="module" crossorigin src="${baseUrl}/${init.fileName}"></script>`,
-          ].filter(Boolean).join('\n');
-        } else {
-          // Dev server — Vite serves modules directly, no hashing needed
-          scriptTags = `<script type="module" src="/app/js/init.js"></script>`;
-        }
+        const prod = !!ctx.bundle;
+        const src = prod ? `${baseUrl}/js/init.js` : '/app/js/init.js';
+        const attrs = prod ? { src } : { type: 'module', src };
+        const scriptTag = prod
+          ? `<script src="${src}"></script>`
+          : `<script type="module" src="${src}"></script>`;
 
         if (isBannerFragment) {
-          // Prepend scripts to the fragment so CAS pages pick them up
-          return scriptTags + '\n' + html;
+          return scriptTag + '\n' + html;
         }
-
-        // Full HTML page — inject at body-prepend via Vite tag API
-        const injectTo = 'body-prepend';
-        const tags = [];
-        if (ctx.bundle) {
-          const chunks = Object.values(ctx.bundle).filter(c => c.type === 'chunk');
-          const polyfill = chunks.find(c => c.name === 'modulepreload-polyfill');
-          const vendor   = chunks.find(c => c.name === 'vendor');
-          const init     = chunks.find(c => c.name === 'init');
-          if (polyfill) tags.push({ tag: 'script', attrs: { type: 'module', crossorigin: true, src: `${baseUrl}/${polyfill.fileName}` }, injectTo });
-          if (vendor)   tags.push({ tag: 'script', attrs: { type: 'module', crossorigin: true, src: `${baseUrl}/${vendor.fileName}`   }, injectTo });
-          if (init)     tags.push({ tag: 'script', attrs: { type: 'module', crossorigin: true, src: `${baseUrl}/${init.fileName}`     }, injectTo });
-        } else {
-          tags.push({ tag: 'script', attrs: { type: 'module', src: '/app/js/init.js' }, injectTo });
-        }
-        return { html, tags };
+        return { html, tags: [{ tag: 'script', attrs, injectTo: 'body-prepend' }] };
       }
     }
   };
@@ -232,7 +202,29 @@ if (theme === 'material') {
   );
 }
 
-export default defineConfig({
+// Second build pass (BUILD_INIT=1): emit app/js/init.js as one standalone
+// classic IIFE bundle at the stable name js/init.js, keeping the main HTML
+// build output (emptyOutDir:false). This is what the banner injection points
+// to in production.
+const initLibConfig = defineConfig({
+  base: `${baseUrl}/`,
+  plugins: [jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } })],
+  build: {
+    emptyOutDir: false,
+    cssCodeSplit: false,
+    lib: {
+      entry: path.resolve(__dirname, 'app/js/init.js'),
+      formats: ['iife'],
+      name: 'AlaBranding',
+      fileName: () => 'js/init.js'
+    },
+    rollupOptions: {
+      output: { assetFileNames: 'css/init.[hash][extname]' }
+    }
+  }
+});
+
+const mainConfig = defineConfig({
   base: `${baseUrl}/`,
   assetsInclude: ['app/assets/*.ico', 'app/assets/images/*', 'app/assets/locales/**/*'],
   plugins: [
@@ -299,4 +291,6 @@ export default defineConfig({
     watch: { usePolling: true }
   }
 });
+
+export default process.env.BUILD_INIT ? initLibConfig : mainConfig;
 
