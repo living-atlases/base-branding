@@ -10,6 +10,44 @@ import { VitePluginRadar } from 'vite-plugin-radar';
 import glob from 'fast-glob';
 
 const buildTimestamp = Date.now();
+
+// ─── Banner / Head injection architecture ────────────────────────────────────
+//
+// ala-cas-5 Thymeleaf layout includes <ala:banner> and <ala:footer> but treats
+// <ala:head> as a no-op (https://github.com/AtlasOfLivingAustralia/ala-cas-5/issues/29).
+// CAS pages therefore never load head.html — only banner.html reaches them.
+//
+// All normal ALA application pages include banner.html via SSI as well, so
+// delivering init via banner gives exactly-once loading on every page including CAS.
+//
+// Build outputs
+// ─────────────
+//  dist/banner.html  ← injectInitToBody()       prepends css/init.css + js/init.js
+//                    ← injectThemeCssLinks()     prepends theme CSS <link> tags
+//
+//  dist/head.html    ← intentionally empty of init (CAS never fetches it)
+//
+//  dist/js/init.js   ← classic IIFE bundle (BUILD_INIT=1 pass)
+//                       stable filename — URL is baked into banner.html at build time
+//                       ?v=<timestamp> query string provides per-deploy cache busting
+//  dist/css/init.css ← same, companion stylesheet from the IIFE pass
+//
+// Dual build passes (package.json "build" script)
+// ────────────────────────────────────────────────
+//  Pass 1 (mainConfig): normal Vite build — ES modules with content-hashed filenames
+//          Used by the dev server (HMR) and as the source of truth for test HTML pages.
+//  Pass 2 (BUILD_INIT=1 → initLibConfig): lib/IIFE mode — emits js/init.js (stable)
+//          This is what banner.html references. Classic <script> (no type=module),
+//          no crossorigin attribute → loads cross-origin from the skin host without
+//          CORS headers, matching how ala-brunch delivered the script.
+//
+// Why `defer` on the injected <script>
+// ─────────────────────────────────────
+//  The CAS Thymeleaf layout loads jQuery via webjars with `defer`. Our init.js must
+//  also defer so that jQuery is available when init.js executes (avoids $ is not defined).
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
 const theme = settings.theme;
 const cleanBased = [
   'flatly', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate'
