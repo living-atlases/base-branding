@@ -167,11 +167,10 @@ function injectInitToBody() {
         const isBannerFragment = ctx.path.endsWith('banner.html') && !html.includes('<body');
         const hasBody = html.includes('<body');
 
-        // Prod: inject into banner.html (SSI fragment for ALA apps + CAS) AND full test pages
-        //       (index.html etc. are only served directly from the branding host — ALA apps
-        //       never receive them, so there is no double-load risk).
-        // Dev:  inject into full pages with <body> (banner is inlined from source, no SSI).
-        if (!isBannerFragment && !hasBody) return html;
+        // Prod: only banner.html (ALA apps + CAS include banner via SSI — no duplication)
+        // Dev:  full pages only (banner is inlined from source, SSI not applicable)
+        if (prod && !isBannerFragment) return html;
+        if (!prod && !hasBody) return html;
 
         const src = prod ? `${baseUrl}/js/init.js?v=${buildTimestamp}` : '/app/js/init.js';
         const cssSrc = prod ? `${baseUrl}/css/init.css?v=${buildTimestamp}` : null;
@@ -184,10 +183,8 @@ function injectInitToBody() {
         if (isBannerFragment) {
           return cssTag + '\n' + scriptTag + '\n' + html;
         }
-        // Full pages: script into body-prepend, CSS link into head (prod only)
-        const tags = [{ tag: 'script', attrs, injectTo: 'body-prepend' }];
-        if (cssSrc) tags.push({ tag: 'link', attrs: { rel: 'stylesheet', href: cssSrc }, injectTo: 'head' });
-        return { html, tags };
+        // Dev: inject into body-prepend of full pages
+        return { html, tags: [{ tag: 'script', attrs, injectTo: 'body-prepend' }] };
       }
     }
   };
