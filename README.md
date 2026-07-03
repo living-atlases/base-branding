@@ -155,6 +155,38 @@ In general you should use `main` or `generic` skin in your ALA modules. Some com
 
 [Here you have a table of skin layouts recommended](https://docs.google.com/spreadsheets/d/19rs1GuxZX2tRfm2x8YYf83fAcBrIG1gObIqVOV6C870/edit?usp=sharing), variables names, layouts used by ALA, links to code, etc.
 
+### Spatial Portal skin
+
+The Spatial Portal (`spatial-hub`) does **not** consume `head/banner/footer.html` like the other
+modules. Its default `portal` layout hardcodes the ALA logo and menu, and it runs as a fat WAR with
+precompiled GSPs, so that layout cannot be overridden by a volume mount. Instead spatial-hub's
+`BootStrap.groovy` registers an **external layout/asset resolver**: a layout GSP placed at
+`/data/spatial-hub/views/layouts/<name>.gsp` (plus assets at `/data/spatial-hub/assets/`) is used
+when `skin.layout=<name>`.
+
+So the build also generates a Spatial skin layout under `dist/spatial/`:
+
+```
+dist/spatial/
+  views/layouts/spatial-layout.gsp   # LA header; ::variable:: URLs baked in, ${grails...} kept
+```
+
+Source lives in [`app/spatial/spatial-layout.gsp`](app/spatial/spatial-layout.gsp) and is
+**hand-customisable**. Only `::variable::` URL tokens are substituted at build time; the map
+application's `<asset:*>` / `<g:*>` / `<hf:*>` / `<ala:*>` tags and `${grailsApplication...}`
+expressions are left untouched. The layout is a copy of spatial-hub 3.1.0 `portal.gsp` with just
+the header block replaced — re-sync the non-header parts if you bump spatial-hub.
+
+**No extra stylesheet is generated.** The header is a plain `navbar navbar-default`, so it reuses
+the commonui/ala styles that already exist — the spatial-hub WAR's `application.css` provides them
+(the same base every other module header uses), so it matches the site across all branding themes.
+
+Preview the header locally (Vite dev server, HMR) at
+[`testPageSpatial.html`](testPageSpatial.html) → `http://localhost:3333/testPageSpatial.html`.
+
+Deployment: la-docker-compose mounts `dist/spatial/views` from the branding volume into
+`/data/spatial-hub/views` and sets `skin.layout=spatial-layout` when `use_branding` is on.
+
 ## Why Vite?
 
 Vite provides an extremely fast development experience with:

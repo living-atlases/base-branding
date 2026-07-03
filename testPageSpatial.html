@@ -1,0 +1,104 @@
+<!doctype html>
+<!--
+  testPageSpatial.html — LOCAL PREVIEW of the Spatial Portal skin header.
+
+  This is a Vite dev page (like testPage.html) so you can iterate on the Living Atlas
+  header in the browser with HMR:  npm run dev  →  http://localhost:3333/testPageSpatial.html
+
+  It is a *visual* preview only. The real layout is app/spatial/spatial-layout.gsp, a GSP
+  rendered by Grails inside spatial-hub — its <g:*>/<asset:*>/<hf:*>/${...} tags cannot run
+  in Vite. The <nav> below MIRRORS the header of spatial-layout.gsp in plain HTML; keep the
+  two in sync when you change the header markup.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Spatial Portal skin preview"/>
+    <meta name="author" content="Living Atlas"/>
+    <title>Spatial Portal skin — preview</title>
+    HEADLOCAL_HERE
+    HEAD_HERE
+    <!-- No spatial-specific stylesheet: the page head already loads the commonui/ala styles the
+         header inherits (the real spatial-hub gets the same through its application.css). -->
+    <script type="module" src="/app/js/init.js"></script>
+  </head>
+  <body>
+    <!-- ===== mirror of spatial-layout.gsp header (plain HTML) ===== -->
+    <div class="la-spatial-header">
+      <nav class="navbar navbar-default" role="navigation" style="margin-bottom:0">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#la-spatial-nav" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="::centralServer::" data-i18n="general.orgfullname">Living Atlas</a>
+          </div>
+
+          <div class="collapse navbar-collapse" id="la-spatial-nav">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a data-i18n="nav.collectory" href="::collectoryURL::">Collections</a></li>
+              <li><a data-i18n="nav.biocache" href="::biocacheURL::">Occurrences</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                   aria-haspopup="true" aria-expanded="false"><span data-i18n="nav.more">More</span> <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a data-i18n="nav.species" href="::bieURL::">Species</a></li>
+                  <li><a data-i18n="nav.species-lists" href="::listsURL::">Species lists</a></li>
+                  <li><a data-i18n="nav.spatial" href="::spatialURL::">Spatial portal</a></li>
+                  <li><a data-i18n="nav.regions" href="::regionsURL::">Regions</a></li>
+                  <li><a data-i18n="nav.images" href="::imagesURL::">Images</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a data-i18n="nav.datasets" href="::datasetsURL::">Datasets</a></li>
+                </ul>
+              </li>
+            </ul>
+
+            <!-- Language selector (init.js wires the switching) -->
+            <ul class="nav navbar-nav navbar-right">
+              <li id="dropdown-lang" class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+                <ul class="locale-switcher dropdown-menu dropdown-lang-menu">
+                  <li class="locale-link" data-locale="en"><a class="en-locale-link" href="#"><span class="lang_link_en">English</span></a></li>
+                  <li class="locale-link" data-locale="es"><a class="es-locale-link" href="#"><span class="lang_link_es">Español</span></a></li>
+                  <li class="locale-link" data-locale="zh"><a class="zh-CN-locale-link" href="#"><span class="lang_link_zh-CN">简体中文</span></a></li>
+                  <li class="locale-link" data-locale="sw"><a class="sw-locale-link" href="#"><span class="lang_link_sw">Swahili</span></a></li>
+                </ul>
+              </li>
+            </ul>
+
+            <!-- Login (static in the preview; the GSP uses <hf:loginLogout/>) -->
+            <ul class="nav navbar-nav navbar-right">
+              <li><a class="loginBtn" data-i18n="nav.login" href="::loginURL::">Log in</a></li>
+            </ul>
+
+            <!-- Species search -->
+            <form method="get" action="::searchServer::::searchPath::" class="navbar-form navbar-right search-form">
+              <div class="form-group">
+                <input name="q" id="autocompleteHeader" type="text" class="form-control"
+                       data-i18n="[placeholder]nav.searchbox" placeholder="Search species..." autocomplete="off"/>
+              </div>
+              <button type="submit" class="btn btn-default" aria-label="Search">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <!-- ===== end header mirror ===== -->
+
+    <!-- Fake full-screen map area (stands in for <g:layoutBody/> = the real spatial app) -->
+    <div class="container-fluid">
+      <div style="height:78vh;margin-top:8px;border-radius:4px;background:
+                  repeating-linear-gradient(45deg,#dfe7ea,#dfe7ea 18px,#e8eef0 18px,#e8eef0 36px);
+                  display:flex;align-items:center;justify-content:center;color:#5b6b70;
+                  font:600 15px/1.4 sans-serif;text-align:center;">
+        Map area (preview only)<br>
+        <span style="font-weight:400">— the real map is rendered by spatial-hub inside &lt;g:layoutBody/&gt; —</span>
+      </div>
+    </div>
+  </body>
+</html>

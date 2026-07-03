@@ -56,7 +56,8 @@ const themeAssets = cleanBased || theme === 'clean' ? 'clean' : theme;
 const baseUrl = process.env.BASE_BRANDING_URL.replace(/\/+$|^\/+/, '');
 
 const toReplace = [
-  /index\.html$/, /errorPage\.html$/, /testPage\.html$/, /testPageCas\.html$/, /testSmall\.html$/
+  /index\.html$/, /errorPage\.html$/, /testPage\.html$/, /testPageCas\.html$/, /testSmall\.html$/,
+  /testPageSpatial\.html$/
 ];
 
 const toReplaceOthers = [
@@ -243,6 +244,52 @@ function hotReloadFragments() {
   };
 }
 
+// Generate the Spatial Portal (spatial-hub) skin layout.
+//
+// spatial-hub runs as a fat WAR with precompiled GSPs, so its portal.gsp (hardcoded ALA
+// header) can't be overridden by a volume mount. Instead spatial-hub's BootStrap.groovy
+// registers an external views/assets resolver: a layout GSP dropped at
+//   /data/spatial-hub/views/layouts/<name>.gsp
+// is used when skin.layout=<name>. We emit such a layout with the ALA header replaced by a
+// Living Atlas navbar. Only ::variable:: URL tokens are substituted at build time; the GSP's
+// own ${grailsApplication...} expressions and <asset:*>/<g:*>/<hf:*>/<ala:*> tags are left
+// untouched (no prefixStaticUrls, no init/theme-CSS injection — those are for banner.html).
+//
+// Output: dist/spatial/views/layouts/spatial-layout.gsp
+// (the companion CSS is copied to dist/spatial/assets via copyCommands)
+function generateSpatialLayout() {
+  const srcGsp = 'app/spatial/spatial-layout.gsp';
+  return {
+    name: 'generate-spatial-layout',
+    apply: 'build',
+    closeBundle() {
+      if (process.env.BUILD_INIT) return; // only the main pass emits the skin
+      if (!fs.existsSync(srcGsp)) return;
+      const gsp = applyRulesToText(fs.readFileSync(srcGsp, 'utf8'));
+      const outDir = path.resolve(__dirname, 'dist/spatial/views/layouts');
+      fs.mkdirSync(outDir, { recursive: true });
+      fs.writeFileSync(path.join(outDir, 'spatial-layout.gsp'), gsp);
+    }
+  };
+}
+
+// Dev-only: full-reload the preview when the Spatial skin sources change. The header CSS is
+// served by vite-plugin-static-copy (outside Vite's module graph, so no automatic HMR); this
+// watches app/spatial/** and reloads so testPageSpatial.html reflects edits live.
+function hotReloadSpatial() {
+  const dir = path.resolve(__dirname, 'app/spatial');
+  return {
+    name: 'hot-reload-spatial',
+    apply: 'serve',
+    configureServer(server) {
+      server.watcher.add(dir);
+      server.watcher.on('change', file => {
+        if (path.resolve(file).startsWith(dir)) server.ws.send({ type: 'full-reload' });
+      });
+    }
+  };
+}
+
 const copyCommands = [
   { src: 'commonui-bs3-2019/build/js/*', dest: 'js' },
   { src: 'commonui-bs3-2019/build/css/*', dest: 'css' },
@@ -294,6 +341,8 @@ const mainConfig = defineConfig({
     viteStaticCopy({ targets: copyCommands }),
     injectInitToBody(),
     injectThemeCssLinks(themeAssets),
+    generateSpatialLayout(),
+    hotReloadSpatial(),
     jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } }),
     VitePluginRadar({ analytics: { id: settings.analytics.googleId } }),
   ],
@@ -306,6 +355,7 @@ const mainConfig = defineConfig({
         testPage: path.resolve(__dirname, 'testPage.html'),
         testPageCas: path.resolve(__dirname, 'testPageCas.html'),
         testSmall: path.resolve(__dirname, 'testSmall.html'),
+        testPageSpatial: path.resolve(__dirname, 'testPageSpatial.html'),
         head: path.resolve(__dirname, 'head.html'),
         banner: path.resolve(__dirname, 'banner.html'),
         footer: path.resolve(__dirname, 'footer.html')
