@@ -64,7 +64,12 @@
      fallback text so the header is fully usable without any extra JavaScript. --%>
 <div class="la-spatial-header ${headerVisiblity}">
   <%-- margin-bottom:0 so the full-screen map sits flush under the bar (the only spatial tweak) --%>
-  <nav class="navbar navbar-default" role="navigation" style="margin-bottom:0">
+  <%-- navbar-expand-md: spatial-hub's WAR ships Bootstrap 4 (application.css), where a bare
+       `.collapse .navbar-collapse` stays hidden at every width — only `navbar-expand-md` on the
+       <nav> makes the bar horizontal on desktop (>=768px) and collapse to the toggler below it.
+       Without it the menu renders stacked with the hamburger always visible. Mirrors spatial-hub
+       3.x portal.gsp (`navbar ... navbar-expand-md`). Keep testPageSpatial.html's <nav> in sync. --%>
+  <nav class="navbar navbar-default navbar-expand-md" role="navigation" style="margin-bottom:0">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
