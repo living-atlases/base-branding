@@ -20,7 +20,7 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-inspect": "^0.8.4",
     "vite-plugin-radar": "^0.10.0",
-    "vite-plugin-static-copy": "^1.0.5"
+    "vite-plugin-static-copy": "^2.3.2"
   },
   "dependencies": {
     "bent": "^7.3.12",
