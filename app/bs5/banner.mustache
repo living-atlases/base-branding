@@ -1,0 +1,76 @@
+<!-- site-banner (Bootstrap 5, mustache) -->
+<div id="wrapper-navbar" class="branding-bs5" itemscope itemtype="http://schema.org/WebSite">
+  <a class="skip-link visually-hidden visually-hidden-focusable" href="#INSERT_CONTENT_ID_HERE">Skip to content</a>
+  <nav class="navbar navbar-dark navbar-expand-lg branding-navbar">
+    <div class="{{containerClass}} header-logo-menu">
+      <a class="navbar-brand" href="::centralServer::" itemprop="url" data-i18n="general.orgfullname"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#brandingNavbar"
+              aria-controls="brandingNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="brandingNavbar">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" data-i18n="nav.collectory" href="::collectoryURL::"></a></li>
+          <li class="nav-item"><a class="nav-link" data-i18n="nav.biocache" href="::biocacheURL::"></a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-i18n="nav.more"></a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" data-i18n="nav.species" href="::bieURL::"></a></li>
+              <li><a class="dropdown-item" data-i18n="nav.species-lists" href="::listsURL::"></a></li>
+              <li><a class="dropdown-item" data-i18n="nav.spatial" href="::spatialURL::"></a></li>
+              <li><a class="dropdown-item" data-i18n="nav.regions" href="::regionsURL::"></a></li>
+              <li><a class="dropdown-item" data-i18n="nav.images" href="::imagesURL::"></a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" data-i18n="nav.your-area" href="::biocacheURL::/explore/your-area/"></a></li>
+              <li><a class="dropdown-item" data-i18n="nav.datasets" href="::datasetsURL::"></a></li>
+            </ul>
+          </li>
+        </ul>
+        <form method="get" action="{{searchServer}}{{searchPath}}" class="search-form d-flex me-lg-3" role="search">
+          <input name="q" id="autocompleteHeader" type="text" class="form-control form-control-sm me-2"
+                 autocomplete="off" data-i18n="[placeholder]nav.searchbox">
+          <button type="submit" class="btn btn-sm btn-outline-light" data-i18n="[title]nav.searchbox" aria-label="Search">
+            <i class="fa-solid fa-search" aria-hidden="true"></i>
+          </button>
+        </form>
+        <div class="account {{loginStatus}} d-flex align-items-center gap-2 me-lg-3">
+          <a href="::casURL::/userdetails/registration/createAccount" data-i18n="nav.create-account" class="btn btn-outline-light btn-sm signUpBtn" role="button"></a>
+          <a href="::casURL::/userdetails/myprofile/" data-i18n="nav.myprofile" class="btn btn-outline-light btn-sm myProfileBtn" role="button"></a>
+          <a href="{{loginURL}}" data-i18n="nav.login" class="btn btn-primary btn-sm loginBtn"></a>
+          <a href="{{logoutURL}}" data-i18n="nav.logout" class="btn btn-outline-light btn-sm logoutBtn" role="button"></a>
+        </div>
+        <!-- Language selector: remove it if you don't want a multilang site -->
+        <ul class="navbar-nav">
+          <li id="dropdown-lang" class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Language"><i class="fa-solid fa-globe" aria-hidden="true"></i></a>
+            <ul class="locale-switcher dropdown-menu dropdown-menu-end dropdown-lang-menu">
+::LOCALE_LINKS::
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="{{containerClass}}"><div id="autocompleteSearchALA" class="collapse"></div></div>
+</div>
+
+<!-- ALA autocomplete code -->
+<script type="text/html" id="autoCompleteTemplate">
+  <li class="autocomplete-item striped">
+    <div class="content-spacing">
+      <div class="autocomplete-heading">
+        <% if (commonNameMatches.length > 0) { %>
+        <%=commonNameMatches[0]%>
+        <% } else if (scientificNameMatches.length > 0) { %>
+        <%=scientificNameMatches[0]%>
+        <% } else { %>
+        <%=matchedNames[0]%>
+        <% } %>
+      </div>
+    </div>
+  </li>
+</script>
+<div id="mante-container" style="display: none;" class="container"></div>
+<link rel="stylesheet" href="::baseUrl::/css/init.css?v=::buildTimestamp::">
+<script defer src="::baseUrl::/js/init.js?v=::buildTimestamp::"></script>
+<!-- end site-banner -->
