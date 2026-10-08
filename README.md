@@ -171,18 +171,18 @@ dist/spatial/
   views/layouts/spatial-layout.gsp   # LA header; ::variable:: URLs baked in, ${grails...} kept
 ```
 
-Source lives in [`app/spatial/spatial-layout.gsp`](app/spatial/spatial-layout.gsp) and is
-**hand-customisable**. Only `::variable::` URL tokens are substituted at build time; the map
-application's `<asset:*>` / `<g:*>` / `<hf:*>` / `<ala:*>` tags and `${grailsApplication...}`
-expressions are left untouched. The layout is a copy of spatial-hub 3.1.0 `portal.gsp` with just
-the header block replaced — re-sync the non-header parts if you bump spatial-hub.
+Source lives in [`app/spatial/spatial-layout.gsp`](app/spatial/spatial-layout.gsp). The layout is a
+copy of spatial-hub 3.x `portal.gsp` with the hardcoded header replaced by `<hf:banner/>`: the hub shows
+the **same** `banner.html` (Bootstrap 3) as the rest of the modules, taken from `headerAndFooter.baseURL`,
+so there is one header to maintain. Re-sync the non-header parts if you bump spatial-hub.
 
-**No extra stylesheet is generated.** The header is a plain `navbar navbar-default`, so it reuses
-the commonui/ala styles that already exist — the spatial-hub WAR's `application.css` provides them
-(the same base every other module header uses), so it matches the site across all branding themes.
+spatial-hub's own CSS (`commonui-bs3-2019.css`, `spatial-hub-generic.css`) forces the mobile variant of
+the ALA header (`.hidden-xs/.hidden-sm` always hidden, `.navbar-toggle` always shown...). The layout
+includes a small `<style>` block that restores the Bootstrap 3 responsive behaviour inside
+`#la-spatial-header`, which is what a branding banner expects.
 
-Preview the header locally (Vite dev server, HMR) at
-[`testPageSpatial.html`](testPageSpatial.html) → `http://localhost:3333/testPageSpatial.html`.
+Use the **Bootstrap 3** build for the hub (`headerAndFooter.baseURL` = branding root, `version: '2'`);
+the `/bs5` build is for the modules that use `ala-bootstrap5` (spatial-service admin pages).
 
 Deployment: la-docker-compose mounts `dist/spatial/views` from the branding volume into
 `/data/spatial-hub/views` and sets `skin.layout=spatial-layout` when `use_branding` is on.
