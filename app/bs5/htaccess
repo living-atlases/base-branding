@@ -1,0 +1,2 @@
+# The ala-bootstrap5 plugin reads these templates over HTTP and needs a content type
+AddType text/html .mustache

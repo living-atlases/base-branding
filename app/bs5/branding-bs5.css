@@ -1,0 +1,7 @@
+/* Local tweaks over the ALA Bootstrap 5 base (commonui-bs5-2019) */
+.branding-navbar { background-color: #2f4858; }
+.branding-bs5 .account.signedIn .loginBtn,
+.branding-bs5 .account.signedIn .signUpBtn,
+.branding-bs5 .account.signedOut .myProfileBtn,
+.branding-bs5 .account.signedOut .logoutBtn { display: none; }
+.branding-bs5-footer { padding: 1rem 0; }
