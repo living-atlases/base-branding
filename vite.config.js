@@ -7,7 +7,7 @@ import settings from './app/js/settings.js';
 import jscc from 'rollup-plugin-jscc';
 import eslintPlugin from 'vite-plugin-eslint';
 import { VitePluginRadar } from 'vite-plugin-radar';
-import glob from 'fast-glob';
+import { globSync } from 'tinyglobby';
 
 const buildTimestamp = Date.now();
 
@@ -125,7 +125,7 @@ function prefixStaticUrls(html, baseUrl) {
 }
 
 function virtualGlobalCss() {
-  const cssFiles = glob.sync('app/css/*.css', { onlyFiles: true });
+  const cssFiles = globSync('app/css/*.css', { onlyFiles: true });
   const content = cssFiles.map(f => `import '/${f}';`).join('\n');
 
   return {
@@ -193,7 +193,7 @@ function injectInitToBody() {
 
 function injectThemeCssLinks(theme) {
   const themePath = `app/themes/${theme}/css/*.css`;
-  const files = glob.sync(themePath, { onlyFiles: true });
+  const files = globSync(themePath, { onlyFiles: true });
 
   return {
     name: 'inject-theme-css-links',
@@ -294,7 +294,6 @@ const copyCommands = [
   { src: 'commonui-bs3-2019/build/js/*', dest: 'js' },
   { src: 'commonui-bs3-2019/build/css/*', dest: 'css' },
   { src: 'commonui-bs3-2019/build/fonts/*', dest: 'fonts' },
-  { src: 'app/assets/fonts/*', dest: 'fonts' },
   { src: 'app/assets/*', dest: '' },
   { src: `app/themes/${themeAssets}`, dest: 'app/themes/' },
   { src: 'app/assets/images/*', dest: 'images' },
