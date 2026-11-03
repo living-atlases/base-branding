@@ -43,7 +43,9 @@ const i18nOpts = {
       return value;
     }
   },
-  whitelist: settings.enabledLangs,
+  // supportedLngs (whitelist was renamed in i18next 21 and is ignored since)
+  // keeps a crafted ?lang= out of the backend loadPath and out of the cookie
+  supportedLngs: settings.enabledLangs,
   load: 'languageOnly', // 'es' o 'en', previously: 'all', // es-ES -> es, en-US -> en
   debug: true,
   ns: 'common',
@@ -95,10 +97,11 @@ i18nOpts.missingKeyHandler = function miss(lng, ns, key, defaultValue) {
 };
 
 i18n.on('languageChanged', function (lng) {
-  if (i18n.services.languageDetector) {
+  if (i18n.services.languageDetector && i18n.resolvedLanguage) {
     console.log(`On lang changed ${lng}`);
-    // Store in the cookie the selection
-    i18n.services.languageDetector.cacheUserLanguage(lng);
+    // Store in the cookie the resolved one: i18n.language keeps the raw
+    // ?lang= value even when it is not in supportedLngs
+    i18n.services.languageDetector.cacheUserLanguage(i18n.resolvedLanguage);
   }
 });
 
@@ -112,7 +115,7 @@ i18n.use(backend)
         console.error(err);
         return;
       }
-      console.log(`Language initialized: ${i18n.language}`);
+      console.log(`Language initialized: ${i18n.resolvedLanguage}`);
       jqueryI18next.init(i18n, $, { i18nName: 'i18next' } );
       console.log('jquery i18next initialized');
       $('body').localize();
@@ -130,7 +133,9 @@ i18n.use(backend)
       });
       // used in clean theme
       if( $('#dropdown-lang').length ) {
-        $('#dropdown-lang').find('.dropdown-toggle').html(i18n.language + ' <span class="caret"></span>');
+        $('#dropdown-lang').find('.dropdown-toggle')
+          .text(i18n.resolvedLanguage)
+          .append(' <span class="caret"></span>');
       }
 
       if (typeof Cookies.get(laSessionCookie) === 'undefined' && typeof currentUrl.query.lang === 'undefined') {
@@ -139,7 +144,7 @@ i18n.use(backend)
         var in30Minutes = 1/48;
         // grails default session lifetime is 30min
         Cookies.set(laSessionCookie, '/', { expires: in30Minutes });
-        currentUrl.query.lang = i18n.language;
+        currentUrl.query.lang = i18n.resolvedLanguage;
         document.location.search = currentUrl.query;
       }
 

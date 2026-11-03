@@ -2,7 +2,7 @@ import settings from './settings';
 import { CountUp } from 'countup.js';
 import { isHomeFromAppOrigin } from './utils/origin.js';
 
-const lang = window.i18next.language;
+const lang = window.i18next.resolvedLanguage;
 
 console.log('Current lang:', lang);
 
