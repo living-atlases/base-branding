@@ -1,0 +1,41 @@
+/* Optional home widgets (app/js/widgets): charts and institution cards. Bundled into init.css,
+ * which every page loads, so every rule stays under the la-* classes. */
+
+.la-widgets[hidden], .la-chart[hidden] { display: none; }
+.la-widgets__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.la-chart {
+  min-height: 420px; border: 1px solid var(--la-line, #e3e8e6); border-radius: 10px;
+  background: #fff; padding: 12px; overflow: hidden;
+}
+.la-chart.is-loading { background: linear-gradient(90deg, #f4f7f6, #fff, #f4f7f6) 0 0 / 200% 100%; animation: la-shimmer 1.4s linear infinite; }
+@keyframes la-shimmer { to { background-position: -200% 0; } }
+
+#accordion-home-institutions h2 {
+  font-family: var(--la-font, inherit); font-size: 24px; font-weight: 700; margin: 40px 0 16px;
+}
+.la-entities { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; align-items: start; }
+.la-entity {
+  border: 1px solid var(--la-line, #e3e8e6); border-radius: 10px; background: var(--la-page, #fff);
+  font-family: var(--la-font, inherit); font-size: 15px; color: var(--la-ink, #1c2a30);
+}
+.la-entity summary {
+  display: flex; align-items: center; gap: 10px; padding: 14px 16px; cursor: pointer; list-style: none; font-weight: 600;
+}
+.la-entity summary::-webkit-details-marker { display: none; }
+.la-entity summary::after { content: "+"; margin-left: auto; font-size: 20px; line-height: 1; color: var(--la-primary, #1b6e5a); }
+.la-entity[open] summary::after { content: "−"; }
+.la-entity[open] summary { border-bottom: 1px solid var(--la-line, #e3e8e6); }
+.la-entity__badge { height: 22px; width: auto; }
+.la-entity__body { padding: 10px 16px 14px; font-size: 14px; }
+.la-entity__body p { margin: 0; color: var(--la-muted, #5d6b71); }
+.la-entity__collections, .la-entity__resources { margin: 0; padding-left: 18px; }
+.la-entity__collections > li { list-style: disc; margin: 4px 0; }
+.la-entity__resources > li { list-style: circle; margin: 2px 0; }
+.la-entity a { color: var(--la-primary, #1b6e5a); }
+
+@media (max-width: 860px) {
+  .la-widgets__grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .la-chart.is-loading { animation: none; }
+}

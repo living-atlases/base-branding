@@ -10,6 +10,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import settings from '../app/js/settings.js';
 import { buildCommonui } from './build-commonui.mjs';
+import { brandTokens, writeBrandAssets } from './branding.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'dist', 'bs5');
@@ -25,6 +26,9 @@ for (const d of ['css', 'js', 'fonts']) {
   fs.cpSync(path.join(bs5Build, d), path.join(out, d), { recursive: true });
 }
 fs.copyFileSync(path.join(root, 'app/bs5/branding-bs5.css'), path.join(out, 'css/branding-bs5.css'));
+// The look shared with the Bootstrap 3 build: tokens and Inter from settings.brand, header and footer CSS
+writeBrandAssets(settings, out);
+fs.copyFileSync(path.join(root, 'app/themes/clean/css/la-brand.css'), path.join(out, 'css/la-brand.css'));
 // Apache: .mustache has no content type by default and the app (Java URLConnection) refuses it
 fs.copyFileSync(path.join(root, 'app/bs5/htaccess'), path.join(out, '.htaccess'));
 
@@ -44,10 +48,13 @@ const tokens = {
   listsURL: settings.services.lists.url,
   spatialURL: settings.services.spatial.url,
   casURL: settings.services.cas.url,
-  imagesURL: settings.services.images.url
+  imagesURL: settings.services.images.url,
+  ...brandTokens(settings, baseUrl)
 };
+// The footer is the Bootstrap 3 one: its markup does not depend on Bootstrap
+const sources = { footer: 'app/themes/clean/assets/footer.html' };
 for (const name of ['assets', 'banner', 'footer', 'head']) {
-  let txt = fs.readFileSync(path.join(root, 'app/bs5', `${name}.mustache`), 'utf8');
+  let txt = fs.readFileSync(path.join(root, sources[name] || `app/bs5/${name}.mustache`), 'utf8');
   txt = txt.replace(/::(\w+)::/g, (m, k) => (k in tokens ? tokens[k] : m));
   const left = txt.match(/::\w+::/g);
   if (left) throw new Error(`${name}.mustache: unresolved tokens ${left.join(', ')}`);

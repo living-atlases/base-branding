@@ -1,23 +1,32 @@
-<!-- site-banner (Bootstrap 5, mustache) -->
-<div id="wrapper-navbar" class="branding-bs5" itemscope itemtype="http://schema.org/WebSite">
+<!-- site-banner (Bootstrap 5, mustache): the same la-header as the Bootstrap 3 banner.html.
+     Look: css/la-brand.css (shared) and css/branding-bs5.css. Colours and logo: settings.brand -->
+<!-- Not #wrapper-navbar: commonui-bs5 styles that id as its own dark ALA bar, with !important -->
+<div id="la-banner" class="branding-bs5" itemscope itemtype="http://schema.org/WebSite">
   <a class="skip-link visually-hidden visually-hidden-focusable" href="#INSERT_CONTENT_ID_HERE">Skip to content</a>
-  <nav class="navbar navbar-dark navbar-expand-lg branding-navbar">
-    <div class="{{containerClass}} header-logo-menu">
-      <a class="navbar-brand" href="::centralServer::" itemprop="url" data-i18n="general.orgfullname"></a>
+  <nav class="navbar navbar-light navbar-expand-lg la-header" id="la-header">
+    <div class="la-header__in">
+      <a class="navbar-brand la-brand" href="::centralServer::" itemprop="url">
+        <img class="la-brand__logo" src="::brandLogo::" alt="">
+        <span class="la-brand__name" data-i18n="general.orgfullname"></span>
+      </a>
+      <button class="navbar-toggler la-search-toggle--mobile" type="button" data-bs-toggle="collapse" data-bs-target="#la-search"
+              aria-controls="la-search" aria-expanded="false" data-i18n="[aria-label]nav.searchbox">
+        <svg class="la-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      </button>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#brandingNavbar"
               aria-controls="brandingNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="brandingNavbar">
-        <ul class="navbar-nav me-auto">
+        <ul class="navbar-nav ms-auto la-nav">
           <li class="nav-item"><a class="nav-link" data-i18n="nav.collectory" href="::collectoryURL::"></a></li>
           <li class="nav-item"><a class="nav-link" data-i18n="nav.biocache" href="::biocacheURL::"></a></li>
+          <li class="nav-item"><a class="nav-link" data-i18n="nav.species" href="::bieURL::"></a></li>
+          <li class="nav-item"><a class="nav-link" data-i18n="nav.spatial" href="::spatialURL::"></a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-i18n="nav.more"></a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" data-i18n="nav.species" href="::bieURL::"></a></li>
+            <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" data-i18n="nav.species-lists" href="::listsURL::"></a></li>
-              <li><a class="dropdown-item" data-i18n="nav.spatial" href="::spatialURL::"></a></li>
               <li><a class="dropdown-item" data-i18n="nav.regions" href="::regionsURL::"></a></li>
               <li><a class="dropdown-item" data-i18n="nav.images" href="::imagesURL::"></a></li>
               <li><hr class="dropdown-divider"></li>
@@ -26,29 +35,41 @@
             </ul>
           </li>
         </ul>
-        <form method="get" action="{{searchServer}}{{searchPath}}" class="search-form d-flex me-lg-3" role="search">
-          <input name="q" id="autocompleteHeader" type="text" class="form-control form-control-sm me-2"
-                 autocomplete="off" data-i18n="[placeholder]nav.searchbox">
-          <button type="submit" class="btn btn-sm btn-outline-light" data-i18n="[title]nav.searchbox" aria-label="Search">
-            <i class="fa-solid fa-search" aria-hidden="true"></i>
-          </button>
-        </form>
-        <div class="account {{loginStatus}} d-flex align-items-center gap-2 me-lg-3">
-          <a href="::casURL::/userdetails/registration/createAccount" data-i18n="nav.create-account" class="btn btn-outline-light btn-sm signUpBtn" role="button"></a>
-          <a href="::casURL::/userdetails/myprofile/" data-i18n="nav.myprofile" class="btn btn-outline-light btn-sm myProfileBtn" role="button"></a>
-          <a href="{{loginURL}}" data-i18n="nav.login" class="btn btn-primary btn-sm loginBtn"></a>
-          <a href="{{logoutURL}}" data-i18n="nav.logout" class="btn btn-outline-light btn-sm logoutBtn" role="button"></a>
-        </div>
-        <!-- Language selector: remove it if you don't want a multilang site -->
-        <ul class="navbar-nav">
+        <ul class="navbar-nav la-tools">
+          <li class="nav-item la-search-toggle">
+            <a class="nav-link" href="#la-search" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="la-search"
+               data-i18n="[title]nav.searchbox;[aria-label]nav.searchbox">
+              <svg class="la-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            </a>
+          </li>
+          <!-- Language selector: remove it if you don't want a multilang site -->
           <li id="dropdown-lang" class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Language"><i class="fa-solid fa-globe" aria-hidden="true"></i></a>
             <ul class="locale-switcher dropdown-menu dropdown-menu-end dropdown-lang-menu">
 ::LOCALE_LINKS::
             </ul>
           </li>
+          <!-- Account: the menu comes before its toggle so the toggle label can follow {{loginStatus}} in CSS -->
+          <li class="nav-item dropdown la-account">
+            <ul class="dropdown-menu dropdown-menu-end account {{loginStatus}}">
+              <li><a href="{{loginURL}}" data-i18n="nav.login" class="dropdown-item loginBtn"></a></li>
+              <li><a href="::casURL::/userdetails/myprofile/" data-i18n="nav.myprofile" class="dropdown-item myProfileBtn"></a></li>
+              <li><a href="{{logoutURL}}" data-i18n="nav.logout" class="dropdown-item logoutBtn"></a></li>
+              <li><a href="::casURL::/userdetails/registration/createAccount" data-i18n="nav.create-account" class="dropdown-item signUpBtn"></a></li>
+            </ul>
+            <a href="#" class="nav-link dropdown-toggle la-account__toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="la-account__out" data-i18n="nav.login"></span><span class="la-account__in" data-i18n="nav.myprofile"></span>
+            </a>
+          </li>
         </ul>
       </div>
+    </div>
+    <!-- Search with ALA autocomplete, opened by the search button -->
+    <div class="collapse la-search" id="la-search">
+      <form method="get" action="{{searchServer}}{{searchPath}}" class="search-form la-search__form" role="search">
+        <input name="q" id="autocompleteHeader" type="text" class="form-control" autocomplete="off" data-i18n="[placeholder]nav.searchbox">
+        <button type="submit" class="btn la-btn la-btn--primary" data-i18n="index.search-btn"></button>
+      </form>
     </div>
   </nav>
   <div class="{{containerClass}}"><div id="autocompleteSearchALA" class="collapse"></div></div>

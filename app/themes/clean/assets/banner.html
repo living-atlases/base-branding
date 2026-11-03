@@ -9,41 +9,69 @@
 
 <!-- site-banner -->
 
-<!-- BootStrap 3 Classic Navbar addapted from sample:
-     https://getbootstrap.com/docs/3.3/components/#navbar -->
+<!-- Bootstrap 3 navbar (https://getbootstrap.com/docs/3.3/components/#navbar) with the la-header
+     look: css/la-brand.css and app/themes/clean/css/la-header-bs3.css. Colours and logo: settings.brand -->
 
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
+<nav class="navbar navbar-default la-header" id="la-header">
+  <div class="la-header__in">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#la-navbar-collapse" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="::centralServer::" data-i18n="general.orgfullname"></a>
+      <button type="button" class="navbar-toggle collapsed la-search-toggle--mobile" data-toggle="collapse" data-target="#la-search" aria-expanded="false" data-i18n="[aria-label]nav.searchbox">
+        <svg class="la-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      </button>
+      <a class="navbar-brand la-brand" href="::centralServer::">
+        <img class="la-brand__logo" src="::brandLogo::" alt="">
+        <span class="la-brand__name" data-i18n="general.orgfullname"></span>
+      </a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav navbar-right">
-
-        <li><a data-i18n="nav.collectory" href="::collectoryURL::"></a></li>
-        <li><a data-i18n="nav.biocache" href="::biocacheURL::"></a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-i18n="nav.more"></span> <span class="caret"></span></a>
-          <ul id="dropdown-auth-menu" class="dropdown-menu ::loginStatus::">
+    <div class="collapse navbar-collapse" id="la-navbar-collapse">
+      <ul class="nav navbar-nav navbar-right la-tools">
+        <li class="la-search-toggle">
+          <a href="#la-search" data-toggle="collapse" role="button" aria-expanded="false" data-i18n="[title]nav.searchbox;[aria-label]nav.searchbox">
+            <svg class="la-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          </a>
+        </li>
+        <!-- Language selector: remove it if you don't want a multilang site -->
+        <li id="dropdown-lang" class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+          <ul class="locale-switcher dropdown-menu dropdown-menu-right dropdown-lang-menu">
+            <li class="locale-link" data-locale="en"><a class="en-locale-link" href="#"><span class="lang_link_en">English</span></a></li>
+            <li class="locale-link" data-locale="es"><a class="es-locale-link" href="#"><span class="lang_link_es">Español</span></a></li>
+            <li class="locale-link" data-locale="zh"><a class="zh-CN-locale-link" href="#"><span class="lang_link_zh-CN">简体中文</span></a></li>
+            <li class="locale-link" data-locale="sw"><a class="sw-locale-link" href="#"><span class="lang_link_sw">Swahili</span></a></li>
+          </ul>
+        </li>
+        <!-- Account: the menu comes before its toggle so the toggle label can follow ::loginStatus:: in CSS -->
+        <li class="dropdown la-account">
+          <ul id="dropdown-auth-menu" class="dropdown-menu dropdown-menu-right ::loginStatus::">
             <li><a data-i18n="nav.login" class="loginBtn" href="::loginURL::"></a></li>
             <li><a data-i18n="nav.myprofile" class="myProfileBtn" href="::casURL::/userdetails/myprofile/"></a></li>
             <li><a data-i18n="nav.logout" class="logoutBtn" href="::logoutURL::"></a></li>
             <li><a data-i18n="nav.create-account" class="signUpBtn" href="::casURL::/userdetails/registration/createAccount"></a></li>
-            <li role="separator" class="divider"></li>
-            <li><a data-i18n="nav.collectory" href="::collectoryURL::"></a></li>
-            <li><a data-i18n="nav.biocache" href="::biocacheURL::"></a></li>
-            <li><a data-i18n="nav.species" href="::bieURL::"></a></li>
+          </ul>
+          <a href="#" class="dropdown-toggle la-account__toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span class="la-account__out" data-i18n="nav.login"></span><span class="la-account__in" data-i18n="nav.myprofile"></span>
+            <span class="caret"></span>
+          </a>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right la-nav">
+        <li><a data-i18n="nav.collectory" href="::collectoryURL::"></a></li>
+        <li><a data-i18n="nav.biocache" href="::biocacheURL::"></a></li>
+        <li><a data-i18n="nav.species" href="::bieURL::"></a></li>
+        <li><a data-i18n="nav.spatial" href="::spatialURL::"></a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-i18n="nav.more"></span> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
             <li><a data-i18n="nav.species-lists" href="::listsURL::"></a></li>
-            <li><a data-i18n="nav.spatial" href="::spatialURL::"></a></li>
             <li><a data-i18n="nav.regions" href="::regionsURL::"></a></li>
             <li><a data-i18n="nav.images" href="::imagesURL::"></a></li>
             <li role="separator" class="divider"></li>
@@ -52,32 +80,16 @@
           </ul>
         </li>
       </ul>
-
-      <!-- Language selector if you don't whan a multilang site, remove it -->
-      <ul class="nav navbar-nav navbar-right">
-        <li id="dropdown-lang" class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
-          <ul class="locale-switcher dropdown-menu dropdown-lang-menu">
-            <li class="locale-link" data-locale="en"><a class="en-locale-link" href="#"><span class="lang_link_en">English</span></a></li>
-            <li class="locale-link" data-locale="es"><a class="es-locale-link" href="#"><span class="lang_link_es">Español</span></a></li>
-            <li class="locale-link" data-locale="zh"><a class="zh-CN-locale-link" href="#"><span class="lang_link_zh-CN">简体中文</span></a></li>
-            <li class="locale-link" data-locale="sw"><a class="sw-locale-link" href="#"><span class="lang_link_sw">Swahili</span></a></li>
-          </ul>
-        </li>
-      </ul>
-
-      <!-- Search classic form with ALA autocomplete -->
-      <form method="get" action="::searchServer::::searchPath::" class="search-form navbar-form navbar-right">
-        <div class="form-group">
-          <input name="q" id="autocompleteHeader" type="text" class="form-control" data-i18n="[placeholder]nav.searchbox">
-        </div>
-
-        <button type="submit" data-toggle="tooltip" aria-label="Left Align" data-placement="bottom" data-i18n="[title]nav.searchbox" class="btn btn-default">
-          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-        </button>
-      </form>
     </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+  </div>
+
+  <!-- Search with ALA autocomplete, opened by the search button -->
+  <div class="collapse la-search" id="la-search">
+    <form method="get" action="::searchServer::::searchPath::" class="search-form la-search__form" role="search">
+      <input name="q" id="autocompleteHeader" type="text" class="form-control" autocomplete="off" data-i18n="[placeholder]nav.searchbox">
+      <button type="submit" class="btn la-btn la-btn--primary" data-i18n="index.search-btn"></button>
+    </form>
+  </div>
 </nav>
 
 <div class="::containerClass::" id="autocompleteSearchALA" class="collapse"></div>
@@ -102,4 +114,3 @@
 <!-- maintenance -->
 <div id="mante-container" style="display: none;" class="container"></div>
 <!-- end maintenance -->
-

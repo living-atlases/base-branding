@@ -1,0 +1,100 @@
+/* Header and footer of the branding, shared by the Bootstrap 3 and 5 builds.
+ *
+ * This file reaches every page of every module and CAS (it rides in banner.html), so every rule
+ * stays under the la-* classes of the header and footer. Sizes are in px: the module pages set
+ * html { font-size } to 10px or 14px, so rem would change from one module to the next.
+ * Colours and font: the --la-* properties of css/la-tokens.css, generated from settings.brand. */
+
+.la-header,
+.la-footer {
+  font-family: var(--la-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Brand: logo and name */
+.la-header .la-brand,
+.la-footer .la-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.la-header .la-brand { color: #1c2a30; font-size: 17px; line-height: 1.2; }
+.la-header .la-brand__logo,
+.la-footer .la-brand__logo { width: 34px; height: 34px; flex: none; object-fit: contain; }
+.la-header .la-icon {
+  width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2;
+  stroke-linecap: round; vertical-align: middle;
+}
+
+/* Account: the label follows the login status class of the menu before it */
+.la-header .la-account__in,
+.la-header .signedIn ~ .la-account__toggle .la-account__out { display: none; }
+.la-header .signedIn ~ .la-account__toggle .la-account__in { display: inline; }
+
+/* Search bar under the header */
+.la-header .la-search { border-top: 1px solid #e3e8e6; background: #fff; }
+.la-header .la-search__form {
+  display: flex; gap: 8px; max-width: 1240px; margin: 0 auto; padding: 12px 20px;
+}
+.la-header .la-search__form .form-control {
+  flex: 1; height: 42px; font-size: 15px; border-radius: 6px; border: 1px solid #cfd8d5;
+  box-shadow: none; color: #1c2a30; background: #fff;
+}
+
+/* Buttons of the header, home and widgets */
+.la-btn,
+.la-header .la-btn {
+  display: inline-block; padding: 10px 20px; border-radius: 6px; border: 2px solid transparent;
+  font-family: var(--la-font); font-weight: 600; font-size: 15px; line-height: 1.3;
+  text-decoration: none; cursor: pointer; transition: filter .15s, background-color .15s;
+}
+.la-btn:hover, .la-btn:focus { text-decoration: none; filter: brightness(1.08); }
+.la-btn--primary, .la-btn--primary:hover, .la-btn--primary:focus { background: var(--la-primary); color: #fff; }
+.la-btn--accent, .la-btn--accent:hover, .la-btn--accent:focus { background: var(--la-accent); color: #1c2a30; }
+.la-btn--ghost, .la-btn--ghost:hover, .la-btn--ghost:focus { border-color: rgba(255, 255, 255, .85); color: #fff; background: transparent; }
+
+/* Footer */
+.la-footer {
+  background: var(--la-primary-dark);
+  color: rgba(255, 255, 255, .82);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 48px;
+}
+.la-footer__in {
+  max-width: 1240px; margin: 0 auto; padding: 48px 20px 24px;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px;
+}
+.la-footer .la-footer__brand { color: #fff; font-size: 16px; margin-bottom: 12px; }
+.la-footer .la-footer__brand .la-brand__logo { background: #fff; border-radius: 50%; padding: 2px; }
+.la-footer p { margin: 0 0 16px; max-width: 440px; font-size: 14px; }
+.la-footer h2 {
+  color: #fff; font-family: var(--la-font); font-size: 13px; font-weight: 700; line-height: 1.4;
+  text-transform: uppercase; letter-spacing: .08em; margin: 0 0 14px;
+}
+.la-footer ul { list-style: none; margin: 0; padding: 0; }
+.la-footer li { margin: 0; padding: 3px 0; }
+.la-footer a, .la-footer a:visited { color: rgba(255, 255, 255, .82); text-decoration: none; }
+.la-footer a:hover, .la-footer a:focus { color: #fff; text-decoration: underline; }
+.la-footer__social { display: flex; flex-wrap: wrap; gap: 8px; }
+.la-footer .la-footer__social a {
+  border: 1px solid rgba(255, 255, 255, .3); border-radius: 999px; padding: 3px 12px; font-size: 13px;
+}
+.la-footer__bar {
+  max-width: 1240px; margin: 0 auto; padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, .14);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  font-size: 13px; color: rgba(255, 255, 255, .65);
+}
+.la-footer__bar a, .la-footer__bar a:visited { color: rgba(255, 255, 255, .8); }
+
+@media (max-width: 860px) {
+  .la-footer__in { grid-template-columns: 1fr 1fr; }
+  .la-footer__about { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .la-footer__in { grid-template-columns: 1fr; }
+}

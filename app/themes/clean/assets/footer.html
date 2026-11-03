@@ -1,20 +1,49 @@
-<!-- Footer -->
+<!-- Footer: the same markup in the Bootstrap 3 and 5 builds (scripts/build-bs5.mjs reads this file).
+     Look: css/la-brand.css. Last column and social links: settings.footer -->
 
-<footer class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-12 col-md">
-        <small class="text-muted"
-          >&copy; 2020-<span id="footer-copyright"
-            ><script>
-              document
-                .getElementById("footer-copyright")
-                .appendChild(document.createTextNode(new Date().getFullYear()));
-            </script>
-          </span> </small
-        ><small class="text-muted" data-i18n="general.orgfullname"></small>
+<footer class="la-footer" id="la-footer">
+  <div class="la-footer__in">
+    <div class="la-footer__about">
+      <a class="la-footer__brand" href="::centralServer::">
+        <img class="la-brand__logo" src="::brandLogo::" alt="">
+        <span data-i18n="general.orgfullname"></span>
+      </a>
+      <p data-i18n="footer.about"></p>
+      <div class="la-footer__social">
+        ::footerSocial::
       </div>
     </div>
+    <nav class="la-footer__col" aria-labelledby="la-footer-explore">
+      <h2 id="la-footer-explore" data-i18n="footer.explore"></h2>
+      <ul>
+        <li><a data-i18n="nav.biocache" href="::biocacheURL::"></a></li>
+        <li><a data-i18n="nav.species" href="::bieURL::"></a></li>
+        <li><a data-i18n="nav.collectory" href="::collectoryURL::"></a></li>
+        <li><a data-i18n="nav.datasets" href="::datasetsURL::"></a></li>
+        <li><a data-i18n="nav.spatial" href="::spatialURL::"></a></li>
+      </ul>
+    </nav>
+    <nav class="la-footer__col" aria-labelledby="la-footer-tools">
+      <h2 id="la-footer-tools" data-i18n="footer.tools"></h2>
+      <ul>
+        <li><a data-i18n="nav.species-lists" href="::listsURL::"></a></li>
+        <li><a data-i18n="nav.regions" href="::regionsURL::"></a></li>
+        <li><a data-i18n="nav.images" href="::imagesURL::"></a></li>
+        <li><a data-i18n="nav.your-area" href="::biocacheURL::/explore/your-area/"></a></li>
+      </ul>
+    </nav>
+    <nav class="la-footer__col" aria-labelledby="la-footer-about">
+      <h2 id="la-footer-about" data-i18n="footer.about-title"></h2>
+      <ul>
+          ::footerLinks::
+      </ul>
+    </nav>
+  </div>
+  <div class="la-footer__bar">
+    <span>&copy; 2020-<span id="footer-copyright"><script>
+      document.getElementById("footer-copyright").appendChild(document.createTextNode(new Date().getFullYear()));
+    </script></span> <span data-i18n="general.orgfullname"></span></span>
+    <span><span data-i18n="footer.powered"></span> <a href="https://living-atlases.gbif.org">Living Atlases</a></span>
   </div>
 </footer>
 <!-- End footer -->

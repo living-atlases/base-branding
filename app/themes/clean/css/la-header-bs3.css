@@ -1,0 +1,98 @@
+/* Bootstrap 3 header (banner.html): a thin white bar over any Bootswatch theme.
+ * Every selector starts with .navbar.la-header so it wins over the theme's .navbar-default rules,
+ * and the colours are fixed (not the theme's) so the header reads the same on the dark themes. */
+
+.navbar.la-header {
+  background: #fff;
+  border: 0;
+  border-bottom: 1px solid #e3e8e6;
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+  min-height: 64px;
+  font-size: 15px;
+}
+.navbar.la-header .la-header__in { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+.navbar.la-header .la-header__in::before,
+.navbar.la-header .la-header__in::after { content: " "; display: table; }
+.navbar.la-header .la-header__in::after { clear: both; }
+.navbar.la-header .navbar-brand.la-brand { height: 64px; padding: 15px 0; margin: 0; color: #1c2a30; }
+.navbar.la-header .navbar-brand.la-brand:hover { color: #1c2a30; }
+
+.navbar.la-header .navbar-nav > li > a {
+  color: #1c2a30;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 20px;
+  padding: 22px 12px;
+  background: transparent;
+  text-shadow: none;
+}
+.navbar.la-header .navbar-nav > li > a:hover,
+.navbar.la-header .navbar-nav > li > a:focus,
+.navbar.la-header .navbar-nav > .open > a,
+.navbar.la-header .navbar-nav > .open > a:hover,
+.navbar.la-header .navbar-nav > .open > a:focus {
+  color: var(--la-primary);
+  background: transparent;
+}
+.navbar.la-header .navbar-nav > .active > a { box-shadow: inset 0 -3px 0 var(--la-primary); color: #1c2a30; background: transparent; }
+.navbar.la-header .caret { border-top-color: currentColor; opacity: .6; }
+
+.navbar.la-header .dropdown-menu {
+  font-size: 15px; border: 1px solid #e3e8e6; border-radius: 8px; box-shadow: 0 8px 24px rgba(16, 32, 28, .12);
+  padding: 6px 0; background: #fff;
+}
+.navbar.la-header .dropdown-menu > li > a { color: #1c2a30; padding: 7px 18px; }
+.navbar.la-header .dropdown-menu > li > a:hover,
+.navbar.la-header .dropdown-menu > li > a:focus { color: var(--la-primary); background: #f4f7f6; }
+.navbar.la-header .dropdown-menu .divider { background: #e3e8e6; }
+
+.navbar.la-header #dropdown-lang > a { font-size: 13px; font-weight: 600; }
+
+/* Search toggle and account button */
+.navbar.la-header .la-search-toggle > a { padding-left: 14px; padding-right: 10px; }
+.navbar.la-header .navbar-nav > li.la-account > a.la-account__toggle {
+  margin: 14px 0 14px 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: var(--la-primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+.navbar.la-header .navbar-nav > li.la-account > a.la-account__toggle:hover,
+.navbar.la-header .navbar-nav > li.la-account.open > a.la-account__toggle { color: #fff; background: var(--la-primary); filter: brightness(1.1); }
+
+.navbar.la-header .navbar-toggle { border: 0; margin: 14px 0 14px 4px; padding: 10px 8px; color: #1c2a30; background: transparent; }
+.navbar.la-header .navbar-toggle .icon-bar { background: #1c2a30; }
+.navbar.la-header .navbar-toggle .la-icon { display: block; width: 20px; height: 20px; margin-top: -1px; }
+.navbar.la-header .navbar-toggle:hover,
+.navbar.la-header .navbar-toggle:focus { background: #f4f7f6; }
+
+@media (min-width: 768px) {
+  .navbar.la-header .la-header__in { display: flex; align-items: center; }
+  .navbar.la-header .navbar-header { float: none; flex: none; }
+  .navbar.la-header .navbar-collapse { display: flex !important; flex: 1; justify-content: flex-end; align-items: center; padding: 0; }
+  .navbar.la-header .navbar-collapse .navbar-nav { float: none; margin: 0; display: flex; }
+  .navbar.la-header .navbar-collapse .la-nav { order: 1; }
+  .navbar.la-header .navbar-collapse .la-tools { order: 2; border-left: 1px solid #e3e8e6; margin-left: 12px; padding-left: 4px; }
+  .navbar.la-header .navbar-nav > li { float: none; }
+  .navbar.la-header .navbar-toggle.la-search-toggle--mobile { display: none; }
+}
+/* Not enough room for the whole menu: tighter items, and the name hides before the logo */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .navbar.la-header .navbar-nav > li > a { padding-left: 8px; padding-right: 8px; font-size: 14px; }
+}
+@media (min-width: 768px) and (max-width: 960px) {
+  .navbar.la-header .la-brand__name { display: none; }
+}
+@media (max-width: 767px) {
+  .navbar.la-header .navbar-brand.la-brand { max-width: calc(100% - 100px); }
+  .navbar.la-header .la-brand__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .navbar.la-header .navbar-collapse { border-top: 1px solid #e3e8e6; box-shadow: none; }
+  .navbar.la-header .navbar-nav > li > a { padding: 10px 4px; }
+  .navbar.la-header .la-search-toggle { display: none; }
+  .navbar.la-header .navbar-nav > li.la-account > a.la-account__toggle { display: inline-block; margin: 8px 0; }
+  .navbar.la-header .navbar-nav .open .dropdown-menu > li > a { color: #1c2a30; }
+}

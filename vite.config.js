@@ -8,6 +8,7 @@ import jscc from 'rollup-plugin-jscc';
 import eslintPlugin from 'vite-plugin-eslint';
 import { VitePluginRadar } from 'vite-plugin-radar';
 import { globSync } from 'tinyglobby';
+import { brandCss, brandTokens, writeBrandAssets } from './scripts/branding.mjs';
 
 const buildTimestamp = Date.now();
 
@@ -71,6 +72,8 @@ const cleanBased = [
 ].includes(theme);
 const themeAssets = cleanBased || theme === 'clean' ? 'clean' : theme;
 const baseUrl = process.env.BASE_BRANDING_URL.replace(/\/+$|^\/+/, '');
+// Logo and footer links from settings.js, already HTML-escaped (scripts/branding.mjs)
+const brand = brandTokens(settings, baseUrl);
 
 const toReplace = [
   /index\.html$/, /errorPage\.html$/, /testPage\.html$/, /testPageCas\.html$/, /testSmall\.html$/,
@@ -117,7 +120,10 @@ const rulesBase = [
   r(toReplaceOthers, '::listsURL::', settings.services.lists.url),
   r(toReplaceOthers, '::spatialURL::', settings.services.spatial.url),
   r(toReplaceOthers, '::casURL::', settings.services.cas.url),
-  r(toReplaceOthers, '::imagesURL::', settings.services.images.url)
+  r(toReplaceOthers, '::imagesURL::', settings.services.images.url),
+  // ::centralServer::, ::loginStatus::, ::loginURL::... are left in banner.html and footer.html for
+  // the ALA apps to fill at runtime; these three are ours and the build fills them everywhere
+  ...['brandLogo', 'footerLinks', 'footerSocial'].map(k => r(toReplaceOthers, `::${k}::`, brand[k]))
 ];
 
 const replacements = Object.fromEntries(
@@ -209,9 +215,14 @@ function injectInitToBody() {
   };
 }
 
+// Theme CSS of banner.html (and of the local pages): css/la-tokens.css, then the Bootswatch
+// bootstrap.min.css of a clean-based theme, then the clean (or material) CSS on top of it.
 function injectThemeCssLinks(theme) {
-  const themePath = `app/themes/${theme}/css/*.css`;
-  const files = globSync(themePath, { onlyFiles: true });
+  const files = [
+    'css/la-tokens.css',
+    ...(cleanBased ? globSync(`app/themes/${settings.theme}/css/*.css`, { onlyFiles: true }) : []),
+    ...globSync(`app/themes/${theme}/css/*.css`, { onlyFiles: true }).sort()
+  ];
 
   return {
     name: 'inject-theme-css-links',
@@ -238,6 +249,36 @@ function injectThemeCssLinks(theme) {
           }))
         : [];
       return { html, tags: links };
+    }
+  };
+}
+
+// css/la-tokens.css and fonts/inter/: generated from settings.js, served by the dev server and
+// written into dist/ by the main build pass
+function brandAssets() {
+  return {
+    name: 'brand-assets',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const url = req.url.split('?')[0];
+        if (url === '/css/la-tokens.css') {
+          res.setHeader('Content-Type', 'text/css');
+          return res.end(brandCss(settings));
+        }
+        const font = url.match(/^\/fonts\/inter\/([\w.-]+\.woff2)$/);
+        if (font) {
+          const f = path.resolve(__dirname, 'node_modules/@fontsource-variable/inter/files', font[1]);
+          if (fs.existsSync(f)) {
+            res.setHeader('Content-Type', 'font/woff2');
+            return res.end(fs.readFileSync(f));
+          }
+        }
+        next();
+      });
+    },
+    closeBundle() {
+      if (process.env.BUILD_INIT) return; // only the main pass
+      writeBrandAssets(settings, path.resolve(__dirname, 'dist'));
     }
   };
 }
@@ -342,6 +383,10 @@ const copyCommands = [
   { src: 'commonui-bs3-2019/build/fonts/*', dest: 'fonts' },
   { src: 'app/assets/*', dest: '' },
   { src: `app/themes/${themeAssets}`, dest: 'app/themes/' },
+  ...(cleanBased ? [{ src: `app/themes/${theme}`, dest: 'app/themes/' }] : []),
+  // Highcharts, loaded on demand by the chart widgets (app/js/widgets/charts.js)
+  { src: 'node_modules/highcharts/highcharts.js', dest: 'js/highcharts' },
+  { src: 'node_modules/highcharts/modules/drilldown.js', dest: 'js/highcharts' },
   { src: 'app/assets/images/*', dest: 'images' },
   { src: 'app/assets/locales/*', dest: 'locales' }
 ];
@@ -386,6 +431,7 @@ const mainConfig = defineConfig({
     viteStaticCopy({ targets: copyCommands }),
     injectInitToBody(),
     injectThemeCssLinks(themeAssets),
+    brandAssets(),
     generateSpatialLayout(),
     emitJqueryFallback(),
     hotReloadSpatial(),
