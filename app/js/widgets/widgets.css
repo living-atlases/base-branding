@@ -26,6 +26,10 @@
 .la-entity[open] summary::after { content: "−"; }
 .la-entity[open] summary { border-bottom: 1px solid var(--la-line, #e3e8e6); }
 .la-entity__badge { height: 22px; width: auto; }
+span.la-entity__badge {
+  height: auto; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  background: var(--la-accent, #e3a72f); color: #1c2a30;
+}
 .la-entity__body { padding: 10px 16px 14px; font-size: 14px; }
 .la-entity__body p { margin: 0; color: var(--la-muted, #5d6b71); }
 .la-entity__collections, .la-entity__resources { margin: 0; padding-left: 18px; }

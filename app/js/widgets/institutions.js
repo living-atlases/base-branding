@@ -37,13 +37,16 @@ const members = () => (dh
   }))
   : getJSON(`${collectory}/ws/institution`).then(list => ({ institutions: list || [] })));
 
+// settings.flagBadge.image, or a text pill with its title (★ without one)
 function badge() {
   const b = settings.flagBadge || {};
-  const img = el('img', { src: assetUrl(brandingBase, b.image || 'images/flag.png'), alt: b.title || '', title: b.title || '' });
-  img.className = 'la-entity__badge';
-  if (!b.url) return img;
+  const mark = b.image
+    ? el('img', { src: assetUrl(brandingBase, b.image), alt: b.title || '', title: b.title || '' })
+    : el('span', b.title ? {} : { 'aria-hidden': 'true' }, b.title || '★');
+  mark.classList.add('la-entity__badge');
+  if (!b.url) return mark;
   const a = el('a', { href: safeUrl(b.url), rel: 'noopener', target: '_blank' });
-  a.append(img);
+  a.append(mark);
   return a;
 }
 

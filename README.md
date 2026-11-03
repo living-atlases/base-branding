@@ -51,7 +51,7 @@ ALA uses Bootstrap 3 in most of their modules and Bootstrap 5 in the newer ones.
 
 Themes live in `app/themes`. `clean` is the default and the base of the [Bootswatch 3](https://bootswatch.com/3/) themes (`cosmo`, `darkly`, `flatly`, `paper`, `sandstone`, `simplex`, `slate`, `superhero`, `yeti`): each one loads its `bootstrap.min.css` and takes its brand colour, and the header stays white on the dark ones. Pick one with `theme` in `app/js/settings.js`. The Bootstrap 5 build has no Bootswatch: it takes the colours of the theme you pick.
 
-`material` is an older experimental theme in `app/themes/material`, a demonstration of a different look&feel with other js/css libs ([Material Design Lite](https://getmdl.io/) and [Material Bootstrap Design](https://github.com/FezVrasta/bootstrap-material-design)). The customization below does not apply to it.
+The experimental `material` theme is discontinued: a `theme: 'material'` now builds as `clean`.
 
 ## Customize the look
 
@@ -71,7 +71,7 @@ Every key of `brand.colors` is optional: what you leave out comes from the theme
 How it works:
 - `scripts/branding.mjs` writes `css/la-tokens.css` from `settings.brand`: the `--la-*` CSS custom properties that the header, footer, home and widgets use, in both builds. Use them in your own CSS too (`color: var(--la-primary)`).
 - The header and footer CSS (`app/themes/clean/css/la-brand.css`, `la-header-bs3.css` and `app/bs5/branding-bs5.css`) reaches every page of every module and CAS, so all of it stays under the `la-*` classes, and sizes are in px because the modules set different `html { font-size }`.
-- The footer is one file for both builds: `app/themes/clean/assets/footer.html`. The Bootstrap 3 header is `app/themes/clean/assets/banner.html`, the Bootstrap 5 one `app/bs5/banner.mustache`: keep their menus in step.
+- The footer is one file for both builds: `app/themes/clean/assets/footer.html`. On pages shorter than the window, `app/js/footer-bottom.js` moves it down to the bottom (by its top margin only: no `html`/`body` CSS, which would fight the module layouts). The Bootstrap 3 header is `app/themes/clean/assets/banner.html`, the Bootstrap 5 one `app/bs5/banner.mustache`: keep their menus in step.
 - The home is `app/themes/clean/assets/indexBody.html`, filled by `app/js/home/` (hero carousel, cards, partners) and `app/js/widgets/` (numbers, charts, institutions). Credits and names from the APIs are written as text, never as HTML.
 - The charts load Highcharts 11 from `js/highcharts/` only when they draw, so a portal without them doesn't download it. Highcharts stays on 11.x: 12 breaks the drilldown (`tests/e2e/home.spec.js` checks it).
 
@@ -84,6 +84,8 @@ location ~* \.(woff2?|ttf|otf|eot)$ { add_header Access-Control-Allow-Origin "*"
 ```
 
 Without it the pages fall back to the system font. For another font, set `brand.font` and load it from your pages.
+
+No page asks a font service for anything: the Bootswatch `bootstrap.min.css` files have their Google Fonts `@import` removed, so their body text uses the theme's fallback fonts (Helvetica, Arial...) while the header, footer and home use Inter. `tests/e2e/layout.spec.js` checks it.
 
 ### Adopting it in a fork
 
@@ -105,11 +107,7 @@ Merge this repository and keep your `app/js/settings.js` and locales, adding the
 │       │   ├── assets
 │       │   ├── js
 │       │   └── css
-│       │   (...)        # add your custom theme here
-│       └── material     # material-BS3 theme that you can select in settings.js
-│           ├── assets
-│           ├── css
-│           └── js
+│       └── (...)        # add your custom theme here
 ├──commonui-bs3-2019     # ALA branding as submodule
 │
 ├──node-modules          # 'yarn add module', to install
@@ -268,28 +266,6 @@ See `vite.config.js`` for implementation details and customization options.
 Pull Request welcome!
 
 ## Screenshots
-
-### Material theme
-
-Home page with stats:
-
-![](https://raw.github.com/living-atlases/base-branding/master/la-base-index.png)
-
-Multilingual menu selection integrated with `grails` i18n:
-
-![](https://raw.github.com/living-atlases/base-branding/master/screenshots/material/collectory-i18n.png)
-
-`CAS` Authentication links in drawer (and other configurable links):
-
-![](https://raw.github.com/living-atlases/base-branding/master/screenshots/material/drawer.png)
-
-ALA Species autocompletion integrated and sticky footer:
-
-![](https://raw.github.com/living-atlases/base-branding/master/screenshots/material/sticky-footer-autocomplete.png)
-
-Error page:
-
-![](https://raw.github.com/living-atlases/base-branding/master/screenshots/material/error-page.png)
 
 ### Clean and Bootswatch themes
 

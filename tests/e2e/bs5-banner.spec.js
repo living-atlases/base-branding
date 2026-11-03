@@ -36,8 +36,16 @@ test('header and footer take the shared tokens and the Inter font', async ({ pag
   expect(primary).toMatch(/^#[0-9a-f]{6}$/i);
   await expect(page.locator('#la-footer')).toBeVisible();
   await expect(page.locator('#la-footer [data-i18n="footer.explore"]')).not.toBeEmpty();
+  // document.fonts.check() is true even with no Inter at all: look for the loaded face itself
   await page.evaluate(() => document.fonts.ready);
-  expect(await page.evaluate(() => document.fonts.check('16px Inter'))).toBe(true);
+  const inter = await page.evaluate(() => [...document.fonts].filter(f => f.family.replace(/"/g, '') === 'Inter').map(f => f.status));
+  expect(inter).toContain('loaded');
+});
+
+test('on a short page the footer sits at the bottom of the window', async ({ page }) => {
+  await openBs5(page);
+  await expect.poll(() => page.locator('#la-footer').evaluate(f => Math.round(window.innerHeight - f.getBoundingClientRect().bottom)))
+    .toBeLessThanOrEqual(1);
 });
 
 test('the account button says what the login status allows', async ({ page }) => {

@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { resolveBrand, tokensCss, serviceUrl, safeUrl, assetUrl, escapeHtml } from '../app/js/utils/brand.js';
+import { footerOf } from '../app/js/utils/defaults.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const fontDir = path.join(root, 'node_modules/@fontsource-variable/inter/files');
@@ -50,10 +51,21 @@ export function writeBrandAssets(settings, outDir) {
 const link = (settings, { i18n, url }) =>
   `<li><a data-i18n="${escapeHtml(i18n)}" href="${escapeHtml(safeUrl(serviceUrl(settings, url)))}"></a></li>`;
 
+// The ALA commonui CSS @imports Google Fonts (Lato, Roboto); drop that from the copies in <cssDir>,
+// so no page of the branding asks a font service for anything (README, "Fonts")
+export function stripFontImports(cssDir) {
+  for (const f of fs.readdirSync(cssDir).filter(n => n.endsWith('.css'))) {
+    const p = path.join(cssDir, f);
+    const css = fs.readFileSync(p, 'utf8');
+    const out = css.replace(/@import\s+url\(\s*["']?https?:\/\/fonts\.googleapis\.com\/[^)]*\)\s*;?/g, '');
+    if (out !== css) fs.writeFileSync(p, out);
+  }
+}
+
 // ::token:: values of the header and footer fragments, the same in both builds
 export function brandTokens(settings, baseUrl) {
   const { logo } = resolveBrand(settings);
-  const footer = settings.footer || {};
+  const footer = footerOf(settings);
   return {
     brandLogo: escapeHtml(assetUrl(baseUrl, logo)),
     footerLinks: (footer.links || []).map(l => link(settings, l)).join('\n          '),

@@ -1,6 +1,7 @@
 import './widgets.css';
 import settings from '../settings';
 import { whenI18n, onReady } from '../utils/i18n-ready.js';
+import { widgetsOf } from '../utils/defaults.js';
 import { mountStats } from './stats.js';
 import { loadHighcharts } from './charts.js';
 import { drawTaxoChart } from './taxo-chart.js';
@@ -12,7 +13,7 @@ import { mountInstitutions } from './institutions.js';
 // nothing, and a portal that turns the charts off never downloads Highcharts.
 // A section with the la-widgets class around the containers is shown once one of them draws.
 
-const on = settings.homeWidgets || {};
+const on = widgetsOf(settings);
 const reveal = container => {
   const section = container.closest('.la-widgets');
   if (section) section.hidden = false;

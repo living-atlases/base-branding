@@ -11,9 +11,11 @@ import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 import settings from '../../app/js/settings.js';
+import { homeOf, widgetsOf } from '../../app/js/utils/defaults.js';
 import { root, readDist, brandingBase, distFile, serviceStub, KINGDOMS, PHYLA, INSTITUTIONS } from './helpers.js';
 
-const on = settings.homeWidgets || {};
+const on = widgetsOf(settings);
+const home = homeOf(settings);
 
 async function openHome(page, { kingdoms } = {}) {
   const base = brandingBase();
@@ -51,7 +53,7 @@ const clickSlice = async (page, container) => {
 test.describe('hero', () => {
   test('shows the first slide with its credits behind the (i) button', async ({ page }) => {
     await openHome(page);
-    const first = settings.home.hero.slides[0];
+    const first = home.hero.slides[0];
     await expect(page.locator('.la-hero__slide.is-active')).toHaveCount(1);
     await expect(page.locator('.la-hero__slide').first()).toHaveAttribute('style', /background-image/);
 
@@ -64,12 +66,12 @@ test.describe('hero', () => {
   });
 
   test('with prefers-reduced-motion the slides do not move by themselves', async ({ page }) => {
-    test.skip(settings.home.hero.slides.length < 2, 'one slide only');
+    test.skip(home.hero.slides.length < 2, 'one slide only');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openHome(page);
     const active = () => page.locator('.la-hero__slide').evaluateAll(s => s.findIndex(e => e.classList.contains('is-active')));
     expect(await active()).toBe(0);
-    await page.waitForTimeout(Math.max(3000, settings.home.hero.interval) + 800);
+    await page.waitForTimeout(Math.max(3000, home.hero.interval) + 800);
     expect(await active()).toBe(0);
     // The dots still move it
     await page.locator('.la-hero__dot').nth(1).click();
@@ -78,9 +80,9 @@ test.describe('hero', () => {
 
   test('cards and partners come from settings.home', async ({ page }) => {
     await openHome(page);
-    await expect(page.locator('#la-home-cards .la-card')).toHaveCount(settings.home.cards.length);
+    await expect(page.locator('#la-home-cards .la-card')).toHaveCount(home.cards.length);
     await expect(page.locator('#la-home-cards .la-card h3').first()).not.toBeEmpty();
-    await expect(page.locator('#la-home-partners img')).toHaveCount(settings.home.partners.length);
+    await expect(page.locator('#la-home-partners img')).toHaveCount(home.partners.length);
   });
 });
 

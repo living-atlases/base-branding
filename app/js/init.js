@@ -3,6 +3,7 @@ import './index-auth.js';
 import './i18next-config.js';
 import './mante.js';
 import './widgets/index.js'; // optional home widgets: settings.homeWidgets
+import './footer-bottom.js'; // the footer at the bottom of the window on short pages
 import './autocomplete-conf.js';
 import 'url-polyfill'; // for URL() usage in older browsers
 

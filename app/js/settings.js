@@ -6,11 +6,12 @@ export default {
   mainLAUrl: 'https://l-a.site',
   baseFooterUrl: 'https://l-a.site',
   // 'clean' or one of the https://bootswatch.com/3/ themes built on it: 'cosmo', 'darkly', 'flatly',
-  // 'paper', 'sandstone', 'simplex', 'slate', 'superhero', 'yeti'; 'material' is experimental.
+  // 'paper', 'sandstone', 'simplex', 'slate', 'superhero', 'yeti' (a theme of your own goes in app/themes).
   // LA_THEME=<name> overrides it at build time (npm run screenshots builds every theme that way).
   theme: (typeof process !== 'undefined' && process.env.LA_THEME) || 'clean',
   // Look of the header, footer and home in both builds (Bootstrap 3 and 5). See "Customize the
-  // look" in the README. Every key is optional: what you leave out comes from the theme.
+  // look" in the README. Every key is optional: a missing brand key comes from the theme, and a
+  // missing home, homeWidgets or footer from app/js/utils/defaults.js.
   brand: {
     logo: 'images/logo.svg', // relative to this branding, or an absolute URL
     colors: {
@@ -59,7 +60,7 @@ export default {
   dataHub: null,
   // Institutions of this other data hub get a badge in the institutions widget (null: none)
   dataHubToFlag: null,
-  // flagBadge: { image: 'images/flag.png', title: 'Member of ...', url: 'https://...' },
+  // flagBadge: { image: 'images/flag.png', title: 'Member of ...', url: 'https://...' }, // no image: a text pill
   institutionsExclude: [], // institution uids the institutions widget leaves out
   // chartColors: { taxo: '#1b6e5a', inst: '#e3a72f' }, // base colour of each pie (default: brand primary, accent)
   footer: {

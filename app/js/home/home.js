@@ -3,12 +3,13 @@ import settings from '../settings.js';
 import { assetUrl, serviceUrl, safeUrl } from '../utils/brand.js';
 import { brandingBase } from '../utils/base-url.js';
 import { localize, onReady } from '../utils/i18n-ready.js';
+import { homeOf } from '../utils/defaults.js';
 import { mountHero } from './hero-carousel.js';
 
 // The home page (index.html only): hero buttons, cards and partners from settings.home.
 // Texts are i18n keys, so they go through data-i18n like the rest of the page.
 
-const home = settings.home || {};
+const home = homeOf(settings);
 const el = (tag, attrs = {}, children = []) => {
   const e = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) if (v !== undefined && v !== null) e.setAttribute(k, v);

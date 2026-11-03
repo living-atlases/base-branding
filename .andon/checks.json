@@ -19,7 +19,20 @@
         "package-lock.json",
         "playwright.config.js",
         "tests/e2e/**",
-        "app/themes/*/assets/banner.html"
+        "app/themes/*/assets/banner.html",
+        "app/themes/*/assets/*.html",
+        "app/themes/*/css/*.css",
+        "app/bs5/*",
+        "app/js/home/*",
+        "app/js/widgets/*",
+        "app/js/utils/*",
+        "app/js/settings.js",
+        "app/js/footer-bottom.js",
+        "app/assets/locales/*/common",
+        "app/assets/images/*",
+        "index.html",
+        "scripts/branding.mjs",
+        "scripts/screenshots.mjs"
       ],
       "run": "npm run build && npm run test:e2e"
     },

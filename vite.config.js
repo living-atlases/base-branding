@@ -8,7 +8,7 @@ import jscc from 'rollup-plugin-jscc';
 import eslintPlugin from 'vite-plugin-eslint';
 import { VitePluginRadar } from 'vite-plugin-radar';
 import { globSync } from 'tinyglobby';
-import { brandCss, brandTokens, writeBrandAssets } from './scripts/branding.mjs';
+import { brandCss, brandTokens, writeBrandAssets, stripFontImports } from './scripts/branding.mjs';
 
 const buildTimestamp = Date.now();
 
@@ -66,7 +66,9 @@ const buildTimestamp = Date.now();
 //
 // ─────────────────────────────────────────────────────────────────────────────
 
-const theme = settings.theme;
+// A theme with no app/themes/<theme> (like 'material', discontinued) builds as 'clean'
+const theme = fs.existsSync(`app/themes/${settings.theme}`) ? settings.theme : 'clean';
+if (theme !== settings.theme) console.warn(`settings.theme '${settings.theme}' is not in app/themes: using 'clean'`);
 const cleanBased = [
   'flatly', 'superhero', 'yeti', 'cosmo', 'darkly', 'paper', 'sandstone', 'simplex', 'slate'
 ].includes(theme);
@@ -216,7 +218,7 @@ function injectInitToBody() {
 }
 
 // Theme CSS of banner.html (and of the local pages): css/la-tokens.css, then the Bootswatch
-// bootstrap.min.css of a clean-based theme, then the clean (or material) CSS on top of it.
+// bootstrap.min.css of a clean-based theme, then the clean (or your own theme's) CSS on top of it.
 function injectThemeCssLinks(theme) {
   const files = [
     'css/la-tokens.css',
@@ -279,6 +281,7 @@ function brandAssets() {
     closeBundle() {
       if (process.env.BUILD_INIT) return; // only the main pass
       writeBrandAssets(settings, path.resolve(__dirname, 'dist'));
+      stripFontImports(path.resolve(__dirname, 'dist/css'));
     }
   };
 }
@@ -390,13 +393,6 @@ const copyCommands = [
   { src: 'app/assets/images/*', dest: 'images' },
   { src: 'app/assets/locales/*', dest: 'locales' }
 ];
-
-if (theme === 'material') {
-  copyCommands.push(
-    { src: 'app/themes/material/material-lite/*', dest: 'material-lite' },
-    { src: 'app/themes/material/custom-bootstrap/*', dest: 'custom-bootstrap' }
-  );
-}
 
 // Second build pass (BUILD_INIT=1): emit app/js/init.js as one standalone
 // classic IIFE bundle at the stable name js/init.js, keeping the main HTML

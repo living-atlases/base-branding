@@ -10,7 +10,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import settings from '../app/js/settings.js';
 import { buildCommonui } from './build-commonui.mjs';
-import { brandTokens, writeBrandAssets } from './branding.mjs';
+import { brandTokens, writeBrandAssets, stripFontImports } from './branding.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'dist', 'bs5');
@@ -28,6 +28,7 @@ for (const d of ['css', 'js', 'fonts']) {
 fs.copyFileSync(path.join(root, 'app/bs5/branding-bs5.css'), path.join(out, 'css/branding-bs5.css'));
 // The look shared with the Bootstrap 3 build: tokens and Inter from settings.brand, header and footer CSS
 writeBrandAssets(settings, out);
+stripFontImports(path.join(out, 'css'));
 fs.copyFileSync(path.join(root, 'app/themes/clean/css/la-brand.css'), path.join(out, 'css/la-brand.css'));
 // Apache: .mustache has no content type by default and the app (Java URLConnection) refuses it
 fs.copyFileSync(path.join(root, 'app/bs5/htaccess'), path.join(out, '.htaccess'));
