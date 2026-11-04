@@ -95,7 +95,7 @@ export function mountHero(hero, { slides = [], interval = 7000 } = {}, base) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'la-hero__dot';
-    b.addEventListener('click', () => { show(i); stop(); });
+    b.addEventListener('click', () => { show(i); restart(); });
     dots.append(b);
     return b;
   }) : [];
@@ -125,6 +125,7 @@ export function mountHero(hero, { slides = [], interval = 7000 } = {}, base) {
     const open = creditBox.hidden;
     creditBox.hidden = !open;
     creditBtn.setAttribute('aria-expanded', String(open));
+    if (open) stop(); else resume();
   });
 
   let timer = null;
@@ -134,13 +135,21 @@ export function mountHero(hero, { slides = [], interval = 7000 } = {}, base) {
     timer = setInterval(() => show((current + 1) % els.length), Math.max(3000, interval));
   };
   const stop = () => { clearInterval(timer); timer = null; };
-  // Paused under a mouse and while focus is inside (the search box); a touch is no hover, or a tap
-  // would stop it for good
-  hero.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') stop(); });
-  hero.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !hero.contains(document.activeElement)) start(); });
-  hero.addEventListener('focusin', stop);
-  hero.addEventListener('focusout', e => { if (!hero.contains(e.relatedTarget) && !hero.matches(':hover')) start(); });
-  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+  // Paused only while it is in the way: the mouse on the dots or the credit, the credit open, or
+  // someone typing in the search box. Not under a mouse anywhere on the hero: on a desktop it
+  // covers most of the screen and the mouse is nearly always on it, so the slides never moved.
+  // A touch is no hover, or a tap would stop it for good.
+  let onControls = false;
+  const typing = () => hero.contains(document.activeElement) && document.activeElement.matches('input, textarea, select');
+  const resume = () => { if (!onControls && !typing() && creditBox.hidden && !document.hidden) start(); };
+  const restart = () => { stop(); resume(); }; // a picked slide gets its full time
+  [dots, credit].filter(Boolean).forEach(el => {
+    el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { onControls = true; stop(); } });
+    el.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { onControls = false; resume(); } });
+  });
+  hero.addEventListener('focusin', () => { if (typing()) stop(); });
+  hero.addEventListener('focusout', () => setTimeout(resume));
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : resume()));
 
   load(0);
   show(0);

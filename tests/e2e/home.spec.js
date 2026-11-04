@@ -90,6 +90,35 @@ test.describe('hero', () => {
     await page.close();
   });
 
+  // On a desktop the hero fills most of the screen: a mouse resting on it must not pause it, nor
+  // a click on a dot (the dot keeps the focus)
+  test('on a desktop the slides move with the mouse on the hero and after a dot is clicked', async ({ page }) => {
+    test.skip(home.hero.slides.length < 3, 'needs three slides');
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await openHome(page);
+    const active = () => page.locator('.la-hero__slide').evaluateAll(s => s.findIndex(e => e.classList.contains('is-active')));
+    const wait = { timeout: Math.max(3000, home.hero.interval) + 3000 };
+    const box = await page.locator('.la-hero').boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 3);
+    const first = await active();
+    await expect.poll(active, wait).not.toBe(first);
+    await page.locator('.la-hero__dot').nth(2).click();
+    await expect.poll(active).toBe(2);
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 3);
+    await expect.poll(active, wait).not.toBe(2);
+  });
+
+  test('the slides stay while the mouse is on the dots', async ({ page }) => {
+    test.skip(home.hero.slides.length < 2, 'one slide only');
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await openHome(page);
+    const active = () => page.locator('.la-hero__slide').evaluateAll(s => s.findIndex(e => e.classList.contains('is-active')));
+    await page.locator('.la-hero__dots').hover();
+    const before = await active();
+    await page.waitForTimeout(Math.max(3000, home.hero.interval) + 1500);
+    expect(await active()).toBe(before);
+  });
+
   test('a slide with renditions gets the narrow cut on a phone and the widest on a retina desktop', () => {
     const slide = {
       image: 'images/hero/x-{w}.webp', widths: [1280, 1920, 2560], ratio: 2.4,
