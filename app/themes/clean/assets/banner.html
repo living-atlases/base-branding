@@ -26,7 +26,7 @@
       </button>
       <a class="navbar-brand la-brand" href="::centralServer::">
         <img class="la-brand__logo" src="::brandLogo::" alt="">
-        <span class="la-brand__name" data-i18n="general.orgfullname"></span>
+        <span class="la-brand__name" data-i18n="general.brandname"></span>
       </a>
     </div>
 
@@ -38,16 +38,8 @@
             <svg class="la-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
           </a>
         </li>
-        <!-- Language selector: remove it if you don't want a multilang site -->
-        <li id="dropdown-lang" class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
-          <ul class="locale-switcher dropdown-menu dropdown-menu-right dropdown-lang-menu">
-            <li class="locale-link" data-locale="en"><a class="en-locale-link" href="#"><span class="lang_link_en">English</span></a></li>
-            <li class="locale-link" data-locale="es"><a class="es-locale-link" href="#"><span class="lang_link_es">Español</span></a></li>
-            <li class="locale-link" data-locale="zh"><a class="zh-CN-locale-link" href="#"><span class="lang_link_zh-CN">简体中文</span></a></li>
-            <li class="locale-link" data-locale="sw"><a class="sw-locale-link" href="#"><span class="lang_link_sw">Swahili</span></a></li>
-          </ul>
-        </li>
+        <!-- Language selector, from settings.enabledLangs (none with a single language) -->
+        ::langMenu::
         <!-- Account: the menu comes before its toggle so the toggle label can follow ::loginStatus:: in CSS -->
         <li class="dropdown la-account">
           <ul id="dropdown-auth-menu" class="dropdown-menu dropdown-menu-right ::loginStatus::">

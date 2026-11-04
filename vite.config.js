@@ -125,8 +125,8 @@ const rulesBase = [
   r(toReplaceOthers, '::casURL::', settings.services.cas.url),
   r(toReplaceOthers, '::imagesURL::', settings.services.images.url),
   // ::centralServer::, ::loginStatus::, ::loginURL::... are left in banner.html and footer.html for
-  // the ALA apps to fill at runtime; these three are ours and the build fills them everywhere
-  ...['brandLogo', 'footerLinks', 'footerSocial'].map(k => r(toReplaceOthers, `::${k}::`, brand[k]))
+  // the ALA apps to fill at runtime; these are ours and the build fills them everywhere
+  ...['brandLogo', 'footerLogo', 'footerLogoClass', 'footerLinks', 'footerSocial', 'langMenu'].map(k => r(toReplaceOthers, `::${k}::`, brand[k]))
 ];
 
 const replacements = Object.fromEntries(

@@ -14,6 +14,8 @@ export default {
   // missing home, homeWidgets or footer from app/js/utils/defaults.js.
   brand: {
     logo: 'images/logo.svg', // relative to this branding, or an absolute URL
+    // logoWide: true, // a wide logo (not a square or round mark) keeps its proportions
+    // footerLogo: 'images/logo-white.svg', // a version for the dark footer, shown without the white box
     colors: {
       // primary: '#00838f', // links, buttons and the big numbers
       // primaryDark: '#00484f', // footer background

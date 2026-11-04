@@ -3,16 +3,17 @@
 // supportedLngs, so the banner has to read i18n.resolvedLanguage instead.
 //
 // Served through page.route over the same CAS login replica as cas-login.spec.js, so the
-// banner's jQuery fallback applies and #dropdown-lang is on the page.
+// banner's jQuery fallback applies.
 // Run after `npm run build`.
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
+import settings from '../../app/js/settings.js';
 
 const root = path.resolve(import.meta.dirname, '../..');
 const dist = path.join(root, 'dist');
 const CAS = 'https://auth.cas.test';
-const ENABLED = ['en', 'es', 'zh', 'sw'];
+const ENABLED = settings.enabledLangs;
 
 const types = {
   '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.html': 'text/html',
@@ -43,8 +44,8 @@ async function openCasLoginWithLang(page, lang) {
   const requested = [];
   await page.route('**/*', async route => {
     const url = new URL(route.request().url());
-    // Paths only: the browser normalises ../ away before sending, and i18next escapes the
-    // slashes of an interpolated value, so a crafted lang shows up as a junk path segment.
+    // Paths only: the browser normalises ../ away before sending, so a crafted lang shows
+    // up as the junk path segment it became.
     requested.push(url.pathname);
     const href = url.origin + url.pathname;
     if (href === `${CAS}/cas/login`) {
@@ -72,6 +73,10 @@ async function openCasLoginWithLang(page, lang) {
 
 // The i18next cookie itself cannot be asserted here: it is written on settings.mainDomain,
 // which this fixture host is not, so the browser drops it. What it must never hold is the raw value.
+// With more than one language the banner renders #dropdown-lang (scripts/branding.mjs) and its
+// .html() sink is live: the toggle must never show anything but a supported code. With one, there
+// is no menu at all.
+const MULTI = ENABLED.length > 1;
 const dropdownLang = page =>
   page.locator('#dropdown-lang .dropdown-toggle').evaluate(e => e.textContent.trim());
 
@@ -87,21 +92,30 @@ test('a crafted ?lang= never becomes the language of a locales request', async (
   expect(requestedLangs.length).toBeGreaterThan(0);
   for (const lang of requestedLangs) expect(ENABLED).toContain(lang);
   expect(ENABLED).toContain(await page.evaluate(() => window.i18next.resolvedLanguage));
-  expect(ENABLED).toContain(await dropdownLang(page));
+  if (MULTI) expect(ENABLED).toContain(await dropdownLang(page));
+  expect(await page.evaluate(() => document.body.innerHTML)).not.toContain('evil');
   expect(await page.evaluate(() => document.cookie)).not.toContain('evil');
 });
 
-test('markup in ?lang= is not injected into the language dropdown', async ({ page }) => {
+test('markup in ?lang= is not injected into the page', async ({ page }) => {
   await openCasLoginWithLang(page, encodeURIComponent('<img src=x onerror=window.__xss=1>'));
 
   expect(await page.evaluate(() => window.__xss)).toBeUndefined();
-  expect(await page.locator('#dropdown-lang').evaluate(e => e.querySelectorAll('img').length)).toBe(0);
-  expect(ENABLED).toContain(await dropdownLang(page));
+  expect(await page.evaluate(() => document.body.innerHTML)).not.toContain('onerror');
+  if (MULTI) expect(await page.locator('#dropdown-lang').evaluate(e => e.querySelectorAll('img').length)).toBe(0);
+  expect(ENABLED).toContain(await page.evaluate(() => window.i18next.resolvedLanguage));
 });
 
-test('a supported ?lang= still switches the language', async ({ page }) => {
-  await openCasLoginWithLang(page, 'es');
+test('a supported ?lang= still resolves', async ({ page }) => {
+  await openCasLoginWithLang(page, ENABLED[0]);
 
-  expect(await page.evaluate(() => window.i18next.resolvedLanguage)).toBe('es');
-  expect(await dropdownLang(page)).toBe('es');
+  expect(await page.evaluate(() => window.i18next.resolvedLanguage)).toBe(ENABLED[0]);
+  if (MULTI) expect(await dropdownLang(page)).toBe(ENABLED[0]);
+});
+
+test('the language menu lists the enabled languages, and is not there with only one', async ({ page }) => {
+  await openCasLoginWithLang(page, ENABLED[0]);
+
+  const listed = await page.locator('#dropdown-lang .locale-link').evaluateAll(ls => ls.map(l => l.dataset.locale));
+  expect(listed).toEqual(MULTI ? ENABLED : []);
 });

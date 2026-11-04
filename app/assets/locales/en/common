@@ -67,5 +67,8 @@
   "index.hero.search-placeholder": "Search records by species, place or collection",
   "index.hero.area": "Explore your area",
   "index.institutions.filter": "Filter institutions",
-  "index.institutions.all": "Show all"
+  "index.institutions.all": "Show all",
+  "general.brandname": "Atlas of Living Wakanda",
+  "index.intro.title": "",
+  "index.intro.text": ""
 }

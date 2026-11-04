@@ -23,7 +23,7 @@
 }
 .la-header .la-brand { color: var(--la-header-ink); font-family: var(--la-heading-font); font-size: 17px; line-height: 1.2; }
 .la-header .la-brand__logo,
-.la-footer .la-brand__logo { width: 34px; height: 34px; flex: none; object-fit: contain; }
+.la-footer .la-brand__logo { width: var(--la-logo-w, 34px); max-width: 160px; height: 34px; flex: none; object-fit: contain; }
 .la-header .la-icon {
   width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2;
   stroke-linecap: round; vertical-align: middle;
@@ -69,7 +69,8 @@
   display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px;
 }
 .la-footer .la-footer__brand { color: #fff; font-family: var(--la-heading-font); font-size: 18px; margin-bottom: 12px; }
-.la-footer .la-footer__brand .la-brand__logo { background: #fff; border-radius: 50%; padding: 2px; }
+.la-footer .la-footer__brand .la-brand__logo { background: #fff; border-radius: var(--la-logo-r, 50%); padding: 2px; }
+.la-footer .la-footer__brand .la-brand__logo--plain { background: none; border-radius: 0; padding: 0; }
 .la-footer p { margin: 0 0 16px; max-width: 440px; font-size: 14px; }
 .la-footer h2 {
   color: #fff; font-family: var(--la-font); font-size: 13px; font-weight: 700; line-height: 1.4;
@@ -97,4 +98,10 @@
 }
 @media (max-width: 480px) {
   .la-footer__in { grid-template-columns: 1fr; }
+}
+
+/* A long portal name next to a wide logo still fits a phone header */
+@media (max-width: 480px) {
+  .la-header .la-brand { font-size: 15px; }
+  .la-header .la-brand__logo { max-width: 88px; height: 28px; }
 }

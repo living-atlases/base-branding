@@ -59,12 +59,13 @@ Everything is in `app/js/settings.js`; the texts are in the locales (`app/assets
 
 | What | Where |
 |---|---|
-| Colours, fonts, logo | `brand`: `colors.primary` (links, buttons), `colors.primaryDark` (footer), `colors.accent` (search button), `colors.highlight` (big numbers, card links; primary by default), `colors.headerBg` (header; its text and accent colours follow from it, or set `headerInk` and `headerAccent`), and `ink`, `muted`, `line`, `surface`, `page` (text and page colours); `font` and `headingFont`; `radius` (px); `logo` |
-| Hero | `home.hero.slides`: `image`, `position` (CSS background-position, for narrow screens) and its credits (`species`, `institution`, `author`, `license`, `licenseUrl`, `recordUrl`); `home.hero.search` (`url`, `param`, or `false`); `home.hero.buttons`; `home.hero.interval` |
+| Colours, fonts, logo | `brand`: `colors.primary` (links, buttons), `colors.primaryDark` (footer), `colors.accent` (search button), `colors.highlight` (big numbers, card links; primary by default), `colors.headerBg` (header; its text and accent colours follow from it, or set `headerInk` and `headerAccent`), and `ink`, `muted`, `line`, `surface`, `page` (text and page colours); `font` and `headingFont`; `radius` (px); `logo`, `logoWide` (a wide logo keeps its proportions) and `footerLogo` (a version for the footer background, shown without the white box) |
+| Hero | `home.hero.slides`: `image`, `position` (CSS background-position, for narrow screens) and its credits (`species`, `institution`, `author`, `license`, `licenseUrl`, `recordUrl`). For sharp images on every screen, `image` can have a `{w}` with the `widths` it comes in and its `ratio` (width / height), plus a `narrow` cut for phones (`image`, `widths`, `ratio`): each visitor gets the smallest one that covers the hero. `home.hero.search` (`url`, `param`, or `false`); `home.hero.buttons`; `home.hero.interval` |
+| Languages | `enabledLangs`: the header language menu lists these, and is left out with a single language |
 | Cards and partners | `home.cards` (`i18n` key, `image`, `url`), `home.partners` (`name`, `logo`, `url`) |
 | Home widgets | `homeWidgets`: `stats`, `taxoChart`, `instChart`, `institutions` (true/false, all true by default); `dataHub`: `null` for the whole portal or a data hub uid; `dataHubToFlag` and `flagBadge`; `institutionsExclude`, `institutionsShow`; `chartColors` |
 | Footer | `footer.links` (last column, `i18n` key and `url`), `footer.social` (`name`, `url`) |
-| Texts | `general.orgfullname`, `index.*`, `footer.*` and `nav.*` keys of the locales |
+| Texts | `general.orgfullname` (the home title), `general.brandname` (next to the logo, a shorter one if the full name is long), `index.*`, `footer.*` and `nav.*` keys of the locales |
 
 Every key of `brand` is optional: what you leave out comes from the theme. Text colours on the header, buttons and accent are picked for contrast (white or dark). The sample photos come from GBIF records, with their licences in `app/assets/images/CREDITS.md`; `npm run demo` builds every theme into `demo/` to compare them (it has a colour picker to try another primary). URLs can use `{biocache}`, `{collectory}`, `{spatial}`... (any of `services`) and `{central}` (`mainLAUrl`); images are paths of this branding (`images/x.png`) or absolute URLs.
 

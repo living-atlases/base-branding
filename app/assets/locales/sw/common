@@ -20,5 +20,6 @@
   "error.title": "Ops!",
   "error.subtitle": "Tunakabiliwa na shida kadhaa katika huduma zetu",
   "error.description": "Ikiwa unahitaji kwako unaweza kuwasiliana nasi kila wakati, vinginevyo tutarudi mkondoni kwa muda mfupi!",
-  "error.button": "nenda kwenye ukurasa wetu wa nyumbani"
+  "error.button": "nenda kwenye ukurasa wetu wa nyumbani",
+  "general.brandname": "ATLAS OF LIVING WAKANDA"
 }

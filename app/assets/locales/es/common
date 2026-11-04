@@ -3,7 +3,7 @@
   "nav.collectory": "Colecciones",
   "nav.biocache": "Registros",
   "nav.datasets": "Juegos de Datos",
-  "nav.your-area": "Explora tu Área",
+  "nav.your-area": "Explora tu zona",
   "nav.more": "Más",
   "nav.login": "Iniciar sesión",
   "nav.myprofile": "Mi perfíl",
@@ -67,5 +67,8 @@
   "index.hero.search-placeholder": "Busca registros por especie, lugar o colección",
   "index.hero.area": "Explora tu zona",
   "index.institutions.filter": "Filtrar instituciones",
-  "index.institutions.all": "Ver todas"
+  "index.institutions.all": "Ver todas",
+  "general.brandname": "Atlas de Biodiversidad de Wakanda",
+  "index.intro.title": "",
+  "index.intro.text": ""
 }

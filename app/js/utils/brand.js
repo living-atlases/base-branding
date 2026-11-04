@@ -96,7 +96,9 @@ export function resolveBrand(settings) {
     font,
     headingFont: brand.headingFont || preset.headingFont || font,
     radius,
-    logo: brand.logo || defaultLogo
+    logo: brand.logo || defaultLogo,
+    logoWide: Boolean(brand.logoWide),
+    footerLogo: brand.footerLogo || null
   };
 }
 
@@ -148,6 +150,8 @@ export function tokensCss(brand) {
   vars.push(`  --la-font: ${fontStack(brand.font, sans)};`);
   vars.push(`  --la-heading-font: ${fontStack(brand.headingFont, sans)};`);
   vars.push(`  --la-radius: ${brand.radius}px;`);
+  // A wide logo (brand.logoWide) keeps its proportions, on a rounded box in the footer
+  if (brand.logoWide) vars.push('  --la-logo-w: auto;', '  --la-logo-r: 6px;');
   return `:root {\n${vars.join('\n')}\n}\n`;
 }
 

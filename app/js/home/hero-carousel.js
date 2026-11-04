@@ -40,6 +40,23 @@ function renderCredit(box, slide) {
   return parts.length > 0;
 }
 
+// The renditions of a slide: image alone, or an image with {w} in it and the widths it comes in
+// (ratio: width / height), and the same again for an optional narrow cut for phones (slide.narrow)
+const renditions = s => [s, s.narrow].filter(Boolean).flatMap(r => (Array.isArray(r.widths) && /\{w\}/.test(r.image)
+  ? r.widths.map(w => ({ src: r.image.replace('{w}', w), w, h: w / (r.ratio || 2.4) }))
+  : [{ src: r.image, w: 0, h: 0 }]));
+
+// The smallest rendition that covers the hero box (in device px) without upscaling, or else the
+// one that upscales least: a phone gets the narrow cut, a retina desktop the widest one
+export function pickRendition(slide, boxW, boxH) {
+  const sized = renditions(slide).filter(r => r.w);
+  if (!sized.length) return slide.image;
+  if (!boxW || !boxH) return sized[0].src; // a hero with no size yet: its smallest image
+  const scale = r => Math.max(boxW / r.w, boxH / r.h);
+  const covering = sized.filter(r => scale(r) <= 1).sort((a, b) => a.w * a.h - b.w * b.h);
+  return (covering[0] || sized.sort((a, b) => scale(a) - scale(b))[0]).src;
+}
+
 export function mountHero(hero, { slides = [], interval = 7000 } = {}, base) {
   const holder = hero.querySelector('.la-hero__slides');
   const dots = hero.querySelector('.la-hero__dots');
@@ -51,12 +68,14 @@ export function mountHero(hero, { slides = [], interval = 7000 } = {}, base) {
     return;
   }
 
+  const dpr = window.devicePixelRatio || 1;
+  const box = hero.getBoundingClientRect();
   const els = slides.map((s, i) => {
     const el = document.createElement('div');
     el.className = 'la-hero__slide';
     el.setAttribute('role', 'group');
     el.setAttribute('aria-roledescription', 'slide');
-    el.dataset.src = assetUrl(base, s.image);
+    el.dataset.src = assetUrl(base, pickRendition(s, box.width * dpr, box.height * dpr));
     // A CSS value from settings: only keywords, numbers and percentages
     if (/^[\w\s.%-]+$/.test(s.position || '')) el.style.backgroundPosition = s.position;
     if (i > 0) el.setAttribute('aria-hidden', 'true');

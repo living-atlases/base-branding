@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import settings from '../../app/js/settings.js';
 import { homeOf, widgetsOf } from '../../app/js/utils/defaults.js';
+import { pickRendition } from '../../app/js/home/hero-carousel.js';
 import { root, readDist, brandingBase, distFile, serviceStub, KINGDOMS, PHYLA, INSTITUTIONS } from './helpers.js';
 
 const on = widgetsOf(settings);
@@ -87,6 +88,31 @@ test.describe('hero', () => {
     const before = await active();
     await expect.poll(active, { timeout: Math.max(3000, home.hero.interval) + 3000 }).not.toBe(before);
     await page.close();
+  });
+
+  test('a slide with renditions gets the narrow cut on a phone and the widest on a retina desktop', () => {
+    const slide = {
+      image: 'images/hero/x-{w}.webp', widths: [1280, 1920, 2560], ratio: 2.4,
+      narrow: { image: 'images/hero/x-n-{w}.webp', widths: [600, 1260], ratio: 0.75 }
+    };
+    expect(pickRendition(slide, 390 * 3, 560 * 3)).toBe('images/hero/x-n-1260.webp');
+    expect(pickRendition(slide, 1280, 640)).toBe('images/hero/x-1920.webp');
+    expect(pickRendition(slide, 1440 * 2, 640 * 2)).toBe('images/hero/x-2560.webp');
+    expect(pickRendition({ image: 'images/hero.jpg' }, 1280, 640)).toBe('images/hero.jpg');
+  });
+
+  test('the hub intro shows its text, and is left out when the locale has none', async ({ page }) => {
+    await openHome(page);
+    await page.waitForFunction(() => window.i18next && window.i18next.resolvedLanguage);
+    const lang = await page.evaluate(() => window.i18next.resolvedLanguage);
+    const texts = JSON.parse(fs.readFileSync(path.join(root, `app/assets/locales/${lang}/common`), 'utf8'));
+    const intro = page.locator('#la-intro');
+    if (texts['index.intro.title']) {
+      await expect(intro).toBeVisible();
+      await expect(intro.locator('.la-intro__text p').first()).not.toBeEmpty();
+    } else {
+      await expect(intro).toBeHidden();
+    }
   });
 
   test('cards and partners come from settings.home', async ({ page }) => {
@@ -178,6 +204,24 @@ test.describe('institutions', () => {
     await page.locator('.la-entities__more').click();
     await expect(page.locator('#accordion-home-institutions .la-entity:visible')).toHaveCount(30);
     await expect(page.locator('.la-entities__more')).toBeHidden();
+  });
+});
+
+test.describe('data hub', () => {
+  test.skip(!settings.dataHub, 'settings.dataHub is not set: the widgets count the whole portal');
+
+  test('the charts and institutions ask for the data hub only, and its flagged members get the badge', async ({ page }) => {
+    const asked = [];
+    page.on('request', r => asked.push(decodeURIComponent(r.url())));
+    await openHome(page);
+    await expect(page.locator('#accordion-home-institutions .la-entity')).toHaveCount(30);
+    await expect(slices(page, 'taxo-container').first()).toBeVisible();
+    expect(asked.some(u => u.includes(`/ws/dataHub/${settings.dataHub}`))).toBe(true);
+    for (const u of asked.filter(x => x.includes('/breakdown.json') || x.includes('/occurrence/facets'))) {
+      expect(u).toContain(`data_hub_uid:${settings.dataHub}`);
+    }
+    const badges = page.locator('#accordion-home-institutions .la-entity__badge');
+    await expect(badges).toHaveCount(settings.dataHubToFlag ? 3 : 0);
   });
 });
 

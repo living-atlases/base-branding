@@ -2,6 +2,7 @@
 // through page.route under the base URL baked into it, so the pages load as in production.
 import fs from 'node:fs';
 import path from 'node:path';
+import settings from '../../app/js/settings.js';
 
 export const root = path.resolve(import.meta.dirname, '../..');
 export const dist = path.join(root, 'dist');
@@ -72,6 +73,9 @@ export const INSTITUTIONS = [
   { label: 'University of Birnin Zana', fq: 'institution_uid:in3', count: 1200 }
 ];
 
+const institutionList = () =>
+  Array.from({ length: 30 }, (_, i) => ({ uid: `in${i + 1}`, name: `Institution ${String(i + 1).padStart(2, '0')}` }));
+
 // Stubs of the services the widgets call, or null for any other request
 export function serviceStub(url, { kingdoms = KINGDOMS } = {}) {
   if (url.pathname.endsWith('/breakdown.json')) {
@@ -80,10 +84,15 @@ export function serviceStub(url, { kingdoms = KINGDOMS } = {}) {
   }
   if (url.pathname.endsWith('/occurrence/facets')) return json([{ fieldResult: INSTITUTIONS }]);
   // The collectory list of institutions: more than the institutions widget shows at first
-  if (url.pathname.endsWith('/ws/institution')) {
-    return json(Array.from({ length: 30 }, (_, i) => ({ uid: `in${i + 1}`, name: `Institution ${String(i + 1).padStart(2, '0')}` })));
-  }
+  if (url.pathname.endsWith('/ws/institution')) return json(institutionList());
   if (url.pathname.endsWith('/ws/dataResource/count') || url.pathname.endsWith('/ws/institution/count')) return json({ total: 30 });
+  // A data hub (settings.dataHub): the same 30 institutions as members. The hub of
+  // settings.dataHubToFlag has the first three.
+  const hub = url.pathname.match(/\/ws\/dataHub\/([\w-]+)$/);
+  if (hub) {
+    const n = hub[1] === settings.dataHubToFlag ? 3 : 30;
+    return json({ uid: hub[1], memberInstitutions: institutionList().slice(0, n), memberCollections: [], memberDataResources: [] });
+  }
   return null;
 }
 

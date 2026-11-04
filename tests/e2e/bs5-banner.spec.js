@@ -26,9 +26,11 @@ test('the Bootstrap 5 header is translated and its dropdowns open', async ({ pag
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
   await openBs5(page);
-  await expect(page.locator('#la-header [data-i18n="nav.collectory"]')).not.toBeEmpty();
-  await page.locator('#dropdown-lang .dropdown-toggle').click();
-  await expect(page.locator('#dropdown-lang .dropdown-menu')).toBeVisible();
+  await expect(page.locator('#la-header [data-i18n="nav.biocache"]').first()).not.toBeEmpty();
+  // The language menu, or with a single language (no menu) the account one
+  const menu = page.locator(settings.enabledLangs.length > 1 ? '#dropdown-lang' : '#la-header .la-account');
+  await menu.locator('.dropdown-toggle').click();
+  await expect(menu.locator('.dropdown-menu')).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -43,6 +45,15 @@ test('header and footer take the shared tokens and the theme font', async ({ pag
   const { font } = resolveBrand(settings);
   const faces = await page.evaluate(family => [...document.fonts].filter(f => f.family.replace(/"/g, '') === family).map(f => f.status), font);
   expect(faces, font).toContain('loaded');
+});
+
+test('the footer shows brand.footerLogo as it is, or the logo on a white box', async ({ page }) => {
+  await openBs5(page);
+  const { logo, footerLogo } = resolveBrand(settings);
+  const img = page.locator('#la-footer .la-footer__brand img');
+  expect(await img.getAttribute('src')).toContain(footerLogo || logo);
+  const bg = await img.evaluate(e => getComputedStyle(e).backgroundColor);
+  expect(bg).toBe(footerLogo ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)');
 });
 
 test('on a short page the footer sits at the bottom of the window', async ({ page }) => {

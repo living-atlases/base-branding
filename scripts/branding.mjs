@@ -92,12 +92,41 @@ export function stripFontImports(cssDir) {
   }
 }
 
+export const localeNames = { en: 'English', es: 'Español', ca: 'Català', zh: '简体中文', sw: 'Swahili', pt: 'Português', fr: 'Français' };
+
+// The language menu of the header with the settings.enabledLangs, or nothing with a single language
+export function langMenu(settings, { bs5 = false } = {}) {
+  const langs = settings.enabledLangs || [];
+  if (langs.length < 2) return '';
+  const item = l => (bs5
+    ? `<li class="locale-link" data-locale="${escapeHtml(l)}"><a class="dropdown-item ${escapeHtml(l)}-locale-link" href="#"><span class="lang_link_${escapeHtml(l)}">${escapeHtml(localeNames[l] || l)}</span></a></li>`
+    : `<li class="locale-link" data-locale="${escapeHtml(l)}"><a class="${escapeHtml(l)}-locale-link" href="#"><span class="lang_link_${escapeHtml(l)}">${escapeHtml(localeNames[l] || l)}</span></a></li>`);
+  const items = langs.map(item).join('\n            ');
+  return bs5
+    ? `<li id="dropdown-lang" class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Language"><i class="fa-solid fa-globe" aria-hidden="true"></i></a>
+            <ul class="locale-switcher dropdown-menu dropdown-menu-end dropdown-lang-menu">
+            ${items}
+            </ul>
+          </li>`
+    : `<li id="dropdown-lang" class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+          <ul class="locale-switcher dropdown-menu dropdown-menu-right dropdown-lang-menu">
+            ${items}
+          </ul>
+        </li>`;
+}
+
 // ::token:: values of the header and footer fragments, the same in both builds
 export function brandTokens(settings, baseUrl) {
-  const { logo } = resolveBrand(settings);
+  const { logo, footerLogo } = resolveBrand(settings);
   const footer = footerOf(settings);
   return {
     brandLogo: escapeHtml(assetUrl(baseUrl, logo)),
+    // brand.footerLogo: a version of the logo for the footer background, shown as it is (no white box)
+    footerLogo: escapeHtml(assetUrl(baseUrl, footerLogo || logo)),
+    footerLogoClass: footerLogo ? 'la-brand__logo la-brand__logo--plain' : 'la-brand__logo',
+    langMenu: langMenu(settings),
     footerLinks: (footer.links || []).map(l => link(settings, l)).join('\n          '),
     footerSocial: (footer.social || []).map(s =>
       `<a href="${escapeHtml(safeUrl(s.url))}" rel="noopener">${escapeHtml(s.name)}</a>`).join('\n        ')

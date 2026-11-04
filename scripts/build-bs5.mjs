@@ -10,7 +10,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import settings from '../app/js/settings.js';
 import { buildCommonui } from './build-commonui.mjs';
-import { brandTokens, writeBrandAssets, stripFontImports } from './branding.mjs';
+import { brandTokens, langMenu, writeBrandAssets, stripFontImports } from './branding.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'dist', 'bs5');
@@ -34,12 +34,8 @@ fs.copyFileSync(path.join(root, 'app/themes/clean/css/la-brand.css'), path.join(
 fs.copyFileSync(path.join(root, 'app/bs5/htaccess'), path.join(out, '.htaccess'));
 
 // 3. Templates: ::token:: are build time values, {{token}} are rendered by the app at runtime
-const localeNames = { en: 'English', es: 'Español', zh: '简体中文', sw: 'Swahili', pt: 'Português', fr: 'Français' };
-const localeLinks = settings.enabledLangs.map(l =>
-  `              <li class="locale-link" data-locale="${l}"><a class="dropdown-item ${l}-locale-link" href="#"><span class="lang_link_${l}">${localeNames[l] || l}</span></a></li>`
-).join('\n');
 const tokens = {
-  buildTimestamp, baseUrl, LOCALE_LINKS: localeLinks,
+  buildTimestamp, baseUrl,
   centralServer: settings.mainLAUrl,
   collectoryURL: settings.services.collectory.url,
   datasetsURL: `${settings.services.collectory.url}/datasets`,
@@ -50,7 +46,8 @@ const tokens = {
   spatialURL: settings.services.spatial.url,
   casURL: settings.services.cas.url,
   imagesURL: settings.services.images.url,
-  ...brandTokens(settings, baseUrl)
+  ...brandTokens(settings, baseUrl),
+  langMenu: langMenu(settings, { bs5: true })
 };
 // The footer is the Bootstrap 3 one: its markup does not depend on Bootstrap
 const sources = { footer: 'app/themes/clean/assets/footer.html' };
