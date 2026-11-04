@@ -19,7 +19,15 @@ export function drawInstChart(Highcharts, container) {
       plotOptions: {
         pie: {
           allowPointSelect: true, cursor: 'pointer', colors: pieColors(Highcharts, 'inst'),
-          dataLabels: { minFontSize: 8 }
+          // Highcharts shrinks the pie to make room for every label, and with dozens of long
+          // institution names it ends up a coin: fix its size and label only the big slices
+          // (the tooltip names the rest)
+          size: '70%',
+          dataLabels: {
+            minFontSize: 8, distance: 16,
+            filter: { property: 'percentage', operator: '>', value: 3 },
+            style: { width: '130px', textOverflow: 'clip' }
+          }
         },
         series: { borderWidth: 0, dataLabels: { enabled: true } }
       },

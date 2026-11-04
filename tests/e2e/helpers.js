@@ -77,14 +77,14 @@ const institutionList = () =>
   Array.from({ length: 30 }, (_, i) => ({ uid: `in${i + 1}`, name: `Institution ${String(i + 1).padStart(2, '0')}` }));
 
 // Stubs of the services the widgets call, or null for any other request
-export function serviceStub(url, { kingdoms = KINGDOMS } = {}) {
+export function serviceStub(url, { kingdoms = KINGDOMS, institutions = INSTITUTIONS } = {}) {
   if (url.pathname.endsWith('/breakdown.json')) {
     // The drilled call carries name=<the clicked level>; the first one does not.
     return json({ taxa: url.searchParams.get('name') ? PHYLA : kingdoms });
   }
   // The big numbers (stats widget) of a build without settings.isDevel, which mocks them
   if (url.pathname.endsWith('/occurrences/search')) return json({ totalRecords: 86965283 });
-  if (url.pathname.endsWith('/occurrence/facets')) return json([{ fieldResult: INSTITUTIONS }]);
+  if (url.pathname.endsWith('/occurrence/facets')) return json([{ fieldResult: institutions }]);
   // The collectory list of institutions: more than the institutions widget shows at first
   if (url.pathname.endsWith('/ws/institution')) return json(institutionList());
   if (url.pathname.endsWith('/ws/dataResource/count') || url.pathname.endsWith('/ws/institution/count')) return json({ total: 30 });

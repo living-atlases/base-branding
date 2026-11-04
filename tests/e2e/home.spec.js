@@ -18,7 +18,7 @@ import { root, readDist, brandingBase, distFile, serviceStub, KINGDOMS, PHYLA, I
 const on = widgetsOf(settings);
 const home = homeOf(settings);
 
-async function openHome(page, { kingdoms, lang = 'en' } = {}) {
+async function openHome(page, { kingdoms, institutions, lang = 'en' } = {}) {
   const base = brandingBase();
   // window.open(...).focus() is what a slice does; record it instead.
   await page.addInitScript(() => {
@@ -27,7 +27,7 @@ async function openHome(page, { kingdoms, lang = 'en' } = {}) {
   });
   await page.route('**/*', async route => {
     const url = new URL(route.request().url());
-    const stub = serviceStub(url, { kingdoms });
+    const stub = serviceStub(url, { kingdoms, institutions });
     if (stub) return route.fulfill(stub);
     const file = distFile(url.origin + url.pathname, base);
     if (file) return route.fulfill(file);
@@ -177,6 +177,22 @@ test.describe('home charts', () => {
     await expect.poll(() => page.evaluate(() => window.__opened)).toContain(
       `${settings.services.biocache.url}/occurrences/search?fq=${encodeURIComponent(INSTITUTIONS[0].fq)}`
     );
+  });
+
+  // Highcharts shrinks a pie to make room for its labels: with dozens of long institution names
+  // it was left a coin in the middle of its box
+  test('the institutions pie keeps its size with many long names', async ({ page }) => {
+    const institutions = Array.from({ length: 40 }, (_, i) => ({
+      label: `Departamento de Biología Vegetal ${i + 1}, Facultad de Ciencias, Universidad de Wakanda`,
+      fq: `institution_uid:in${i + 1}`, count: 40000 - i * 900
+    }));
+    await openHome(page, { institutions });
+    await expect(slices(page, 'inst-container')).toHaveCount(institutions.length);
+    const { diameter, box } = await page.evaluate(() => {
+      const c = window.Highcharts.charts.find(ch => ch && ch.renderTo.id === 'inst-container');
+      return { diameter: c.series[0].center[2], box: Math.min(c.plotWidth, c.plotHeight) };
+    });
+    expect(diameter).toBeGreaterThanOrEqual(box * 0.65);
   });
 
   test('names from the API are shown as text, never as markup', async ({ page }) => {
