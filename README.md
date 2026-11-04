@@ -286,7 +286,16 @@ Pull Request welcome!
 
 ## Screenshots
 
-### Clean and Bootswatch themes
+### Every theme
+
+The home page on a phone, as the theme picker of the LA Toolkit shows it (`screenshots/<theme>.png`):
+
+<table>
+<tr><td align="center"><img src="screenshots/clean.png" width="150" alt="clean"><br><code>clean</code><br><sub>Inter</sub></td><td align="center"><img src="screenshots/cosmo.png" width="150" alt="cosmo"><br><code>cosmo</code><br><sub>Space Grotesk</sub></td><td align="center"><img src="screenshots/darkly.png" width="150" alt="darkly"><br><code>darkly</code><br><sub>Outfit</sub></td><td align="center"><img src="screenshots/flatly.png" width="150" alt="flatly"><br><code>flatly</code><br><sub>Plus Jakarta Sans</sub></td><td align="center"><img src="screenshots/paper.png" width="150" alt="paper"><br><code>paper</code><br><sub>Nunito</sub></td></tr>
+<tr><td align="center"><img src="screenshots/sandstone.png" width="150" alt="sandstone"><br><code>sandstone</code><br><sub>Work Sans, Fraunces</sub></td><td align="center"><img src="screenshots/simplex.png" width="150" alt="simplex"><br><code>simplex</code><br><sub>Manrope</sub></td><td align="center"><img src="screenshots/slate.png" width="150" alt="slate"><br><code>slate</code><br><sub>IBM Plex Sans</sub></td><td align="center"><img src="screenshots/superhero.png" width="150" alt="superhero"><br><code>superhero</code><br><sub>Sora</sub></td><td align="center"><img src="screenshots/yeti.png" width="150" alt="yeti"><br><code>yeti</code><br><sub>Figtree</sub></td></tr>
+</table>
+
+### Desktop
 
 Home page (Bootstrap 3), `clean`, `flatly` and `darkly`:
 
@@ -303,8 +312,6 @@ A Bootstrap 5 module page with the same header and footer, with the `clean`, `fl
 ![](screenshots/bs5/flatly.png)
 
 ![](screenshots/bs5/darkly.png)
-
-Thumbnails of every theme: `screenshots/<theme>.png`.
 
 ## Error pages
 
