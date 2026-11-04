@@ -1,5 +1,6 @@
 import './settings.js';
 import './index-auth.js';
+import './login-return.js'; // the login link returns to this page
 import './i18next-config.js';
 import './mante.js';
 import './widgets/index.js'; // optional home widgets: settings.homeWidgets

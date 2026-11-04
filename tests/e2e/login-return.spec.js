@@ -1,0 +1,47 @@
+// The login link of the banner must bring the visitor back to the page they were on: with the
+// bare CAS login URL (what the build and the ALA apps put there) CAS stays on its own page.
+// Run after `npm run build`.
+import { test, expect } from '@playwright/test';
+import settings from '../../app/js/settings.js';
+import { addLoginReturn } from '../../app/js/login-return.js';
+import { brandingBase, distFile, serviceStub } from './helpers.js';
+
+const fakeRoot = hrefs => {
+  const links = hrefs.map(href => ({ href, getAttribute: () => href, setAttribute(_, v) { this.href = v; } }));
+  return { links, querySelectorAll: () => links };
+};
+
+test('the home login link returns to the home', async ({ page }) => {
+  const base = brandingBase();
+  await page.route('**/*', route => {
+    const url = new URL(route.request().url());
+    const stub = serviceStub(url);
+    if (stub) return route.fulfill(stub);
+    const file = distFile(url.origin + url.pathname, base);
+    return file ? route.fulfill(file) : route.abort();
+  });
+  await page.goto(`${base}/?lang=en`);
+  const href = await page.locator('a.loginBtn').first().getAttribute('href');
+  const url = new URL(href);
+  expect(url.origin + url.pathname).toBe(`${settings.services.cas.url}/cas/login`);
+  expect(url.searchParams.get('service')).toBe(`${base}/?lang=en`);
+});
+
+test('a login link that already has its service is left alone', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/login?service=https%3A%2F%2Fapp.example.org%2Fx']);
+  addLoginReturn(root, 'https://hub.example.org/page');
+  expect(root.links[0].href).toBe('https://auth.example.org/cas/login?service=https%3A%2F%2Fapp.example.org%2Fx');
+});
+
+test('the CAS ticket and the hash of the page are not sent back as the service', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/login']);
+  addLoginReturn(root, 'https://hub.example.org/registros/search?q=a&ticket=ST-1#top');
+  const url = new URL(root.links[0].href);
+  expect(url.searchParams.get('service')).toBe('https://hub.example.org/registros/search?q=a');
+});
+
+test('links that are not a CAS login are not touched', () => {
+  const root = fakeRoot(['/login', 'https://auth.example.org/userdetails/myprofile/']);
+  addLoginReturn(root, 'https://hub.example.org/');
+  expect(root.links.map(l => l.href)).toEqual(['/login', 'https://auth.example.org/userdetails/myprofile/']);
+});
