@@ -48,6 +48,44 @@ test('a crafted ?lang= does not travel on in the service', () => {
   expect(root.links[0].href).not.toContain('onerror');
 });
 
+// The ALA apps sign in by OIDC: the bare CAS login leaves them signed out. On their pages the
+// link goes to the app's /login?path= (ala-auth's LoginController), which comes back to the page
+const SERVICES = {
+  biocache: { url: 'https://hub.example.org/registros' },
+  bie: { url: 'https://especies.example.org' },
+  cas: { url: 'https://auth.example.org' }
+};
+
+test('on a page of an app under a path the link goes to its /login with the page as path', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/login']);
+  addLoginReturn(root, 'https://hub.example.org/registros/occurrences/search?q=lynx&lang=es#map', SERVICES);
+  const url = new URL(root.links[0].href);
+  expect(url.origin + url.pathname).toBe('https://hub.example.org/registros/login');
+  expect(url.searchParams.get('path')).toBe('/registros/occurrences/search?q=lynx');
+});
+
+test('on a page of an app on its own host the link goes to that host /login', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/login']);
+  addLoginReturn(root, 'https://especies.example.org/species/2435261', SERVICES);
+  const url = new URL(root.links[0].href);
+  expect(url.origin + url.pathname).toBe('https://especies.example.org/login');
+  expect(url.searchParams.get('path')).toBe('/species/2435261');
+});
+
+test('on the home of a hub, outside its apps, the link stays on CAS with the home as service', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/login']);
+  addLoginReturn(root, 'https://hub.example.org/', SERVICES);
+  const url = new URL(root.links[0].href);
+  expect(url.origin + url.pathname).toBe('https://auth.example.org/cas/login');
+  expect(url.searchParams.get('service')).toBe('https://hub.example.org/');
+});
+
+test('a path that only starts like an app is not taken for it', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/login']);
+  addLoginReturn(root, 'https://hub.example.org/registros-old/x', SERVICES);
+  expect(new URL(root.links[0].href).pathname).toBe('/cas/login');
+});
+
 test('links that are not a CAS login are not touched', () => {
   const root = fakeRoot(['/login', 'https://auth.example.org/userdetails/myprofile/']);
   addLoginReturn(root, 'https://hub.example.org/');
