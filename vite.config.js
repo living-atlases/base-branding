@@ -406,7 +406,7 @@ const copyCommands = [
 // to in production.
 const initLibConfig = defineConfig({
   base: `${baseUrl}/`,
-  plugins: [jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } })],
+  plugins: [jscc({ values: { _LOCALES_URL: baseUrl, _BUILD_ID: buildTimestamp, _DEBUG: 1 } })],
   build: {
     emptyOutDir: false,
     cssCodeSplit: false,
@@ -437,7 +437,7 @@ const mainConfig = defineConfig({
     generateSpatialLayout(),
     emitJqueryFallback(),
     hotReloadSpatial(),
-    jscc({ values: { _LOCALES_URL: baseUrl, _DEBUG: 1 } }),
+    jscc({ values: { _LOCALES_URL: baseUrl, _BUILD_ID: buildTimestamp, _DEBUG: 1 } }),
     VitePluginRadar({ analytics: { id: settings.analytics.googleId } }),
   ],
   build: {

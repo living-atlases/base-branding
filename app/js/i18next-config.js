@@ -12,7 +12,9 @@ import { mountCookieConsent } from './cookie-consent.js';
 const backOpts = {
   // Something like: https://vtatlasoflife.org/basic-brand-2020//locales/es/common
   // More options: https://github.com/i18next/i18next-http-backend
-  loadPath: '$_LOCALES_URL/locales/{{lng}}/{{ns}}', // in the original .json
+  // ?v= changes with every build: the locales go out without cache headers, so a browser
+  // would otherwise keep the texts of an older branding for weeks
+  loadPath: '$_LOCALES_URL/locales/{{lng}}/{{ns}}?v=$_BUILD_ID', // in the original .json
 
   // allow cross domain requests
   crossDomain: true,
