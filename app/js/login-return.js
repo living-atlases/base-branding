@@ -7,6 +7,8 @@ const isCasLogin = url => /\/cas\/login\/?$/.test(url.pathname);
 export function addLoginReturn(root = document, here = window.location.href) {
   const back = new URL(here);
   back.searchParams.delete('ticket'); // the one CAS appends when it comes back
+  // the language is in the i18next cookie already, and a crafted ?lang= must not travel on
+  back.searchParams.delete('lang');
   back.hash = '';
   root.querySelectorAll('a.loginBtn').forEach(a => {
     let url;

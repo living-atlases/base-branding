@@ -24,7 +24,7 @@ test('the home login link returns to the home', async ({ page }) => {
   const href = await page.locator('a.loginBtn').first().getAttribute('href');
   const url = new URL(href);
   expect(url.origin + url.pathname).toBe(`${settings.services.cas.url}/cas/login`);
-  expect(url.searchParams.get('service')).toBe(`${base}/?lang=en`);
+  expect(url.searchParams.get('service')).toBe(`${base}/`);
 });
 
 test('a login link that already has its service is left alone', () => {
@@ -38,6 +38,14 @@ test('the CAS ticket and the hash of the page are not sent back as the service',
   addLoginReturn(root, 'https://hub.example.org/registros/search?q=a&ticket=ST-1#top');
   const url = new URL(root.links[0].href);
   expect(url.searchParams.get('service')).toBe('https://hub.example.org/registros/search?q=a');
+});
+
+test('a crafted ?lang= does not travel on in the service', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/login']);
+  addLoginReturn(root, 'https://hub.example.org/?lang=%3Cimg%20onerror%3Dx%3E&q=a');
+  const service = new URL(root.links[0].href).searchParams.get('service');
+  expect(service).toBe('https://hub.example.org/?q=a');
+  expect(root.links[0].href).not.toContain('onerror');
 });
 
 test('links that are not a CAS login are not touched', () => {
