@@ -10,7 +10,15 @@ const dh = settings.dataHub;
 
 const lang = () => (window.i18next && window.i18next.resolvedLanguage) || 'en';
 
-const setCounter = (id, val) => {
+// The numbers can arrive before i18next has resolved the language, and would come out in English
+const whenLang = cb => {
+  const i18n = window.i18next;
+  if (!i18n || i18n.resolvedLanguage) return cb();
+  const go = () => { i18n.off('initialized', go); cb(); };
+  i18n.on('initialized', go);
+};
+
+const setCounter = (id, val) => whenLang(() => {
   const el = document.getElementById(id);
   if (!el || typeof val !== 'number') return;
   // If testing set some dummy value
@@ -26,7 +34,7 @@ const setCounter = (id, val) => {
   } else {
     console.error(countUp.error);
   }
-};
+});
 
 const getStats = (url, callback) => {
   // As many times during development, the LA portal is not returning stats, let's mock this a bit

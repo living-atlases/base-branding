@@ -82,6 +82,8 @@ export function serviceStub(url, { kingdoms = KINGDOMS } = {}) {
     // The drilled call carries name=<the clicked level>; the first one does not.
     return json({ taxa: url.searchParams.get('name') ? PHYLA : kingdoms });
   }
+  // The big numbers (stats widget) of a build without settings.isDevel, which mocks them
+  if (url.pathname.endsWith('/occurrences/search')) return json({ totalRecords: 86965283 });
   if (url.pathname.endsWith('/occurrence/facets')) return json([{ fieldResult: INSTITUTIONS }]);
   // The collectory list of institutions: more than the institutions widget shows at first
   if (url.pathname.endsWith('/ws/institution')) return json(institutionList());

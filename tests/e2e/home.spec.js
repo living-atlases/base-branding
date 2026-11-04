@@ -18,7 +18,7 @@ import { root, readDist, brandingBase, distFile, serviceStub, KINGDOMS, PHYLA, I
 const on = widgetsOf(settings);
 const home = homeOf(settings);
 
-async function openHome(page, { kingdoms } = {}) {
+async function openHome(page, { kingdoms, lang = 'en' } = {}) {
   const base = brandingBase();
   // window.open(...).focus() is what a slice does; record it instead.
   await page.addInitScript(() => {
@@ -33,7 +33,7 @@ async function openHome(page, { kingdoms } = {}) {
     if (file) return route.fulfill(file);
     return route.abort();
   });
-  await page.goto(`${base}/?lang=en`);
+  await page.goto(`${base}/?lang=${lang}`);
   await page.waitForLoadState('load');
   return { base };
 }
@@ -222,6 +222,19 @@ test.describe('data hub', () => {
     }
     const badges = page.locator('#accordion-home-institutions .la-entity__badge');
     await expect(badges).toHaveCount(settings.dataHubToFlag ? 3 : 0);
+  });
+});
+
+test.describe('stats', () => {
+  test.skip(!on.stats, 'stats widget off in this build');
+
+  // The numbers can arrive before i18next has resolved the language: they must still come out in it
+  test('formats the numbers in the page language', async ({ page }) => {
+    await openHome(page, { lang: 'es' });
+    const occ = page.locator('#stats_occurrences.loaded_stats');
+    await expect(occ).toHaveCount(1);
+    const n = Number((await occ.textContent()).replace(/\D/g, ''));
+    expect(await occ.textContent()).toBe(new Intl.NumberFormat('es').format(n));
   });
 });
 
