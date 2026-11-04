@@ -6,10 +6,14 @@ import settings from './settings.js';
 // - on a page of one of the apps (settings.services), the link goes to that app's /login?path=,
 //   ala-auth's LoginController: it signs in by OIDC and comes back to this page;
 // - anywhere else (the static home) it goes to CAS with ?service= this page.
+// The logout link gets the way back too: an app's own /logout (what the apps put there) and the
+// bare CAS logout (the home) both take ?url=, and without it they land on the app root or on CAS.
 
 const APPS = ['biocache', 'bie', 'regions', 'lists', 'collectory', 'spatial', 'images', 'alerts', 'doi', 'dashboard'];
 
 const isCasLogin = url => /\/cas\/login\/?$/.test(url.pathname);
+const isLogout = url => /\/logout\/?$/.test(url.pathname);
+const hasReturn = url => ['url', 'appUrl', 'service'].some(k => url.searchParams.has(k));
 
 // The app whose URL is the longest prefix of the page
 function appOf(page, services) {
@@ -37,11 +41,19 @@ export function addLoginReturn(root = document, here = window.location.href, ser
   back.searchParams.delete('lang');
   back.hash = '';
   const app = appOf(back, services);
-  root.querySelectorAll('a.loginBtn').forEach(a => {
+  root.querySelectorAll('a.loginBtn, a.logoutBtn').forEach(a => {
     let url;
     try {
       url = new URL(a.getAttribute('href') || '', back);
     } catch (e) {
+      return;
+    }
+    if (/\blogoutBtn\b/.test(a.className || '')) {
+      // CAS, or an app of this same host
+      if (isLogout(url) && !hasReturn(url) && (/\/cas\/logout\/?$/.test(url.pathname) || url.origin === back.origin)) {
+        url.searchParams.set('url', back.href);
+        a.setAttribute('href', url.href);
+      }
       return;
     }
     if (!isCasLogin(url) || url.searchParams.has('service')) return;
