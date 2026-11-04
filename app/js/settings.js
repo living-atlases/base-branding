@@ -15,46 +15,72 @@ export default {
   brand: {
     logo: 'images/logo.svg', // relative to this branding, or an absolute URL
     colors: {
-      // primary: '#1b6e5a', // links, buttons, the active menu item and the big numbers
-      // primaryDark: '#0f3f34', // footer background
-      // accent: '#e3a72f', // main hero button
+      // primary: '#00838f', // links, buttons and the big numbers
+      // primaryDark: '#00484f', // footer background
+      // accent: '#ffb703', // search button
+      // headerBg: '#ffffff', // header background; its text and accent follow from it
     },
-    // font: 'Inter', // 'Inter' is bundled; any other name must be loaded by your pages
+    // font: 'Inter', // body text; headingFont: titles (the font by default). A font with an
+    //   @fontsource-variable package in node_modules is bundled; any other must be loaded by your pages
+    // radius: 8, // px, corners of buttons, cards and menus
   },
   home: {
     hero: {
       interval: 7000, // ms between slides; slides never move by themselves with prefers-reduced-motion
       // Credits are shown as plain text under the (i) button; leave out what you don't know.
+      // position: the CSS background-position of the image, for the part that stays when a narrow
+      // screen crops it. These photos come from GBIF records (images/CREDITS.md).
       slides: [
-        // { image, species, institution, author, license, licenseUrl, recordUrl }
-        { image: 'images/slide01.jpg', species: 'Vespidae' },
-        { image: 'images/slide3.png', species: 'Felis catus' }
+        // { image, position, species, institution, author, license, licenseUrl, recordUrl }
+        {
+          image: 'images/hero-orca.jpg', position: '35% 50%', species: 'Orcinus orca', institution: 'iNaturalist (via GBIF)',
+          author: 'Евгений Егорейченков', license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/', recordUrl: 'https://www.gbif.org/occurrence/2980844512'
+        },
+        {
+          image: 'images/hero-kingfisher.jpg', position: '45% 50%', species: 'Alcedo atthis', institution: 'iNaturalist (via GBIF)',
+          author: 'Frank Sengpiel', license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/', recordUrl: 'https://www.gbif.org/occurrence/1993731423'
+        },
+        {
+          image: 'images/hero-dolphin.jpg', position: '55% 50%', species: 'Delphinidae', institution: 'iNaturalist (via GBIF)',
+          author: 'Daniel', license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/', recordUrl: 'https://www.gbif.org/occurrence/4121112404'
+        },
+        {
+          image: 'images/hero-rosella.jpg', position: '62% 50%', species: 'Platycercus elegans', institution: 'iNaturalist (via GBIF)',
+          author: 'Ellen Rykers', license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/', recordUrl: 'https://www.gbif.org/occurrence/1993726184'
+        },
+        {
+          image: 'images/hero-nudibranch.jpg', position: '50% 40%', species: 'Felimare californiensis', institution: 'iNaturalist (via GBIF)',
+          author: 'Madeleine Claire', license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/', recordUrl: 'https://www.gbif.org/occurrence/3466156222'
+        }
       ],
-      // Buttons under the slogan: the text is the i18n key, the url can use the service names;
+      // Search box: a GET form to url with the text in param; search: false hides it
+      search: { url: '{biocache}/occurrences/search', param: 'q' },
+      // Buttons under the search box: the text is the i18n key, the url can use the service names;
       // style: 'accent', 'primary' or 'ghost' (outlined)
       buttons: [
-        { i18n: 'index.hero.search', url: '{biocache}/search', style: 'accent' },
+        { i18n: 'index.hero.area', url: '{biocache}/explore/your-area/', style: 'primary' },
         { i18n: 'index.hero.collections', url: '{collectory}', style: 'ghost' }
       ]
     },
     // Cards of the home: title, text and link text are the <i18n>.title, .text and .link keys
+    // (CC0 photos from GBIF records, images/CREDITS.md)
     cards: [
-      { i18n: 'index.cards.area', image: 'images/slide3.png', url: '{biocache}/explore/your-area/' },
-      { i18n: 'index.cards.spatial', image: 'images/slide2.jpg', url: '{spatial}' },
-      { i18n: 'index.cards.collections', image: 'images/slide01.jpg', url: '{collectory}' }
+      { i18n: 'index.cards.area', image: 'images/card-swallowtail.jpg', url: '{biocache}/explore/your-area/' },
+      { i18n: 'index.cards.spatial', image: 'images/card-jellyfish.jpg', url: '{spatial}' },
+      { i18n: 'index.cards.collections', image: 'images/card-conure.jpg', url: '{collectory}' }
     ],
     partners: [
       { name: 'GBIF', logo: 'images/gbif.png', url: 'https://www.gbif.org' },
       { name: 'TDWG', logo: 'images/tdwg.png', url: 'https://www.tdwg.org' }
     ]
   },
-  // Optional widgets: each one draws only when it is true here and its container is on the page
+  // Home widgets, all on by default: each one draws only when it is true here and its container is on the page
   // (indexBody.html has all of them). Charts load Highcharts from this branding on demand.
   homeWidgets: {
     stats: true, // big numbers: occurrences, datasets, institutions, species (#stats_*)
     taxoChart: true, // records by kingdom, drilling down to species (#taxo-container)
     instChart: true, // records by institution (#inst-container)
-    institutions: false // institutions with their collections and data resources (#accordion-home-institutions)
+    institutions: true // institutions with their collections and data resources (#accordion-home-institutions)
   },
   // null: the widgets count the whole portal. A data hub uid ('dh1'): only that hub.
   dataHub: null,
@@ -62,7 +88,8 @@ export default {
   dataHubToFlag: null,
   // flagBadge: { image: 'images/flag.png', title: 'Member of ...', url: 'https://...' }, // no image: a text pill
   institutionsExclude: [], // institution uids the institutions widget leaves out
-  // chartColors: { taxo: '#1b6e5a', inst: '#e3a72f' }, // base colour of each pie (default: brand primary, accent)
+  institutionsShow: 12, // institution cards shown before "show all" (a filter appears with more)
+  // chartColors: { taxo: '#00838f', inst: '#ffb703' }, // base colour of each pie (default: brand primary, accent)
   footer: {
     // Last column of the footer: the text is the i18n key
     links: [

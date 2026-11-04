@@ -43,6 +43,12 @@
         ".andon/checks.json"
       ],
       "run": "npm run build && grep -q 'fathom' dist/js/init.js && grep -q 'fathom.trackEvent' dist/js/application.js"
+    },
+    {
+      "match": [
+        "scripts/demo.mjs"
+      ],
+      "run": "rm -rf /tmp/la-demo-check && DEMO_OUT=/tmp/la-demo-check node scripts/demo.mjs clean && test -f /tmp/la-demo-check/clean/index.html && grep -q 'data-t=\"clean\"' /tmp/la-demo-check/index.html && grep -q 'localhost:4180/clean' /tmp/la-demo-check/clean/banner.html"
     }
   ]
 }

@@ -6,7 +6,7 @@ import { localize, onReady } from '../utils/i18n-ready.js';
 import { homeOf } from '../utils/defaults.js';
 import { mountHero } from './hero-carousel.js';
 
-// The home page (index.html only): hero buttons, cards and partners from settings.home.
+// The home page (index.html only): hero search box and buttons, cards and partners from settings.home.
 // Texts are i18n keys, so they go through data-i18n like the rest of the page.
 
 const home = homeOf(settings);
@@ -18,6 +18,15 @@ const el = (tag, attrs = {}, children = []) => {
 };
 const url = u => safeUrl(serviceUrl(settings, u));
 
+// A plain GET form: no autocomplete, so it doesn't touch the header search (autocompleteHeader)
+function mountSearch(form) {
+  const search = (home.hero && home.hero.search) ?? {};
+  if (!search) return;
+  form.action = url(search.url || '{biocache}/occurrences/search');
+  form.querySelector('input').name = search.param || 'q';
+  form.hidden = false;
+}
+
 function mountButtons(box) {
   for (const b of (home.hero && home.hero.buttons) || []) {
     box.append(el('a', { class: `la-btn la-btn--${b.style || 'primary'}`, href: url(b.url), 'data-i18n': b.i18n }));
@@ -27,7 +36,7 @@ function mountButtons(box) {
 function mountCards(box) {
   for (const c of home.cards || []) {
     box.append(el('a', { class: 'la-card', href: url(c.url) }, [
-      c.image ? el('img', { src: assetUrl(brandingBase, c.image), alt: '', loading: 'lazy' }) : '',
+      c.image ? el('div', { class: 'la-card__img' }, [el('img', { src: assetUrl(brandingBase, c.image), alt: '', loading: 'lazy' })]) : '',
       el('div', { class: 'la-card__body' }, [
         el('h3', { 'data-i18n': `${c.i18n}.title` }),
         el('p', { 'data-i18n': `${c.i18n}.text` }),
@@ -54,6 +63,7 @@ onReady(() => {
   if (!hero) return;
   mountHero(hero, home.hero, brandingBase);
   const parts = [
+    [hero.querySelector('.la-hero__search'), mountSearch],
     [hero.querySelector('.la-hero__buttons'), mountButtons],
     [document.getElementById('la-home-cards'), mountCards],
     [document.getElementById('la-home-partners'), mountPartners]

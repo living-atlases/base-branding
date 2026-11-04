@@ -49,7 +49,7 @@ Other strategy is to have an independent CMS theme with their own js/css and a s
 
 ALA uses Bootstrap 3 in most of their modules and Bootstrap 5 in the newer ones. This branding builds both (`npm run build`), and both share the same look: a thin white header with the logo and name on the left and the menu, search, language and login on the right, and a footer of several columns. The home page has a full-bleed hero carousel with image credits, big numbers, cards, optional charts and a strip of partners.
 
-Themes live in `app/themes`. `clean` is the default and the base of the [Bootswatch 3](https://bootswatch.com/3/) themes (`cosmo`, `darkly`, `flatly`, `paper`, `sandstone`, `simplex`, `slate`, `superhero`, `yeti`): each one loads its `bootstrap.min.css` and takes its brand colour, and the header stays white on the dark ones. Pick one with `theme` in `app/js/settings.js`. The Bootstrap 5 build has no Bootswatch: it takes the colours of the theme you pick.
+Themes live in `app/themes`. `clean` is the default and the base of the [Bootswatch 3](https://bootswatch.com/3/) themes (`cosmo`, `darkly`, `flatly`, `paper`, `sandstone`, `simplex`, `slate`, `superhero`, `yeti`): each one loads its `bootstrap.min.css` and has its own look: brand and navbar colours, a font and a corner radius (`presets` in `app/js/utils/brand.js`). Pick one with `theme` in `app/js/settings.js`. The Bootstrap 5 build has no Bootswatch: it takes the colours of the theme you pick.
 
 The experimental `material` theme is discontinued: a `theme: 'material'` now builds as `clean`.
 
@@ -59,33 +59,51 @@ Everything is in `app/js/settings.js`; the texts are in the locales (`app/assets
 
 | What | Where |
 |---|---|
-| Colours, font, logo | `brand`: `colors.primary` (links, buttons, active menu item), `colors.primaryDark` (footer), `colors.accent` (main hero button), `colors.highlight` (big numbers, card links; primary by default), and `ink`, `muted`, `line`, `surface`, `page` (text and page colours); `font`; `logo` |
-| Hero | `home.hero.slides`: `image` and its credits (`species`, `institution`, `author`, `license`, `licenseUrl`, `recordUrl`); `home.hero.buttons`; `home.hero.interval` |
+| Colours, fonts, logo | `brand`: `colors.primary` (links, buttons), `colors.primaryDark` (footer), `colors.accent` (search button), `colors.highlight` (big numbers, card links; primary by default), `colors.headerBg` (header; its text and accent colours follow from it, or set `headerInk` and `headerAccent`), and `ink`, `muted`, `line`, `surface`, `page` (text and page colours); `font` and `headingFont`; `radius` (px); `logo` |
+| Hero | `home.hero.slides`: `image`, `position` (CSS background-position, for narrow screens) and its credits (`species`, `institution`, `author`, `license`, `licenseUrl`, `recordUrl`); `home.hero.search` (`url`, `param`, or `false`); `home.hero.buttons`; `home.hero.interval` |
 | Cards and partners | `home.cards` (`i18n` key, `image`, `url`), `home.partners` (`name`, `logo`, `url`) |
-| Home widgets | `homeWidgets`: `stats`, `taxoChart`, `instChart`, `institutions` (true/false); `dataHub`: `null` for the whole portal or a data hub uid; `dataHubToFlag` and `flagBadge`; `institutionsExclude`; `chartColors` |
+| Home widgets | `homeWidgets`: `stats`, `taxoChart`, `instChart`, `institutions` (true/false, all true by default); `dataHub`: `null` for the whole portal or a data hub uid; `dataHubToFlag` and `flagBadge`; `institutionsExclude`, `institutionsShow`; `chartColors` |
 | Footer | `footer.links` (last column, `i18n` key and `url`), `footer.social` (`name`, `url`) |
 | Texts | `general.orgfullname`, `index.*`, `footer.*` and `nav.*` keys of the locales |
 
-Every key of `brand.colors` is optional: what you leave out comes from the theme. URLs can use `{biocache}`, `{collectory}`, `{spatial}`... (any of `services`) and `{central}` (`mainLAUrl`); images are paths of this branding (`images/x.png`) or absolute URLs.
+Every key of `brand` is optional: what you leave out comes from the theme. Text colours on the header, buttons and accent are picked for contrast (white or dark). The sample photos come from GBIF records, with their licences in `app/assets/images/CREDITS.md`; `npm run demo` builds every theme into `demo/` to compare them (it has a colour picker to try another primary). URLs can use `{biocache}`, `{collectory}`, `{spatial}`... (any of `services`) and `{central}` (`mainLAUrl`); images are paths of this branding (`images/x.png`) or absolute URLs.
 
 How it works:
-- `scripts/branding.mjs` writes `css/la-tokens.css` from `settings.brand`: the `--la-*` CSS custom properties that the header, footer, home and widgets use, in both builds. Use them in your own CSS too (`color: var(--la-primary)`).
+- `scripts/branding.mjs` writes `css/la-tokens.css` from `settings.brand`: the `--la-*` CSS custom properties that the header, footer, home and widgets use, in both builds. Use them in your own CSS too (`color: var(--la-primary)`). The same file gives the Bootstrap buttons of the module pages (`btn-primary`, `btn-default`/`btn-secondary`, the outline ones, pagination) the brand colours in `clean` and in the Bootstrap 5 build, whose base CSS has the ALA ones; the Bootswatch themes keep their own.
 - The header and footer CSS (`app/themes/clean/css/la-brand.css`, `la-header-bs3.css` and `app/bs5/branding-bs5.css`) reaches every page of every module and CAS, so all of it stays under the `la-*` classes, and sizes are in px because the modules set different `html { font-size }`.
 - The footer is one file for both builds: `app/themes/clean/assets/footer.html`. On pages shorter than the window, `app/js/footer-bottom.js` moves it down to the bottom (by its top margin only: no `html`/`body` CSS, which would fight the module layouts). The Bootstrap 3 header is `app/themes/clean/assets/banner.html`, the Bootstrap 5 one `app/bs5/banner.mustache`: keep their menus in step.
 - The home is `app/themes/clean/assets/indexBody.html`, filled by `app/js/home/` (hero carousel, cards, partners) and `app/js/widgets/` (numbers, charts, institutions). Credits and names from the APIs are written as text, never as HTML.
 - The charts load Highcharts 11 from `js/highcharts/` only when they draw, so a portal without them doesn't download it. Highcharts stays on 11.x: 12 breaks the drilldown (`tests/e2e/home.spec.js` checks it).
 
+### Optional home widgets
+
+All four are on by default; set a key of `homeWidgets` to `false` to turn one off. Each one draws only when its container is on the page (`indexBody.html` has all of them; module pages have none, so they do nothing there). The section around the charts (`.la-widgets`) stays hidden until one of them draws.
+
+| `homeWidgets` key | Container | What it shows | Reads |
+|---|---|---|---|
+| `stats` | `#stats_occurrences`, `#stats_datasets`, `#stats_species`, `#stats_institutions` | Big numbers, counting up | biocache `occurrences/search?pageSize=0` (records, species); collectory `ws/dataResource/count` and `ws/institution/count`, or `ws/dataHub/<uid>` with a data hub |
+| `taxoChart` | `#taxo-container` | Pie of records by kingdom; a click drills down to species, and a button opens the records of that level | biocache `breakdown.json` |
+| `instChart` | `#inst-container` | Pie of records by institution; a click opens their records | biocache `occurrence/facets` (`institution_uid`) |
+| `institutions` | `#accordion-home-institutions` | Institution cards; opening one lists its collections and data resources | collectory `ws/institution`, `ws/institution/<uid>`, `ws/collection/<uid>` |
+
+- `dataHub`: `null` counts the whole portal; a data hub uid (`'dh1'`) limits every widget to that hub (`q=data_hub_uid:<uid>`, and only its member institutions).
+- `dataHubToFlag` and `flagBadge` (`image`, `title`, `url`): institutions of that other hub get a badge in the institution cards (a text pill when there is no `image`).
+- `institutionsExclude`: institution uids left out of the cards. `institutionsShow` (12 by default): cards shown before a "show all" button; a longer list also gets a filter by name.
+- `chartColors` (`taxo`, `inst`): base colour of each pie, `#hex` or an index of the Highcharts palette; by default the brand primary and accent.
+- Chart texts are the `index.stats.*` and `index.charts.*` keys of the locales; names from the APIs are written as text.
+- Highcharts 11 is copied to `js/highcharts/` and loaded only when a chart draws. To put a widget in a page of your own, add its container (and a `.la-widgets` section if you want it hidden until it draws): `js/init.js` does the rest.
+
 ### Fonts
 
-[Inter](https://rsms.me/inter/) comes with the branding (`fonts/inter/`, from `@fontsource-variable/inter`), no external font service. The module pages load it from the branding host, another origin, so the server must send `Access-Control-Allow-Origin` for the fonts, as it already must for the Bootstrap 5 Font Awesome. With nginx:
+Each theme brings its fonts with the branding, no external font service: `clean` Inter, `cosmo` Space Grotesk, `darkly` Outfit, `flatly` Plus Jakarta Sans, `paper` Nunito, `sandstone` Work Sans with Fraunces titles, `simplex` Manrope, `slate` IBM Plex Sans, `superhero` Sora and `yeti` Figtree. A font named in `brand.font` or `brand.headingFont` is bundled when its `@fontsource-variable/<name>` package is installed (`npm install @fontsource-variable/<name>`): the build copies only the fonts of the theme to `fonts/<name>/`. The module pages load them from the branding host, another origin, so the server must send `Access-Control-Allow-Origin` for the fonts, as it already must for the Bootstrap 5 Font Awesome. With nginx:
 
 ```
 location ~* \.(woff2?|ttf|otf|eot)$ { add_header Access-Control-Allow-Origin "*"; }
 ```
 
-Without it the pages fall back to the system font. For another font, set `brand.font` and load it from your pages.
+Without it the pages fall back to the system font. A font without such a package must be loaded by your pages.
 
-No page asks a font service for anything: the Bootswatch `bootstrap.min.css` files have their Google Fonts `@import` removed, so their body text uses the theme's fallback fonts (Helvetica, Arial...) while the header, footer and home use Inter. `tests/e2e/layout.spec.js` checks it.
+No page asks a font service for anything: the Bootswatch `bootstrap.min.css` files have their Google Fonts `@import` removed, so their body text uses the theme's fallback fonts (Helvetica, Arial...) while the header, footer and home use the theme font. `tests/e2e/layout.spec.js` checks it.
 
 ### Adopting it in a fork
 

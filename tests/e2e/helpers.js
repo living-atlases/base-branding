@@ -79,6 +79,11 @@ export function serviceStub(url, { kingdoms = KINGDOMS } = {}) {
     return json({ taxa: url.searchParams.get('name') ? PHYLA : kingdoms });
   }
   if (url.pathname.endsWith('/occurrence/facets')) return json([{ fieldResult: INSTITUTIONS }]);
+  // The collectory list of institutions: more than the institutions widget shows at first
+  if (url.pathname.endsWith('/ws/institution')) {
+    return json(Array.from({ length: 30 }, (_, i) => ({ uid: `in${i + 1}`, name: `Institution ${String(i + 1).padStart(2, '0')}` })));
+  }
+  if (url.pathname.endsWith('/ws/dataResource/count') || url.pathname.endsWith('/ws/institution/count')) return json({ total: 30 });
   return null;
 }
 

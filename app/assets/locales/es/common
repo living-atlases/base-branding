@@ -62,5 +62,10 @@
   "footer.powered": "Funciona con",
   "footer.links.about": "Quiénes somos",
   "footer.links.contact": "Contacto",
-  "footer.links.data-policy": "Política de datos"
+  "footer.links.data-policy": "Política de datos",
+  "index.hero.search-label": "Buscar registros",
+  "index.hero.search-placeholder": "Busca registros por especie, lugar o colección",
+  "index.hero.area": "Explora tu zona",
+  "index.institutions.filter": "Filtrar instituciones",
+  "index.institutions.all": "Ver todas"
 }

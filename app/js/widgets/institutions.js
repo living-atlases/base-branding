@@ -8,9 +8,11 @@ import { biocache, collectory, getJSON } from './charts.js';
 // resources. With settings.dataHub only the hub's members are listed; without it, every
 // institution of the portal. Collections are fetched when a card is opened, not up front.
 // Names come from the collectory, so they are only ever written with textContent.
+// A long list shows settings.institutionsShow cards (12 by default), a filter and a "show all" button.
 
 const dh = settings.dataHub;
 const exclude = new Set(settings.institutionsExclude || []);
+const shown = Number(settings.institutionsShow) > 0 ? Number(settings.institutionsShow) : 12;
 const byName = (a, b) => String(a.name).localeCompare(String(b.name), undefined, { sensitivity: 'base' });
 
 const el = (tag, attrs = {}, text) => {
@@ -84,12 +86,34 @@ function fillCollections(body, uid, m) {
   });
 }
 
+// The cards past `shown` stay hidden until "show all"; a filter text shows every card that matches
+function compact(box, grid, cards) {
+  if (cards.length <= shown) return;
+  let all = false;
+  const filter = el('input', { type: 'search', class: 'la-entities__filter', 'data-i18n': '[placeholder]index.institutions.filter;[aria-label]index.institutions.filter' });
+  const more = el('button', { type: 'button', class: 'la-btn la-btn--primary la-entities__more' });
+  more.append(el('span', { 'data-i18n': 'index.institutions.all' }), ` (${cards.length})`);
+  const apply = () => {
+    const q = filter.value.trim().toLocaleLowerCase();
+    cards.forEach(([card, name], i) => {
+      card.hidden = q ? !name.includes(q) : !all && i >= shown;
+    });
+    more.hidden = all || Boolean(q);
+  };
+  filter.addEventListener('input', apply);
+  more.addEventListener('click', () => { all = true; apply(); });
+  box.querySelector('h2').after(filter);
+  grid.after(more);
+  apply();
+}
+
 export function mountInstitutions(box) {
   return Promise.all([members(), flagged()]).then(([m, flags]) => {
     const list = m.institutions.filter(i => !exclude.has(i.uid)).sort(byName);
     if (!list.length) return false;
     box.replaceChildren(el('h2', { 'data-i18n': 'index.stats.institutions' }));
     const grid = el('div', { class: 'la-entities' });
+    const cards = [];
     for (const inst of list) {
       const card = el('details', { class: 'la-entity' });
       const summary = el('summary');
@@ -104,8 +128,10 @@ export function mountInstitutions(box) {
         }
       });
       grid.append(card);
+      cards.push([card, String(inst.name || '').toLocaleLowerCase()]);
     }
     box.append(grid);
+    compact(box, grid, cards);
     localize(box);
     return true;
   });

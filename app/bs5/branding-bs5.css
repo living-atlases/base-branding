@@ -1,10 +1,10 @@
 /* Bootstrap 5 header (banner.mustache) over the ALA Bootstrap 5 base (commonui-bs5-2019): the
- * same thin white bar as the Bootstrap 3 build. The brand, account labels, search bar and footer
+ * same bar as the Bootstrap 3 build, in the --la-header-* colours. The brand, account labels, search bar and footer
  * are in la-brand.css, shared with Bootstrap 3. Sizes in px (see la-brand.css). */
 
 .branding-bs5 .navbar.la-header {
-  background: #fff;
-  border-bottom: 1px solid #e3e8e6;
+  background: var(--la-header-bg);
+  border-bottom: 1px solid var(--la-header-line);
   padding: 0;
   min-height: 64px;
   font-size: 15px;
@@ -14,31 +14,31 @@
   display: flex; flex-wrap: wrap; align-items: center; width: 100%;
   max-width: 1240px; margin: 0 auto; padding: 0 20px;
 }
-.branding-bs5 .navbar.la-header .navbar-brand.la-brand { padding: 15px 0; margin-right: 16px; color: #1c2a30; }
+.branding-bs5 .navbar.la-header .navbar-brand.la-brand { padding: 15px 0; margin-right: 16px; color: var(--la-header-ink); }
 .branding-bs5 .navbar.la-header .nav-link {
-  color: #1c2a30; font-weight: 500; font-size: 15px; padding: 22px 12px;
+  color: var(--la-header-ink); font-weight: 500; font-size: 15px; padding: 22px 12px;
 }
 .branding-bs5 .navbar.la-header .nav-link:hover,
 .branding-bs5 .navbar.la-header .nav-link:focus,
-.branding-bs5 .navbar.la-header .nav-link.show { color: var(--la-primary); }
-.branding-bs5 .navbar.la-header .nav-link.active { box-shadow: inset 0 -3px 0 var(--la-primary); }
+.branding-bs5 .navbar.la-header .nav-link.show { color: var(--la-header-ink); background: transparent; box-shadow: inset 0 -3px 0 var(--la-header-line); }
+.branding-bs5 .navbar.la-header .nav-link.active { box-shadow: inset 0 -3px 0 var(--la-header-accent); }
 .branding-bs5 .navbar.la-header .dropdown-menu {
-  font-size: 15px; border: 1px solid #e3e8e6; border-radius: 8px; box-shadow: 0 8px 24px rgba(16, 32, 28, .12);
+  font-size: 15px; border: 1px solid #e3e8e6; border-radius: var(--la-radius); box-shadow: 0 8px 24px rgba(16, 32, 28, .12);
 }
 .branding-bs5 .navbar.la-header .dropdown-item { color: #1c2a30; padding: 7px 18px; }
 .branding-bs5 .navbar.la-header .dropdown-item:hover,
 .branding-bs5 .navbar.la-header .dropdown-item:focus { color: var(--la-primary); background: #f4f7f6; }
 .branding-bs5 .navbar.la-header #dropdown-lang > .nav-link { font-size: 13px; font-weight: 600; text-transform: uppercase; }
-.branding-bs5 .navbar.la-header .navbar-toggler { border: 0; color: #1c2a30; padding: 8px; margin-left: 4px; }
-.branding-bs5 .navbar.la-header .navbar-toggler:focus { box-shadow: 0 0 0 2px var(--la-primary); }
+.branding-bs5 .navbar.la-header .navbar-toggler { border: 0; color: var(--la-header-ink); padding: 8px; margin-left: 4px; }
+.branding-bs5 .navbar.la-header .navbar-toggler:focus { box-shadow: 0 0 0 2px var(--la-header-accent); }
 .branding-bs5 .navbar.la-header .la-search-toggle--mobile { margin-left: auto; }
 
 .branding-bs5 .navbar.la-header .la-account > .nav-link.la-account__toggle {
-  margin: 14px 0 14px 8px; padding: 8px 16px; border-radius: 6px;
-  background: var(--la-primary); color: #fff; font-weight: 600; font-size: 14px;
+  margin: 14px 0 14px 8px; padding: 8px 16px; border-radius: var(--la-radius);
+  background: var(--la-header-accent); color: var(--la-on-header-accent); font-weight: 600; font-size: 14px; box-shadow: none;
 }
 .branding-bs5 .navbar.la-header .la-account > .nav-link.la-account__toggle:hover,
-.branding-bs5 .navbar.la-header .la-account > .nav-link.la-account__toggle.show { color: #fff; filter: brightness(1.1); }
+.branding-bs5 .navbar.la-header .la-account > .nav-link.la-account__toggle.show { color: var(--la-on-header-accent); box-shadow: none; filter: brightness(1.1); }
 
 .branding-bs5 .la-header .account.signedIn .loginBtn,
 .branding-bs5 .la-header .account.signedIn .signUpBtn,
@@ -47,15 +47,20 @@
 .branding-bs5 .la-header .la-search { width: 100%; }
 
 @media (min-width: 992px) {
+  .branding-bs5 .navbar.la-header .la-brand { min-width: 0; flex: 0 1 auto; }
+  .branding-bs5 .la-header .la-brand__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .branding-bs5 .navbar.la-header .nav-link { white-space: nowrap; }
   .branding-bs5 .navbar.la-header .la-search-toggle--mobile { display: none; }
-  .branding-bs5 .navbar.la-header .la-tools { border-left: 1px solid #e3e8e6; margin-left: 12px; padding-left: 4px; align-items: center; }
+  .branding-bs5 .navbar.la-header .la-tools { border-left: 1px solid var(--la-header-line); margin-left: 12px; padding-left: 4px; align-items: center; }
 }
 @media (min-width: 992px) and (max-width: 1150px) {
   .branding-bs5 .navbar.la-header .nav-link { padding-left: 8px; padding-right: 8px; font-size: 14px; }
   .branding-bs5 .la-header .la-brand__name { display: none; }
 }
 @media (max-width: 991.98px) {
-  .branding-bs5 .navbar.la-header .navbar-collapse { border-top: 1px solid #e3e8e6; }
+  .branding-bs5 .navbar.la-header .la-account { display: flex; flex-direction: column; align-items: flex-start; }
+  .branding-bs5 .navbar.la-header .la-account > .dropdown-menu { order: 2; width: 100%; }
+  .branding-bs5 .navbar.la-header .navbar-collapse { border-top: 1px solid var(--la-header-line); }
   .branding-bs5 .navbar.la-header .nav-link { padding: 10px 4px; }
   .branding-bs5 .navbar.la-header .la-search-toggle { display: none; }
   .branding-bs5 .la-header .la-brand { max-width: calc(100% - 110px); }

@@ -2,6 +2,8 @@
 // {{...}} placeholders filled in, assets.mustache in <head>, banner and footer in <body>.
 // Run after `npm run build`.
 import { test, expect } from '@playwright/test';
+import settings from '../../app/js/settings.js';
+import { resolveBrand } from '../../app/js/utils/brand.js';
 import { brandingBase, distFile, bs5Page } from './helpers.js';
 
 const APP = 'https://app.bs5.test';
@@ -30,16 +32,17 @@ test('the Bootstrap 5 header is translated and its dropdowns open', async ({ pag
   expect(errors).toEqual([]);
 });
 
-test('header and footer take the shared tokens and the Inter font', async ({ page }) => {
+test('header and footer take the shared tokens and the theme font', async ({ page }) => {
   await openBs5(page);
   const primary = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--la-primary').trim());
   expect(primary).toMatch(/^#[0-9a-f]{6}$/i);
   await expect(page.locator('#la-footer')).toBeVisible();
   await expect(page.locator('#la-footer [data-i18n="footer.explore"]')).not.toBeEmpty();
-  // document.fonts.check() is true even with no Inter at all: look for the loaded face itself
+  // document.fonts.check() is true even with no such font at all: look for the loaded face itself
   await page.evaluate(() => document.fonts.ready);
-  const inter = await page.evaluate(() => [...document.fonts].filter(f => f.family.replace(/"/g, '') === 'Inter').map(f => f.status));
-  expect(inter).toContain('loaded');
+  const { font } = resolveBrand(settings);
+  const faces = await page.evaluate(family => [...document.fonts].filter(f => f.family.replace(/"/g, '') === family).map(f => f.status), font);
+  expect(faces, font).toContain('loaded');
 });
 
 test('on a short page the footer sits at the bottom of the window', async ({ page }) => {
@@ -55,4 +58,17 @@ test('the account button says what the login status allows', async ({ page }) =>
   await page.locator('.la-account__toggle').click();
   await expect(page.locator('.la-account .logoutBtn')).toBeVisible();
   await expect(page.locator('.la-account .loginBtn')).toBeHidden();
+});
+
+test('Bootstrap 5 buttons take the brand colours, and secondary ones stay neutral', async ({ page }) => {
+  await openBs5(page, { body: '<a class="btn btn-primary" id="b1">A</a> <a class="btn btn-outline-secondary" id="b2">B</a>' });
+  const { colors } = resolveBrand(settings);
+  const rgb = hex => `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`;
+  const [primary, secondary] = await page.evaluate(() => ['b1', 'b2'].map(id => {
+    const s = getComputedStyle(document.getElementById(id));
+    return { bg: s.backgroundColor, color: s.color };
+  }));
+  expect(primary.bg).toBe(rgb(colors.primary));
+  expect(primary.color).toBe(rgb(colors.onPrimary));
+  expect(secondary.color).toBe('rgb(28, 42, 48)');
 });

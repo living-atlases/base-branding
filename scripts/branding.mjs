@@ -1,50 +1,80 @@
 // Build-time pieces shared by the Bootstrap 3 (vite.config.js) and Bootstrap 5 (build-bs5.mjs) builds,
 // so both get the same look from settings.js:
-//  - css/la-tokens.css: the Inter @font-face and the --la-* colour and font custom properties
-//  - fonts/inter/*.woff2: Inter (variable, latin and latin-ext) from @fontsource-variable/inter
+//  - css/la-tokens.css: the @font-face of the theme fonts, the --la-* custom properties and the
+//    Bootstrap buttons in those colours (not for Bootswatch, which has its own)
+//  - fonts/<font>/*.woff2: those fonts (variable, latin and latin-ext) from @fontsource-variable/<font>
+//  - images/logo.svg: the default logo, in the colours of the theme
 //  - ::token:: values for banner.html and footer.html (logo, footer links), HTML-escaped
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { resolveBrand, tokensCss, serviceUrl, safeUrl, assetUrl, escapeHtml } from '../app/js/utils/brand.js';
+import { resolveBrand, tokensCss, buttonsCss, logoSvg, defaultLogo, serviceUrl, safeUrl, assetUrl, escapeHtml } from '../app/js/utils/brand.js';
 import { footerOf } from '../app/js/utils/defaults.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const fontDir = path.join(root, 'node_modules/@fontsource-variable/inter/files');
-const fontFiles = {
-  // unicode-range of each subset, as @fontsource-variable/inter/index.css declares them
-  'inter-latin-wght-normal.woff2':
-    'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD',
-  'inter-latin-ext-wght-normal.woff2':
-    'U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF'
+
+// A font of settings.brand is bundled when its @fontsource-variable package is installed:
+// 'Plus Jakarta Sans' -> node_modules/@fontsource-variable/plus-jakarta-sans
+const fontId = family => family.toLowerCase().trim().replace(/\s+/g, '-');
+const fontPkg = id => path.join(root, 'node_modules/@fontsource-variable', id);
+export const fontFile = (id, file) => {
+  const f = path.join(fontPkg(id), 'files', path.basename(file));
+  return /^[\w-]+$/.test(id) && fs.existsSync(f) ? f : null;
 };
 
-// The font is served from the branding host to the pages of every module (other origins), so the
-// server has to send Access-Control-Allow-Origin for it (see the README); if it doesn't, the
+// The latin and latin-ext faces of each font, as the package's own index.css declares them
+function fontFaces(brand) {
+  const faces = [];
+  for (const family of new Set([brand.font, brand.headingFont])) {
+    const id = fontId(family);
+    const css = path.join(fontPkg(id), 'index.css');
+    if (!fs.existsSync(css)) {
+      console.warn(`[branding] no @fontsource-variable/${id}: '${family}' must be loaded by your pages`);
+      continue;
+    }
+    const re = /\/\*\s*[\w-]+-(latin|latin-ext)-wght-normal\s*\*\/\s*@font-face\s*\{([^}]*)\}/g;
+    for (const [, , body] of fs.readFileSync(css, 'utf8').matchAll(re)) {
+      const file = body.match(/url\(\.\/files\/([\w.-]+\.woff2)\)/)[1];
+      faces.push({ id, family, file, range: body.match(/unicode-range:\s*([^;]+);/)[1].trim() });
+    }
+  }
+  return faces;
+}
+
+// The fonts are served from the branding host to the pages of every module (other origins), so the
+// server has to send Access-Control-Allow-Origin for them (see the README); if it doesn't, the
 // pages fall back to the system font of the --la-font stack.
-function fontFaceCss() {
-  return Object.entries(fontFiles).map(([file, range]) => `@font-face {
-  font-family: "Inter";
+const fontFaceCss = faces => faces.map(({ id, family, file, range }) => `@font-face {
+  font-family: "${family.replace(/["\;{}]/g, '')}";
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url("../fonts/inter/${file}") format("woff2-variations"), url("../fonts/inter/${file}") format("woff2");
+  src: url("../fonts/${id}/${file}") format("woff2-variations"), url("../fonts/${id}/${file}") format("woff2");
   unicode-range: ${range};
 }`).join('\n');
-}
 
-export function brandCss(settings) {
+// bs5: for the Bootstrap 5 build, which always gets the buttons in the brand colours (its base CSS
+// has the ALA ones); the Bootstrap 3 build gets them unless a Bootswatch theme styles its own
+export function brandCss(settings, { bs5 = false } = {}) {
+  const brand = resolveBrand(settings);
   return `/* Generated from settings.js by scripts/branding.mjs: do not edit, change settings.brand */\n`
-    + fontFaceCss() + '\n' + tokensCss(resolveBrand(settings));
+    + fontFaceCss(fontFaces(brand)) + '\n' + tokensCss(brand)
+    + (bs5 || !brand.bootswatch ? buttonsCss() : '');
 }
 
-// Writes <outDir>/css/la-tokens.css and <outDir>/fonts/inter/
-export function writeBrandAssets(settings, outDir) {
+// Writes <outDir>/css/la-tokens.css, the fonts of the theme in <outDir>/fonts/<font>/ and, when
+// settings.brand keeps the default logo, <outDir>/images/logo.svg in the colours of the theme
+export function writeBrandAssets(settings, outDir, { bs5 = false } = {}) {
+  const brand = resolveBrand(settings);
   fs.mkdirSync(path.join(outDir, 'css'), { recursive: true });
-  fs.writeFileSync(path.join(outDir, 'css/la-tokens.css'), brandCss(settings));
-  fs.mkdirSync(path.join(outDir, 'fonts/inter'), { recursive: true });
-  for (const f of Object.keys(fontFiles)) {
-    fs.copyFileSync(path.join(fontDir, f), path.join(outDir, 'fonts/inter', f));
+  fs.writeFileSync(path.join(outDir, 'css/la-tokens.css'), brandCss(settings, { bs5 }));
+  for (const { id, file } of fontFaces(brand)) {
+    fs.mkdirSync(path.join(outDir, 'fonts', id), { recursive: true });
+    fs.copyFileSync(fontFile(id, file), path.join(outDir, 'fonts', id, file));
+  }
+  if (brand.logo === defaultLogo) {
+    fs.mkdirSync(path.join(outDir, 'images'), { recursive: true });
+    fs.writeFileSync(path.join(outDir, defaultLogo), logoSvg(brand));
   }
 }
 

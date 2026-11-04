@@ -62,5 +62,10 @@
   "footer.powered": "Powered by",
   "footer.links.about": "Who we are",
   "footer.links.contact": "Contact",
-  "footer.links.data-policy": "Data policy"
+  "footer.links.data-policy": "Data policy",
+  "index.hero.search-label": "Search records",
+  "index.hero.search-placeholder": "Search records by species, place or collection",
+  "index.hero.area": "Explore your area",
+  "index.institutions.filter": "Filter institutions",
+  "index.institutions.all": "Show all"
 }

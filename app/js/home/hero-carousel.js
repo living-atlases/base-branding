@@ -57,6 +57,8 @@ export function mountHero(hero, { slides = [], interval = 7000 } = {}, base) {
     el.setAttribute('role', 'group');
     el.setAttribute('aria-roledescription', 'slide');
     el.dataset.src = assetUrl(base, s.image);
+    // A CSS value from settings: only keywords, numbers and percentages
+    if (/^[\w\s.%-]+$/.test(s.position || '')) el.style.backgroundPosition = s.position;
     if (i > 0) el.setAttribute('aria-hidden', 'true');
     holder.append(el);
     return el;
@@ -113,9 +115,12 @@ export function mountHero(hero, { slides = [], interval = 7000 } = {}, base) {
     timer = setInterval(() => show((current + 1) % els.length), Math.max(3000, interval));
   };
   const stop = () => { clearInterval(timer); timer = null; };
-  hero.addEventListener('mouseenter', stop);
-  hero.addEventListener('mouseleave', start);
+  // Paused under a mouse and while focus is inside (the search box); a touch is no hover, or a tap
+  // would stop it for good
+  hero.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') stop(); });
+  hero.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !hero.contains(document.activeElement)) start(); });
   hero.addEventListener('focusin', stop);
+  hero.addEventListener('focusout', e => { if (!hero.contains(e.relatedTarget) && !hero.matches(':hover')) start(); });
   document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
 
   load(0);

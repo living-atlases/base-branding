@@ -8,7 +8,8 @@ import jscc from 'rollup-plugin-jscc';
 import eslintPlugin from 'vite-plugin-eslint';
 import { VitePluginRadar } from 'vite-plugin-radar';
 import { globSync } from 'tinyglobby';
-import { brandCss, brandTokens, writeBrandAssets, stripFontImports } from './scripts/branding.mjs';
+import { resolveBrand, logoSvg, defaultLogo } from './app/js/utils/brand.js';
+import { brandCss, brandTokens, writeBrandAssets, stripFontImports, fontFile } from './scripts/branding.mjs';
 
 const buildTimestamp = Date.now();
 
@@ -255,7 +256,7 @@ function injectThemeCssLinks(theme) {
   };
 }
 
-// css/la-tokens.css and fonts/inter/: generated from settings.js, served by the dev server and
+// css/la-tokens.css, fonts/<font>/ and images/logo.svg: generated from settings.js, served by the dev server and
 // written into dist/ by the main build pass
 function brandAssets() {
   return {
@@ -267,10 +268,15 @@ function brandAssets() {
           res.setHeader('Content-Type', 'text/css');
           return res.end(brandCss(settings));
         }
-        const font = url.match(/^\/fonts\/inter\/([\w.-]+\.woff2)$/);
+        const brand = resolveBrand(settings);
+        if (url === `/${defaultLogo}` && brand.logo === defaultLogo) {
+          res.setHeader('Content-Type', 'image/svg+xml');
+          return res.end(logoSvg(brand));
+        }
+        const font = url.match(/^\/fonts\/([\w-]+)\/([\w.-]+\.woff2)$/);
         if (font) {
-          const f = path.resolve(__dirname, 'node_modules/@fontsource-variable/inter/files', font[1]);
-          if (fs.existsSync(f)) {
+          const f = fontFile(font[1], font[2]);
+          if (f) {
             res.setHeader('Content-Type', 'font/woff2');
             return res.end(fs.readFileSync(f));
           }

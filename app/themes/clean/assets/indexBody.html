@@ -9,6 +9,12 @@
         <div class="la-hero__in">
           <h1 data-i18n="general.orgfullname"></h1>
           <p data-i18n="index.slogan"></p>
+          <form class="la-hero__search" id="la-hero-search" role="search" method="get" hidden>
+            <label class="sr-only" for="la-hero-q" data-i18n="index.hero.search-label"></label>
+            <svg class="la-hero__search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            <input type="search" id="la-hero-q" name="q" autocomplete="off" data-i18n="[placeholder]index.hero.search-placeholder">
+            <button type="submit" class="la-btn la-btn--accent" data-i18n="index.search-btn"></button>
+          </form>
           <div class="la-hero__buttons"></div>
         </div>
         <div class="la-hero__dots" role="group"></div>
@@ -21,10 +27,10 @@
       <section class="la-stats" id="la-stats" aria-labelledby="la-stats-title">
         <h2 class="sr-only" id="la-stats-title" data-i18n="index.stats.title"></h2>
         <div class="la-stats__in">
-          <a class="la-stat" href="::biocacheURL::/occurrences/search"><b id="stats_occurrences">&nbsp;</b><span data-i18n="index.stats.occurrences"></span></a>
-          <a class="la-stat" href="::datasetsURL::"><b id="stats_datasets">&nbsp;</b><span data-i18n="index.stats.datasets"></span></a>
-          <a class="la-stat" href="::bieURL::"><b id="stats_species">&nbsp;</b><span data-i18n="index.stats.species"></span></a>
-          <a class="la-stat" href="::collectoryURL::"><b id="stats_institutions">&nbsp;</b><span data-i18n="index.stats.institutions"></span></a>
+          <a class="la-stat" href="::biocacheURL::/occurrences/search"><span class="la-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="la-stat__txt"><b id="stats_occurrences">&nbsp;</b><span data-i18n="index.stats.occurrences"></span></span></a>
+          <a class="la-stat" href="::datasetsURL::"><span class="la-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><span class="la-stat__txt"><b id="stats_datasets">&nbsp;</b><span data-i18n="index.stats.datasets"></span></span></a>
+          <a class="la-stat" href="::bieURL::"><span class="la-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19c1-9 6-14 15-15-1 9-6 14-15 15z"/><path d="m5 19 7-7"/></svg></span><span class="la-stat__txt"><b id="stats_species">&nbsp;</b><span data-i18n="index.stats.species"></span></span></a>
+          <a class="la-stat" href="::collectoryURL::"><span class="la-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m14 11V10M9 21v-7m6 7v-7M2 10l10-6 10 6"/></svg></span><span class="la-stat__txt"><b id="stats_institutions">&nbsp;</b><span data-i18n="index.stats.institutions"></span></span></a>
         </div>
       </section>
 

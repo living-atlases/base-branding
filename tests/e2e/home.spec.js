@@ -78,6 +78,17 @@ test.describe('hero', () => {
     expect(await active()).toBe(1);
   });
 
+  test('the slides move by themselves, and a tap on a phone does not stop them', async ({ browser }) => {
+    test.skip(home.hero.slides.length < 2, 'one slide only');
+    const page = await browser.newPage({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 800 } });
+    await openHome(page);
+    const active = () => page.locator('.la-hero__slide').evaluateAll(s => s.findIndex(e => e.classList.contains('is-active')));
+    await page.locator('.la-hero p').tap();
+    const before = await active();
+    await expect.poll(active, { timeout: Math.max(3000, home.hero.interval) + 3000 }).not.toBe(before);
+    await page.close();
+  });
+
   test('cards and partners come from settings.home', async ({ page }) => {
     await openHome(page);
     await expect(page.locator('#la-home-cards .la-card')).toHaveCount(home.cards.length);
@@ -149,6 +160,24 @@ test.describe('home charts', () => {
     await expect(page.locator('#taxo-container')).toContainText('Evil');
     expect(await page.evaluate(() => window.__xss)).toBeUndefined();
     expect(await page.locator('#taxo-container img').count()).toBe(0);
+  });
+});
+
+test.describe('institutions', () => {
+  test.skip(!on.institutions, 'settings.homeWidgets turns the institutions off');
+
+  test('a long list shows a few cards, a filter and a button for the rest', async ({ page }) => {
+    await openHome(page);
+    const shown = Number(settings.institutionsShow) || 12;
+    const cards = page.locator('#accordion-home-institutions .la-entity');
+    await expect(cards).toHaveCount(30);
+    await expect(page.locator('#accordion-home-institutions .la-entity:visible')).toHaveCount(shown);
+    await page.locator('.la-entities__filter').fill('institution 2');
+    await expect(page.locator('#accordion-home-institutions .la-entity:visible')).toHaveCount(10); // 20 to 29
+    await page.locator('.la-entities__filter').fill('');
+    await page.locator('.la-entities__more').click();
+    await expect(page.locator('#accordion-home-institutions .la-entity:visible')).toHaveCount(30);
+    await expect(page.locator('.la-entities__more')).toBeHidden();
   });
 });
 

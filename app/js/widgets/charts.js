@@ -12,8 +12,10 @@ import { brandingBase } from '../utils/base-url.js';
 // breaks silently with it (tests/e2e/home-charts.spec.js clicks into a pie to catch that).
 
 export const biocache = settings.services.biocache.url;
-export const biocacheService = settings.services.biocacheService.url;
-export const collectory = settings.services.collectory.url;
+// With isDevel the charts read ALA's services, so a portal without data yet (or the demo) shows
+// real charts; the numbers of stats.js are mocked instead
+export const biocacheService = settings.isDevel ? 'https://biocache-ws.ala.org.au/ws' : settings.services.biocacheService.url;
+export const collectory = settings.isDevel ? 'https://collections.ala.org.au' : settings.services.collectory.url;
 const dh = settings.dataHub;
 
 // The records the charts count: the whole portal, or settings.dataHub only
