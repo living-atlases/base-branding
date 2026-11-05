@@ -392,7 +392,11 @@ const copyCommands = [
   { src: 'commonui-bs3-2019/build/fonts/*', dest: 'fonts' },
   { src: 'app/assets/*', dest: '' },
   { src: `app/themes/${themeAssets}`, dest: 'app/themes/' },
-  ...(cleanBased ? [{ src: `app/themes/${theme}`, dest: 'app/themes/' }] : []),
+  // A bootswatch theme only brings its css, and the glyphicon urls in it are relative to the
+  // theme (../fonts/), so it needs the fonts next to its css as 'clean' has them. Both targets
+  // copy contents, so neither races the other creating app/themes/<theme>
+  ...(cleanBased ? [{ src: `app/themes/${theme}/*`, dest: `app/themes/${theme}` },
+    { src: 'app/themes/clean/fonts/*', dest: `app/themes/${theme}/fonts` }] : []),
   // Highcharts, loaded on demand by the chart widgets (app/js/widgets/charts.js)
   { src: 'node_modules/highcharts/highcharts.js', dest: 'js/highcharts' },
   { src: 'node_modules/highcharts/modules/drilldown.js', dest: 'js/highcharts' },
