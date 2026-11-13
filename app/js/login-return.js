@@ -14,6 +14,19 @@ const APPS = ['biocache', 'bie', 'regions', 'lists', 'collectory', 'spatial', 'i
 const isCasLogin = url => /\/cas\/login\/?$/.test(url.pathname);
 const isLogout = url => /\/logout\/?$/.test(url.pathname);
 const hasReturn = url => ['url', 'appUrl', 'service'].some(k => url.searchParams.has(k));
+// After a GitHub or Google login on CAS itself the page is the provider's way back
+// (/cas/login?client_name=GitHub&code=...&iss=..., Google adds state, scope, authuser, prompt),
+// good only once: as the logout url CAS replays it with the code spent and shows "Aplicación no
+// autorizada a usar CAS". Signed in with the portal password the page has none of this, so the
+// logout keeps coming back to the page as is; with a provider it comes back to it without them.
+const DELEGATED_RETURN = ['client_name', 'code', 'state', 'session_state', 'iss', 'scope', 'authuser', 'prompt', 'hd'];
+const isDelegatedReturn = url => url.searchParams.has('client_name') && (url.searchParams.has('code') || url.searchParams.has('state'));
+function logoutReturn(back) {
+  if (!isDelegatedReturn(back)) return back.href;
+  const clean = new URL(back.href);
+  DELEGATED_RETURN.forEach(k => clean.searchParams.delete(k));
+  return clean.href;
+}
 
 // The app whose URL is the longest prefix of the page
 function appOf(page, services) {
@@ -51,7 +64,7 @@ export function addLoginReturn(root = document, here = window.location.href, ser
     if (/\blogoutBtn\b/.test(a.className || '')) {
       // CAS, or an app of this same host
       if (isLogout(url) && !hasReturn(url) && (/\/cas\/logout\/?$/.test(url.pathname) || url.origin === back.origin)) {
-        url.searchParams.set('url', back.href);
+        url.searchParams.set('url', logoutReturn(back));
         a.setAttribute('href', url.href);
       }
       return;

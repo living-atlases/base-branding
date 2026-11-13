@@ -106,6 +106,57 @@ test('the bare CAS logout of the home gets the home as url', () => {
   expect(url.searchParams.get('url')).toBe('https://hub.example.org/');
 });
 
+// After a GitHub or Google login on CAS itself the page is the provider's way back, good only once:
+// as the logout url CAS replays it with the code spent ("Aplicación no autorizada a usar CAS")
+test('on the CAS page after a GitHub login the logout goes back to the bare CAS login', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/logout'], 'logoutBtn');
+  addLoginReturn(root, 'https://auth.example.org/cas/login?client_name=GitHub&code=fd0f&iss=https%3A%2F%2Fgithub.com%2Flogin%2Foauth', SERVICES);
+  const url = new URL(root.links[0].href);
+  expect(url.origin + url.pathname).toBe('https://auth.example.org/cas/logout');
+  expect(url.searchParams.get('url')).toBe('https://auth.example.org/cas/login');
+});
+
+test('on the CAS page after a Google login neither code nor state travel in the logout url', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/logout'], 'logoutBtn');
+  addLoginReturn(root, 'https://auth.example.org/cas/login?authuser=0&client_name=Google&code=4%2F0A&iss=https%3A%2F%2Faccounts.google.com&prompt=none&state=1d37', SERVICES);
+  expect(new URL(root.links[0].href).searchParams.get('url')).toBe('https://auth.example.org/cas/login');
+});
+
+// Signed in with the portal password: the CAS page is the bare /cas/login and the logout comes
+// back to it, as f503250 left it
+test('on the CAS page after a portal password login the logout still comes back to it', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/logout'], 'logoutBtn');
+  addLoginReturn(root, 'https://auth.example.org/cas/login', SERVICES);
+  const url = new URL(root.links[0].href);
+  expect(url.origin + url.pathname).toBe('https://auth.example.org/cas/logout');
+  expect(url.searchParams.get('url')).toBe('https://auth.example.org/cas/login');
+});
+
+test('a page of an app keeps its own query in the logout url', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/logout'], 'logoutBtn');
+  addLoginReturn(root, 'https://especies.example.org/search?q=code&scope=all', SERVICES);
+  expect(new URL(root.links[0].href).searchParams.get('url')).toBe('https://especies.example.org/search?q=code&scope=all');
+});
+
+test("an app's own logout keeps the page as url after a GitHub login too", () => {
+  // the app took the provider's way back on its /callback and then showed this page
+  const root = fakeRoot(['/registros/logout?'], 'logoutBtn');
+  addLoginReturn(root, 'https://hub.example.org/registros/occurrences/search?q=lynx', SERVICES);
+  expect(new URL(root.links[0].href).searchParams.get('url')).toBe('https://hub.example.org/registros/occurrences/search?q=lynx');
+});
+
+test('only the provider parameters are dropped, the rest of the page stays', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/logout'], 'logoutBtn');
+  addLoginReturn(root, 'https://hub.example.org/page?q=a&client_name=GitHub&code=fd0f&iss=x', SERVICES);
+  expect(new URL(root.links[0].href).searchParams.get('url')).toBe('https://hub.example.org/page?q=a');
+});
+
+test('a client_name without code or state is not taken for a provider way back', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/logout'], 'logoutBtn');
+  addLoginReturn(root, 'https://hub.example.org/page?client_name=x&scope=all', SERVICES);
+  expect(new URL(root.links[0].href).searchParams.get('url')).toBe('https://hub.example.org/page?client_name=x&scope=all');
+});
+
 test('a logout that already says where to go, or of another host, is left alone', () => {
   const root = fakeRoot(['https://auth.example.org/cas/logout?url=https%3A%2F%2Fx.example.org%2F', 'https://other.example.org/logout'], 'logoutBtn');
   addLoginReturn(root, 'https://hub.example.org/', SERVICES);
