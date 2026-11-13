@@ -6,7 +6,7 @@ import settings from './settings.js';
 // - on a page of one of the apps (settings.services), the link goes to that app's /login?path=,
 //   ala-auth's LoginController: it signs in by OIDC and comes back to this page;
 // - anywhere else (the static home) it goes to CAS with ?service= this page.
-// The logout link gets the way back too: an app's own /logout (what the apps put there) and the
+// The logout link gets the way back too: an app's own /logout (what most apps put there) and the
 // bare CAS logout (the home) both take ?url=, and without it they land on the app root or on CAS.
 
 const APPS = ['biocache', 'bie', 'regions', 'lists', 'collectory', 'spatial', 'images', 'alerts', 'doi', 'dashboard'];
@@ -63,7 +63,11 @@ export function addLoginReturn(root = document, here = window.location.href, ser
     }
     if (/\blogoutBtn\b/.test(a.className || '')) {
       // CAS, or an app of this same host
-      if (isLogout(url) && !hasReturn(url) && (/\/cas\/logout\/?$/.test(url.pathname) || url.origin === back.origin)) {
+      const casLogout = /\/cas\/logout\/?$/.test(url.pathname);
+      if (isLogout(url) && !hasReturn(url) && (casLogout || url.origin === back.origin)) {
+        // On an app page the bare CAS logout would leave the app's own session open: like the
+        // login, go through the app's /logout, which closes it and then CAS's
+        if (casLogout && app) url = new URL(`${app.origin}${app.base}/logout`);
         url.searchParams.set('url', logoutReturn(back));
         a.setAttribute('href', url.href);
       }

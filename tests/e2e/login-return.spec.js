@@ -122,6 +122,25 @@ test('on the CAS page after a Google login neither code nor state travel in the 
   expect(new URL(root.links[0].href).searchParams.get('url')).toBe('https://auth.example.org/cas/login');
 });
 
+// Some apps put the bare CAS logout in the banner (registros, especies, regiones...): CAS closes its
+// session and sends back to the page, but the app keeps its own and the visitor is still signed in
+// there. Like the login, on an app page the logout goes through the app's /logout, which closes both
+test('on a page of an app the bare CAS logout goes through the app /logout with the page as url', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/logout'], 'logoutBtn');
+  addLoginReturn(root, 'https://especies.example.org/search?q=lynx', SERVICES);
+  const url = new URL(root.links[0].href);
+  expect(url.origin + url.pathname).toBe('https://especies.example.org/logout');
+  expect(url.searchParams.get('url')).toBe('https://especies.example.org/search?q=lynx');
+});
+
+test('on a page of an app under a path the bare CAS logout goes through its /logout', () => {
+  const root = fakeRoot(['https://auth.example.org/cas/logout'], 'logoutBtn');
+  addLoginReturn(root, 'https://hub.example.org/registros/occurrences/search?q=lynx', SERVICES);
+  const url = new URL(root.links[0].href);
+  expect(url.origin + url.pathname).toBe('https://hub.example.org/registros/logout');
+  expect(url.searchParams.get('url')).toBe('https://hub.example.org/registros/occurrences/search?q=lynx');
+});
+
 // Signed in with the portal password: the CAS page is the bare /cas/login and the logout comes
 // back to it, as f503250 left it
 test('on the CAS page after a portal password login the logout still comes back to it', () => {
